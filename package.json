@@ -1,0 +1,24 @@
+{
+  "name": "last-list",
+  "version": "1.0.0",
+  "description": "List App made with React and Express",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NRDuya/Last-List.git"
+  },
+  "keywords": [],
+  "author": "Nathaniel Duya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NRDuya/Last-List/issues"
+  },
+  "homepage": "https://github.com/NRDuya/Last-List#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.9"
+  }
+}
