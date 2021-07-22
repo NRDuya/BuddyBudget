@@ -1,2 +1,2 @@
-# Last-List
-List App made with React and Express
+# BudGet
+Budget App made with React and Express
