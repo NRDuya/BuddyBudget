@@ -40,50 +40,48 @@ router.post('/register', (req, res, next) => {
 
     if(isUserValid(username) && isEmailValid(email) && isPasswordSecure(password) && password === cpassword){
         db.execute("SELECT * FROM users WHERE username=?", [username])
-            .then((userExists) => {
-                if(!userExists){
-                    db.execute("SELECT * FROM email WHERE email=?", [email]);
+            .then(([results, fields]) => {
+                if(results && results.length == 0){
+                    return db.execute("SELECT * FROM users WHERE email=?", [email]);
                 }
                 else{
                     throw new UserError(
                         "Registration failed: User exists",
-                        "/registration",
+                        "/signup",
                         200
                     );
                 }
             })
-            .then((emailExists) => {
-                if(!emailExists){
-                    bcrypt.hash(password, 15)
-                        .then((hashedPassword) => {
-                            let baseSQL = "INSERT INTO users (username, email, password, created) VALUES(?, ?,?, now());"
-                            return db.execute(baseSQL, [username, email, hashedPassword]);
-                        })
+            .then(([results, fields]) => {
+                if(results && results.length == 0){
+                    return bcrypt.hash(password, 15);
                 }
                 else{
                     throw new UserError(
                         "Registration failed: Email exists",
-                        "/registration",
+                        "/signup",
                         200
-                    );
+                    )
                 }
-                
             })
-            .then((createdUserId) => {
-                if(createdUserId < 0){
+            .then((hashedPassword) => {
+                let baseSQL = "INSERT INTO users (username, email, password, created) VALUES(?, ?,?, now());"
+                return db.execute(baseSQL, [username, email, hashedPassword]);
+            })
+            .then(([results, fields]) => {
+                if(results && results.affectedRows){
+                      return res.status(201).json({success: true, message: "User registration successful", redirect: "/login"});
+                }
+                else{
                     throw new UserError(
-                      "Server Error, user could not be created",
-                      "/registration",
-                      500);
-                    }
-                    else{
-                      console.log("users.js -> User registration successful");
-                      res.redirect('/login');
-                    }            })
+                        "Server Error, user could not be created",
+                        "/signup",
+                        500);
+                }
+            })
             .catch((err) => {
                 if(err instanceof UserError){
-                    res.status(err.getStatus);
-                    res.redirect(err.getRedirectURL);
+                    return res.status(err.getStatus()).json({success: false, message: err.getMessage(), redirectURL: err.getRedirectURL()});
                 }
                 else{
                     next(err);
@@ -91,8 +89,7 @@ router.post('/register', (req, res, next) => {
             });
     }
     else{
-        console.log("Invalid inputs");
-        res.redirect('/registration');
+        res.status(200).json({success: false, message: "Invalid inputs", redirectURL: "/signup"});
     }
 }
 
