@@ -1,17 +1,31 @@
-import React from 'react';
+import axios  from 'axios';
+import { useState, useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-function isLogin(){
-    return false;
-}
-
 function PrivateRoute ({component: Component, ...rest}){
-    return (
+    axios.defaults.withCredentials = true;
 
-        // Show the component only when the user is logged in
-        // Otherwise, redirect the user to /signin page
+    const [logged, setLogged] = useState(false);
+
+    useEffect(() => {
+        axios.get("http://localhost:3001/users/verify")
+        .then((res) => {
+            console.log(res);
+            if(res.data.logged === true){
+                setLogged(true);
+            }
+            else{
+                return false;
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        }); 
+    }, [])
+    
+    return (
         <Route {...rest} render={props => (
-            isLogin() ?
+            logged ?
                 <Component {...props} />
             : <Redirect to="/login" />
         )} />

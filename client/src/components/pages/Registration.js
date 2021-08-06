@@ -17,7 +17,8 @@ function Registration(){
             email: emailRef.current.value,
             password: passwordRef.current.value,
             cpassword: cpasswordRef.current.value
-        }).then((res) => {
+        })
+        .then((res) => {
             if(res.data.success){
                 history.push("/login");
             }
@@ -40,11 +41,11 @@ function Registration(){
                 </div>
                 <div className='form-field'>
                     <label>Password</label>
-                    <input id="password" type="text" placeholder="Password" ref={passwordRef} required />
+                    <input id="password" type="password" placeholder="Password" ref={passwordRef} required />
                 </div>
                 <div className='form-field'>
                     <label>Confirm Password</label>
-                    <input id="cpassword" type="text" placeholder="Confirm Password" ref={cpasswordRef} required />
+                    <input id="cpassword" type="password" placeholder="Confirm Password" ref={cpasswordRef} required />
                 </div>
 
                 <div>

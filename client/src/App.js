@@ -13,6 +13,7 @@ function App() {
     <Router>
         <Switch>
           <PrivateRoute exact path="/" component={Dashboard} />
+          <PrivateRoute exact path="/dashboard" component={Dashboard} />
           <Route path='/login' component={Login} />
           <Route path='/signup' component={Registration} />
         </Switch>

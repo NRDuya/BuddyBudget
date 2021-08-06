@@ -32,6 +32,15 @@ function isPasswordSecure (password_){
     }
 };
 
+router.get('/verify', (req, res, next) => {
+    if(req.session.username){
+        res.send({logged: true, username: req.session.username})
+    }
+    else{
+        res.send({logged: false})
+    }
+})
+
 router.post('/register', (req, res, next) => {
     let username = req.body.username;
     let email = req.body.email;
@@ -89,7 +98,7 @@ router.post('/register', (req, res, next) => {
             });
     }
     else{
-        res.status(200).json({success: false, message: "Invalid inputs", redirectURL: "/signup"});
+        return res.status(200).json({success: false, message: "Invalid inputs", redirectURL: "/signup"});
     }
 });
 
@@ -98,7 +107,7 @@ router.post('/login', (req, res, next) => {
     let password = req.body.password;
 
     let userId;
-    let baseSQL = "SELECT id, username, password FROM users WHERE username=?;"
+    let baseSQL = "SELECT id, username, password FROM users WHERE username=?;";
 
     if(isUserValid(username) && isPasswordSecure(password)){
         db.execute(baseSQL, [username])
@@ -117,7 +126,9 @@ router.post('/login', (req, res, next) => {
         })
         .then((passwordsMatch) => {
             if(passwordsMatch){
-                return res.status(201).json({success: true, message: "User login successful", redirect: "/login", id: userId});
+                req.session.username = username;
+                req.session.userId = userId;
+                return res.status(201).json({success: true, message: "User login successful", redirect: "/dashboard"});
             }
             else{
                 throw new UserError(
@@ -137,7 +148,20 @@ router.post('/login', (req, res, next) => {
         })
     }
     else{
-        res.status(200).json({success: false, message: "Invalid inputs", redirectURL: "/login"});
+        return res.status(200).json({success: false, message: "Invalid inputs", redirectURL: "/login"});
     }
+});
+
+router.post('/logout', (req, res, next) => {
+    req.session.destroy((err) => {
+        if(err){
+            console.log("Session could not be destroyed");
+            next(err);
+          }
+          else{
+            res.clearCookie('userid');
+            return res.status(200).json({success: true, message: "User logout successful", redirect: "/login"});
+          }
+    })
 });
 module.exports = router;

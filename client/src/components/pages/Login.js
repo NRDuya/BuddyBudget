@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 function Login(){
@@ -16,12 +16,15 @@ function Login(){
         })
         .then((res) => {
             if(res.data.success){
-                console.log(res.data);
-                history.push("/signup");
+                localStorage.setItem("isLogged", true);
+                history.push("/dashboard");
             }
             else{
                 window.location.reload(false);
             }
+        })
+        .catch((err) => {
+            console.log(err);
         });
     }
 
