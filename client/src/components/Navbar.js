@@ -9,6 +9,7 @@ function Navbar() {
 
     const handleLogout = (event) => {
         event.preventDefault();
+        axios.defaults.withCredentials = true;
 
         axios.post('http://localhost:3001/users/logout', {})
         .then((res) => {
@@ -39,7 +40,7 @@ function Navbar() {
                     BudGet
                 </Link>
                 {
-                    logged ? <button onClick={handleLogout}>Logout</button> : <><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></>
+                    logged ? <><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></> : <button onClick={handleLogout}>Logout</button>
                 }
             </div>
         </nav>

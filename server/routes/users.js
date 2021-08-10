@@ -127,7 +127,7 @@ router.post('/login', (req, res, next) => {
         .then((passwordsMatch) => {
             if(passwordsMatch){
                 req.session.username = username;
-                req.session.userId = userId;
+                req.session.user = userId;
                 return res.status(201).json({success: true, message: "User login successful", redirect: "/dashboard"});
             }
             else{

@@ -1,0 +1,22 @@
+[
+    {
+      "id": 1,
+      "category": "Grocery",
+      "cost": "250.44"
+    },
+    {
+      "id": 2,
+      "category": "Gas",
+      "cost": "2419"
+    },
+    {
+      "id": 3,
+      "category": "Food",
+      "cost": "11"
+    },
+    {
+      "id": 4,
+      "category": "Boba",
+      "cost": "333 "
+    }
+]

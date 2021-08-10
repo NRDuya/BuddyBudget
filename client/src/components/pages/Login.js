@@ -9,12 +9,14 @@ function Login(){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
+        axios.defaults.withCredentials = true;
+        
         axios.post('http://localhost:3001/users/login', {
             username: usernameRef.current.value,
             password: passwordRef.current.value
         })
         .then((res) => {
+            console.log(res.data);
             if(res.data.success){
                 localStorage.setItem("isLogged", true);
                 history.push("/dashboard");

@@ -9,6 +9,7 @@ const mySqlSession = require('express-mysql-session')(session);
 
 // IMPORT ROUTERS //
 const usersRouter = require('./routes/users');
+const budgetRouter = require('./routes/budget');
 
 const app = express();
 
@@ -38,5 +39,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use('/users', usersRouter);
+app.use('/budget', budgetRouter);
 
 module.exports = app;
