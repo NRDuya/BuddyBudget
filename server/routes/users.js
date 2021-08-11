@@ -79,7 +79,7 @@ router.post('/register', (req, res, next) => {
             })
             .then(([results, fields]) => {
                 if(results && results.affectedRows){
-                      return res.status(201).json({success: true, message: "User registration successful", redirect: "/login"});
+                      return res.status(201).json({success: true, message: "User registration successful", username: username});
                 }
                 else{
                     throw new UserError(

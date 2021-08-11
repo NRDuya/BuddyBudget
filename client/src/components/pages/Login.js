@@ -19,6 +19,7 @@ function Login(){
             console.log(res.data);
             if(res.data.success){
                 localStorage.setItem("isLogged", true);
+                localStorage.setItem("username", res.data.username);
                 history.push("/dashboard");
             }
             else{
