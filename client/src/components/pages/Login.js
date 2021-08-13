@@ -3,6 +3,8 @@ import { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 function Login(){
+    const isLogged = localStorage.getItem("isLogged");    
+
     const usernameRef = useRef();
     const passwordRef = useRef();
     const history = useHistory();
@@ -10,7 +12,7 @@ function Login(){
     const handleSubmit = (event) => {
         event.preventDefault();
         axios.defaults.withCredentials = true;
-        
+        console.log(isLogged);
         axios.post('http://localhost:3001/users/login', {
             username: usernameRef.current.value,
             password: passwordRef.current.value
@@ -20,6 +22,7 @@ function Login(){
             if(res.data.success){
                 localStorage.setItem("isLogged", true);
                 localStorage.setItem("username", res.data.username);
+                console.log(isLogged);
                 history.push("/dashboard");
             }
             else{

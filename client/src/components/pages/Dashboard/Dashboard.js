@@ -1,25 +1,60 @@
 import axios from 'axios';
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../Navbar';
+import ReadOnlyRow from '../../ReadOnlyRow';
+import EditableRow from '../../EditableRow';
 
 function Dashboard() {
-    const categoryRef = useRef();
-    const priceRef = useRef();
-
     const [mainBudget, setMainBudget] = useState(null);
+
+    const [addFormData, setAddFormData] = useState({
+        category: '',
+        expense: 0
+    });
+
+    const [editFormData, setEditFormData] = useState({
+        category: '',
+        expense: 0
+    });
+
+    const [editBudgetId, setEditBudgetId] = useState(null); 
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const handleAddFormChange = (event) => {
+        event.preventDefault();
+
+        const fieldName = event.target.getAttribute('name');
+        const fieldValue = event.target.value;
+
+        const newFormData = {...addFormData};
+        newFormData[fieldName] = fieldValue;
+
+        setAddFormData(newFormData);
+    };
+
+    const handleEditFormChange = (event) => {
+        event.preventDefault();
+
+        const fieldName = event.target.getAttribute('name');
+        const fieldValue = event.target.value;
+
+        const newFormData = {...editFormData};
+        newFormData[fieldName] = fieldValue;
+
+        setEditFormData(newFormData);
+    };
 
     const handleAddFormSubmit = (event) => {
         event.preventDefault(); 
         axios.defaults.withCredentials = true;
 
         const newBudget = {
-            category: categoryRef.current.value,
-            price: priceRef.current.value
+            category: addFormData.category,
+            expense: addFormData.expense
         };
-
         const newMainBudget = [...mainBudget, newBudget];
         setMainBudget(newMainBudget);
         
@@ -30,14 +65,64 @@ function Dashboard() {
          .catch((err) => {
              console.log("Cannot add");
          })
-    }
+    };
+
+    const handleEditFormSubmit = (event) => {
+        event.preventDefault();
+
+        const editedBudget = {
+            id: editBudgetId,
+            category: editFormData.category,
+            expense: editFormData.expense
+        };
+        const newMainBudget = [...mainBudget];
+        const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
+
+        newMainBudget[index] = editedBudget;
+
+        setMainBudget(newMainBudget);
+        setEditBudgetId(null);
+
+        axios.post('http://localhost:3001/budget/editMain', editedBudget)
+        .then((res) => {
+           console.log('Successfully edited from db.');            
+        })
+        .catch((err) => {
+            console.log("Cannot add");
+        })
+    };
+
+    const handleEditClick = (event, budget) => {
+        event.preventDefault();
+        setEditBudgetId(budget.id);
+
+        const formValues = {
+            category: budget.category,
+            expense: budget.expense
+        }
+
+        setEditFormData(formValues);
+    };
+
+    const handleEditCancelClick = () => {
+        setEditBudgetId(null);
+    };
+
+    const handleDeleteClick = (budgetId) => {
+        const newMainBudget = [...mainBudget];
+        const index = mainBudget.findIndex((budget) => budget.id === budgetId);
+
+        newMainBudget.splice(index, 1);
+
+        setMainBudget(newMainBudget);
+    };
 
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
         axios('http://localhost:3001/budget/getMain')
          .then((res) => {
-            setMainBudget(res.data.budget)
+            setMainBudget(res.data.budget);
              
          })
          .catch((err) => {
@@ -50,7 +135,7 @@ function Dashboard() {
     }, [])
 
     if(loading) return "Loading...";
-    if(error) return error;
+    if(error) return "Error loading...";
     return (
         <>
             <Navbar />
@@ -58,31 +143,41 @@ function Dashboard() {
                 <h2>
                     Main BudGet
                 </h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                Category
-                            </th>
-                            <th>
-                                Set BudGet
-                            </th>
-                        </tr>
 
-                    </thead>
-                    <tbody>
-                        {mainBudget.map((data) => (
+                <form onSubmit={ handleEditFormSubmit }>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>{data.category}</td>
-                                <td>${data.price}</td>
-                            </tr> 
-                        ))}
-                    </tbody>
-                </table>
+                                <th>Category</th>
+                                <th>Set BudGet</th>
+                                <th>Actions</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            {mainBudget.map((data) => (
+                                <>
+                                    { editBudgetId === data.id ? 
+                                     <EditableRow 
+                                        editFormData={ editFormData } 
+                                        handleEditFormChange={ handleEditFormChange } 
+                                        handleEditCancelClick={ handleEditCancelClick } /> : 
+                                     <ReadOnlyRow 
+                                        data={ data } 
+                                        handleEditClick={ handleEditClick }
+                                        handleDeleteClick={ handleDeleteClick }/> 
+                                    }
+                                </>
+                            ))}
+                        </tbody>
+                    </table>
+                </form>
+
+
                 <h2>Add a BudGet</h2>
-                <form onSubmit={handleAddFormSubmit}>
-                    <input type='text' ref={categoryRef} placeholder="Category" required/>
-                    <input type='number' ref={priceRef} placeholder="BudGeted" step='.01' required/>
+                <form onSubmit={ handleAddFormSubmit }>
+                    <input type='text' name="category" placeholder="Category" onChange={handleAddFormChange} required/>
+                    <input type='number' name="expense" placeholder="BudGeted" step='.01' onChange={handleAddFormChange} required/>
                     <button type='submit'>Add</button>
                 </form>
             </div>

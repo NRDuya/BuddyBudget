@@ -4,8 +4,8 @@ import { Link, useHistory } from 'react-router-dom';
 import './Navbar.css';
 
 function Navbar() {
-    const [logged, setLogged] = useState(false);
     const history = useHistory();
+    const isLogged = localStorage.getItem("isLogged"); 
 
     const handleLogout = (event) => {
         event.preventDefault();
@@ -28,11 +28,7 @@ function Navbar() {
         });
     };
 
-    useEffect(() => {
-        const isLogged = localStorage.getItem("isLogged");
-        setLogged(isLogged);
-    }, [])
-    
+
     return (
         <nav>
             <div id='navbar'>
@@ -40,7 +36,7 @@ function Navbar() {
                     BudGet
                 </Link>
                 {
-                    logged ? <><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></> : <button onClick={handleLogout}>Logout</button>
+                    isLogged ? <button onClick={handleLogout}>Logout</button> : <><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></> 
                 }
             </div>
         </nav>
