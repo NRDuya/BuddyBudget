@@ -84,12 +84,12 @@ function Dashboard() {
         setEditBudgetId(null);
 
         axios.post('http://localhost:3001/budget/editMain', editedBudget)
-        .then((res) => {
-           console.log('Successfully edited from db.');            
-        })
-        .catch((err) => {
-            console.log("Cannot add");
-        })
+         .then((res) => {
+           console.log('Successfully edited to db.');            
+         })
+         .catch((err) => {
+            console.log("Cannot edit");
+         })
     };
 
     const handleEditClick = (event, budget) => {
@@ -113,8 +113,15 @@ function Dashboard() {
         const index = mainBudget.findIndex((budget) => budget.id === budgetId);
 
         newMainBudget.splice(index, 1);
-
         setMainBudget(newMainBudget);
+
+        axios.delete('http://localhost:3001/budget/deleteMain', {data: {id: budgetId}})
+         .then((res) => {
+           console.log('Successfully deleted from db.');            
+         })
+         .catch((err) => {
+            console.log("Cannot delete");
+         })
     };
 
     useEffect(() => {
