@@ -2,11 +2,11 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../Navbar';
-import ReadOnlyRow from '../../ReadOnlyRow';
-import EditableRow from '../../EditableRow';
+import ReadOnlyRow from './ReadMainBudgetRow';
+import EditableRow from './EditMainBudgetRow';
 
-function Dashboard() {
-    const [mainBudget, setMainBudget] = useState(null);
+function MainBudget() {
+    const [mainBudget, setMainBudget] = useState([]);
 
     const [addFormData, setAddFormData] = useState({
         category: '',
@@ -23,6 +23,7 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Add functions
     const handleAddFormChange = (event) => {
         event.preventDefault();
 
@@ -33,18 +34,6 @@ function Dashboard() {
         newFormData[fieldName] = fieldValue;
 
         setAddFormData(newFormData);
-    };
-
-    const handleEditFormChange = (event) => {
-        event.preventDefault();
-
-        const fieldName = event.target.getAttribute('name');
-        const fieldValue = event.target.value;
-
-        const newFormData = {...editFormData};
-        newFormData[fieldName] = fieldValue;
-
-        setEditFormData(newFormData);
     };
 
     const handleAddFormSubmit = (event) => {
@@ -65,6 +54,19 @@ function Dashboard() {
          .catch((err) => {
              console.log("Cannot add");
          })
+    };
+    
+    // Edit Functions
+    const handleEditFormChange = (event) => {
+        event.preventDefault();
+
+        const fieldName = event.target.getAttribute('name');
+        const fieldValue = event.target.value;
+
+        const newFormData = {...editFormData};
+        newFormData[fieldName] = fieldValue;
+
+        setEditFormData(newFormData);
     };
 
     const handleEditFormSubmit = (event) => {
@@ -108,6 +110,7 @@ function Dashboard() {
         setEditBudgetId(null);
     };
 
+    // Delete Functions
     const handleDeleteClick = (budgetId) => {
         const newMainBudget = [...mainBudget];
         const index = mainBudget.findIndex((budget) => budget.id === budgetId);
@@ -164,7 +167,7 @@ function Dashboard() {
                         <tbody>
                             {mainBudget.map((data) => (
                                 <>
-                                    { editBudgetId === data.id ? 
+                                    { data.id === editBudgetId ? 
                                      <EditableRow 
                                         editFormData={ editFormData } 
                                         handleEditFormChange={ handleEditFormChange } 
@@ -192,4 +195,4 @@ function Dashboard() {
     )
 }
 
-export default Dashboard;
+export default MainBudget;
