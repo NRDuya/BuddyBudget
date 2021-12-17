@@ -1,2 +1,2 @@
 # BudGet
-Budget App made with React and Express
+Budgeting App made with React and Express
