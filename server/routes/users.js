@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/database');
-const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const UserError = require('../helpers/errors/UserError');
+const UserModel = require('../models/Users');
 
 function isUserValid(username_){
     if( username_.match(/^[0-9a-zA-Z]+$/) &&
@@ -33,122 +33,60 @@ function isPasswordSecure (password_){
 };
 
 router.get('/verify', (req, res, next) => {
-    if(req.session.username){
-        res.send({logged: true, username: req.session.username})
-    }
-    else{
-        res.send({logged: false})
-    }
 })
 
-router.post('/register', (req, res, next) => {
+router.post('/register', async function (req, res, next) {
     let username = req.body.username;
     let email = req.body.email;
     let password = req.body.password;
     let cpassword = req.body.cpassword;
-
+    console.log("register");
     if(isUserValid(username) && isEmailValid(email) && isPasswordSecure(password) && password === cpassword){
-        db.execute("SELECT * FROM users WHERE username=?", [username])
-            .then(([results, fields]) => {
-                if(results && results.length == 0){
-                    return db.execute("SELECT * FROM users WHERE email=?", [email]);
+        try {
+            const usernameExists = await UserModel.usernameExists(username);
+            const emailExists = await UserModel.emailExists(email);
+            
+            if (usernameExists) throw new UserError("Registration Failed: Username already exists", 200);
+            if (emailExists) throw new UserError("Registration Failed: Email already exists", 200);
+            
+            if (!usernameExists && !emailExists) {
+                const userId = await UserModel.create(username, password, email);
+                if (userId < 0) {
+                    throw new UserError("Server Error, user could not be created", 500);
+                } else {
+                    console.log("register success");
+                    return res.status(201).json({success: true, message: "User registration successful", username: username});
                 }
-                else{
-                    throw new UserError(
-                        "Registration failed: User exists",
-                        "/signup",
-                        200
-                    );
-                }
-            })
-            .then(([results, fields]) => {
-                if(results && results.length == 0){
-                    return bcrypt.hash(password, 15);
-                }
-                else{
-                    throw new UserError(
-                        "Registration failed: Email exists",
-                        "/signup",
-                        200
-                    )
-                }
-            })
-            .then((hashedPassword) => {
-                let baseSQL = "INSERT INTO users (username, email, password, created) VALUES(?, ?,?, now());"
-                return db.execute(baseSQL, [username, email, hashedPassword]);
-            })
-            .then(([results, fields]) => {
-                if(results && results.affectedRows){
-                      return res.status(201).json({success: true, message: "User registration successful", username: username});
-                }
-                else{
-                    throw new UserError(
-                        "Server Error, user could not be created",
-                        "/signup",
-                        500);
-                }
-            })
-            .catch((err) => {
-                if(err instanceof UserError){
-                    return res.status(err.getStatus()).json({success: false, message: err.getMessage(), redirectURL: err.getRedirectURL()});
-                }
-                else{
-                    next(err);
-                }
-            });
-    }
-    else{
-        return res.status(200).json({success: false, message: "Invalid inputs", redirectURL: "/signup"});
+            }
+        }
+        catch (err) {
+            next(err);
+        }
+    } else {
+        return res.status(200).json({success: false, message: "Invalid inputs"});
     }
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', async function (req, res, next) {
     let username = req.body.username;
     let password = req.body.password;
-
-    let userId;
-    let baseSQL = "SELECT id, username, password FROM users WHERE username=?;";
-
+    
     if(isUserValid(username) && isPasswordSecure(password)){
-        db.execute(baseSQL, [username])
-        .then(([results, fields]) => {
-            if(results && results.length == 1){
-                userId = results[0].id;
-                return bcrypt.compare(password, results[0].password);
+        try {
+            const userId = await UserModel.authenticate(username, password);
+            if(userId > 0){
+                const accessToken = jwt.sign(userId, process.env.ACCESS_TOKEN_SECRET);
+                return res.status(201).json({success: true, token: accessToken});
+            } else {
+                throw new UserError("Invalid username and/or password", 200);
             }
-            else{
-                throw new UserError(
-                    "Invalid Username and/or Password",
-                    "/login",
-                    200
-                )
-            }
-        })
-        .then((passwordsMatch) => {
-            if(passwordsMatch){
-                req.session.username = username;
-                req.session.user = userId;
-                return res.status(201).json({success: true, message: "User login successful", redirect: "/dashboard"});
-            }
-            else{
-                throw new UserError(
-                    "Invalid Username and/or Password",
-                    "/login",
-                    200
-                )
-            }
-        })
-        .catch((err) => {
-            if(err instanceof UserError){
-                return res.status(err.getStatus()).json({success: false, message: err.getMessage(), redirectURL: err.getRedirectURL()});
-            }
-            else{
-                next(err);
-            }
-        })
+        }
+        catch (err) {
+            next(err);
+        }
     }
     else{
-        return res.status(200).json({success: false, message: "Invalid inputs", redirectURL: "/login"});
+        return res.status(200).json({success: false, message: "Invalid inputs"});
     }
 });
 

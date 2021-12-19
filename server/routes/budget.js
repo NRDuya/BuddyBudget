@@ -6,7 +6,6 @@ const UserError = require('../helpers/errors/UserError');
 router.post('/saveMain', (req, res, next) => {
     let category = req.body.category;
     let expense = req.body.expense;
-    let fk_userid = req.session.user;
 
     //TODO SERVER SIDE CHECK CATEGORY/COST
 
@@ -34,7 +33,6 @@ router.post('/saveMain', (req, res, next) => {
 });
 
 router.get('/getMain', (req, res, next) => {
-    let fk_userid = req.session.user;
 
     let baseSQL = "SELECT id, category, expense FROM mainBudget WHERE fk_userid=?;"
     db.execute(baseSQL, [fk_userid])

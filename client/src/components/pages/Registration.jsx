@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import Navbar from '../Navbar';
 
 function Registration(){
     const usernameRef = useRef();
@@ -11,8 +12,8 @@ function Registration(){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        axios.post('http://localhost:3001/users/register', {
+        console.log("handlesub");
+        axios.post('/users/register', {
             username: usernameRef.current.value,
             email: emailRef.current.value,
             password: passwordRef.current.value,
@@ -21,15 +22,22 @@ function Registration(){
         .then((res) => {
             if(res.data.success){
                 history.push("/login");
+                console.log("success");
             }
             else{
+                console.log("fail");
                 window.location.reload(false);
             }
+        })
+        .catch((err) => {
+            console.log("Axios error" + err);
         });
+        console.log("handlesub2");
     };
 
     return(
         <>
+            <Navbar />
             <form onSubmit={handleSubmit}>
                 <div className='form-field'>
                     <label>Username</label>
