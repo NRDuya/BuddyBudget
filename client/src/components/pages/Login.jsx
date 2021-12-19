@@ -14,13 +14,14 @@ function Login(){
         event.preventDefault();
         axios.defaults.withCredentials = true;
         console.log(isLogged);
-        axios.post('http://localhost:3001/users/login', {
+        axios.post('/users/login', {
             username: usernameRef.current.value,
             password: passwordRef.current.value
         })
         .then((res) => {
             console.log(res.data);
             if(res.data.success){
+                console.log("SUCCESSS!!!");
                 localStorage.setItem("isLogged", true);
                 localStorage.setItem("username", res.data.username);
                 console.log(isLogged);

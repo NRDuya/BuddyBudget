@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-
+require('dotenv').config();
 // Import Routes
 const usersRouter = require('./routes/users');
 const budgetRouter = require('./routes/budget');
@@ -25,7 +25,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/users', usersRouter);
 app.use('/budget', budgetRouter);
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3030;
 app.listen(port, () => {
     console.log("Listening on port " + port);
 });

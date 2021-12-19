@@ -33,6 +33,8 @@ function isPasswordSecure (password_){
 };
 
 router.get('/verify', (req, res, next) => {
+    console.log("test");
+    return res.status(201).json({success: true, message: "User registration successful", username: "HELLO"});
 })
 
 router.post('/register', async function (req, res, next) {
@@ -40,7 +42,6 @@ router.post('/register', async function (req, res, next) {
     let email = req.body.email;
     let password = req.body.password;
     let cpassword = req.body.cpassword;
-    console.log("register");
     if(isUserValid(username) && isEmailValid(email) && isPasswordSecure(password) && password === cpassword){
         try {
             const usernameExists = await UserModel.usernameExists(username);
@@ -54,7 +55,6 @@ router.post('/register', async function (req, res, next) {
                 if (userId < 0) {
                     throw new UserError("Server Error, user could not be created", 500);
                 } else {
-                    console.log("register success");
                     return res.status(201).json({success: true, message: "User registration successful", username: username});
                 }
             }
