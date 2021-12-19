@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import Navbar from '../Navbar';
 
 function Login(){
     const isLogged = localStorage.getItem("isLogged");    
@@ -36,6 +37,7 @@ function Login(){
 
     return(
         <>
+            <Navbar />
             <form onSubmit={handleSubmit}>
                 <div className='form-field'>
                     <label>Username</label>

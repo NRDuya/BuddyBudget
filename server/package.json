@@ -2,9 +2,9 @@
   "name": "last-list",
   "version": "1.0.0",
   "description": "List App made with React and Express",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node server/server.js"
+    "start": "node ./app.js"
   },
   "repository": {
     "type": "git",
@@ -23,8 +23,6 @@
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "express-mysql-session": "^2.1.6",
-    "express-session": "^1.17.2",
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.9"
   }
