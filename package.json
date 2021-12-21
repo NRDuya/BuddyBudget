@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node server/app.js"
+  },
   "dependencies": {
     "dotenv": "^10.0.0",
     "jsonwebtoken": "^8.5.1"
