@@ -26,9 +26,11 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 // Routes
 app.use('/users', usersRouter);
 app.use('/budget', budgetRouter);
-app.get('*', (req, res) => {  res.sendFile(path.join(__dirname, '../client/build/index.html')); });
 
-const port = process.env.PORT || 3030;
+app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build/index.html')); });
+app.use((req, res) => { res.status(404).json({ message: 'Route Not Found' }); });
+
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log("Listening on port " + port);
 });
