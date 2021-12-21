@@ -4,36 +4,30 @@ import { Link, useHistory } from 'react-router-dom';
 import Navbar from '../Navbar';
 
 function Login(){
-    const isLogged = localStorage.getItem("isLogged");    
-
     const usernameRef = useRef();
     const passwordRef = useRef();
     const history = useHistory();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         axios.defaults.withCredentials = true;
-        console.log(isLogged);
-        axios.post('/users/login', {
-            username: usernameRef.current.value,
-            password: passwordRef.current.value
-        })
-        .then((res) => {
-            console.log(res.data);
-            if(res.data.success){
-                console.log("SUCCESSS!!!");
-                localStorage.setItem("isLogged", true);
+
+        try{
+            const res = await axios.post('/users/login', {
+                username: usernameRef.current.value,
+                password: passwordRef.current.value
+            });
+
+            if (res.data.success) {
                 localStorage.setItem("username", res.data.username);
-                console.log(isLogged);
-                history.push("/dashboard");
-            }
-            else{
+                history.push("/dashboard");    
+            } else {
                 window.location.reload(false);
             }
-        })
-        .catch((err) => {
+        }
+        catch (err) {
             console.log(err);
-        });
+        }
     }
 
     return(

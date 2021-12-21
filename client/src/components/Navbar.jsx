@@ -1,33 +1,34 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import './Navbar.css';
 
 function Navbar() {
     const history = useHistory();
-    const isLogged = localStorage.getItem("isLogged"); 
+    const [isLogged, setLogged] = useState(false);
+    localStorage.getItem("username");
 
-    const handleLogout = (event) => {
+    const handleLogout = async (event) => {
         event.preventDefault();
         axios.defaults.withCredentials = true;
-
-        axios.post('http://localhost:3001/users/logout', {})
-        .then((res) => {
-            console.log(res.data);
-            if(res.data.success){
-                localStorage.setItem("isLogged", false);
-                history.push("/login");
-            }
-            else{
-                console.log(res.data);
+        try {
+            const res = await axios.post('/users/logout', {});
+            if (res.data.success) {
+                history.push('/login');
+            } else {
                 window.location.reload(false);
             }
-        })
-        .catch((err) => {
+        }
+        catch (err) {
             console.log(err);
-        });
+        }
+        localStorage.removeItem("username");
     };
 
+    useEffect(() => {
+        localStorage.getItem("username") ? setLogged(true) : setLogged(false);
+    }, [])
 
     return (
         <nav>

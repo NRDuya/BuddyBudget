@@ -130,7 +130,7 @@ function MainBudget() {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios('http://localhost:3001/budget/getMain')
+        axios('/budget/getMain')
          .then((res) => {
             setMainBudget(res.data.budget);
              

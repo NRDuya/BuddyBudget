@@ -12,7 +12,8 @@ function App() {
   return (
     <Router>
         <Switch>
-          <Route exact path="/" component={Login} />
+          <Route exact path="/" component={Dashboard} />
+          <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/mainbudget" component={MainBudget} />
           <Route path='/login' component={Login} />
           <Route path='/signup' component={Registration} />

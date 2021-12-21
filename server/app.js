@@ -1,9 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-require('dotenv').config();
+
 // Import Routes
 const usersRouter = require('./routes/users');
 const budgetRouter = require('./routes/budget');
