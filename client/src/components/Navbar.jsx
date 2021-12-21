@@ -9,18 +9,16 @@ function Navbar() {
     const handleLogout = async (event) => {
         event.preventDefault();
         axios.defaults.withCredentials = true;
+        localStorage.removeItem("username");
         try {
             const res = await axios.post('/users/logout', {});
             if (res.data.success) {
                 navigate('/login');
-            } else {
-                window.location.reload(false);
             }
         }
         catch (err) {
             console.log(err);
         }
-        localStorage.removeItem("username");
     };
 
     return (
