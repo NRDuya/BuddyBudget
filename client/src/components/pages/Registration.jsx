@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../Navbar';
 
@@ -8,31 +8,27 @@ function Registration(){
     const emailRef = useRef();
     const passwordRef = useRef();
     const cpasswordRef = useRef();
-    const history = useHistory();
+    const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("handlesub");
-        axios.post('/users/register', {
-            username: usernameRef.current.value,
-            email: emailRef.current.value,
-            password: passwordRef.current.value,
-            cpassword: cpasswordRef.current.value
-        })
-        .then((res) => {
-            if(res.data.success){
-                history.push("/login");
-                console.log("success");
-            }
-            else{
-                console.log("fail");
+        try {
+            const res = await axios.post('/users/register', {
+                username: usernameRef.current.value,
+                email: emailRef.current.value,
+                password: passwordRef.current.value,
+                cpassword: cpasswordRef.current.value
+            });
+
+            if (res.data.success) {
+                navigate('/login');
+            } else {
                 window.location.reload(false);
             }
-        })
-        .catch((err) => {
-            console.log("Axios error" + err);
-        });
-        console.log("handlesub2");
+        }
+        catch (err) {
+            window.location.reload(false);
+        }
     };
 
     return(

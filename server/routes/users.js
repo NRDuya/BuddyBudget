@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const UserError = require('../helpers/errors/UserError');
 const UserModel = require('../models/Users');
+const authenticateToken = require('../middleware/authenticateToken');
 
 function isUserValid(username_){
     if( username_.match(/^[0-9a-zA-Z]+$/) &&
@@ -32,7 +33,8 @@ function isPasswordSecure (password_){
     }
 };
 
-router.get('/verify', (req, res, next) => {
+router.get('/authenticate', authenticateToken, (req, res, next) => {
+    return res.status(201).json({success: true});
 })
 
 router.post('/register', async function (req, res, next) {
@@ -40,7 +42,6 @@ router.post('/register', async function (req, res, next) {
     let email = req.body.email;
     let password = req.body.password;
     let cpassword = req.body.cpassword;
-    console.log("register");
     if(isUserValid(username) && isEmailValid(email) && isPasswordSecure(password) && password === cpassword){
         try {
             const usernameExists = await UserModel.usernameExists(username);
@@ -54,13 +55,14 @@ router.post('/register', async function (req, res, next) {
                 if (userId < 0) {
                     throw new UserError("Server Error, user could not be created", 500);
                 } else {
-                    console.log("register success");
-                    return res.status(201).json({success: true, message: "User registration successful", username: username});
+                    return res.status(201).json({success: true, message: "User registration successful"});
                 }
             }
         }
         catch (err) {
-            next(err);
+            if (err instanceof UserError) {
+                return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            } else next(err);
         }
     } else {
         return res.status(200).json({success: false, message: "Invalid inputs"});
@@ -75,14 +77,18 @@ router.post('/login', async function (req, res, next) {
         try {
             const userId = await UserModel.authenticate(username, password);
             if(userId > 0){
-                const accessToken = jwt.sign(userId, process.env.ACCESS_TOKEN_SECRET);
-                return res.status(201).json({success: true, token: accessToken});
+                const token = jwt.sign(userId, process.env.ACCESS_TOKEN_SECRET);
+
+                res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });  
+                return res.status(201).json({success: true, token: token, username: username});
             } else {
                 throw new UserError("Invalid username and/or password", 200);
             }
         }
         catch (err) {
-            next(err);
+            if (err instanceof UserError) {
+                return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            } else next(err);
         }
     }
     else{
@@ -90,16 +96,18 @@ router.post('/login', async function (req, res, next) {
     }
 });
 
-router.post('/logout', (req, res, next) => {
-    req.session.destroy((err) => {
-        if(err){
-            console.log("Session could not be destroyed");
-            next(err);
-          }
-          else{
-            res.clearCookie('userid');
-            return res.status(200).json({success: true, message: "User logout successful", redirect: "/login"});
-          }
-    })
+router.post('/logout', authenticateToken, (req, res, next) => {
+    // req.session.destroy((err) => {
+    //     if(err){
+    //         console.log("Session could not be destroyed");
+    //         next(err);
+    //       }
+    //       else{
+    //         res.clearCookie('userid');
+    //         return res.status(200).json({success: true, message: "User logout successful", redirect: "/login"});
+    //       }
+    // })
+    res.cookie('token', '', { httpOnly: true, maxAge: 1});  
+    return res.status(201).json({success: true});
 });
 module.exports = router;

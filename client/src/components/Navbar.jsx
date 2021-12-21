@@ -1,33 +1,28 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 function Navbar() {
-    const history = useHistory();
-    const isLogged = localStorage.getItem("isLogged"); 
+    const navigate = useNavigate();
+    const isLogged = localStorage.getItem('username');
 
-    const handleLogout = (event) => {
+    const handleLogout = async (event) => {
         event.preventDefault();
         axios.defaults.withCredentials = true;
-
-        axios.post('http://localhost:3001/users/logout', {})
-        .then((res) => {
-            console.log(res.data);
-            if(res.data.success){
-                localStorage.setItem("isLogged", false);
-                history.push("/login");
-            }
-            else{
-                console.log(res.data);
+        try {
+            const res = await axios.post('/users/logout', {});
+            if (res.data.success) {
+                navigate('/login');
+            } else {
                 window.location.reload(false);
             }
-        })
-        .catch((err) => {
+        }
+        catch (err) {
             console.log(err);
-        });
+        }
+        localStorage.removeItem("username");
     };
-
 
     return (
         <nav>
@@ -36,7 +31,7 @@ function Navbar() {
                     BudGet
                 </Link>
                 {
-                    isLogged ? <button onClick={handleLogout}>Logout</button> : <><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></> 
+                    isLogged ? (<button onClick={handleLogout}>Logout</button>) : (<><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></>) 
                 }
             </div>
         </nav>

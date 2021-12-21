@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -25,7 +26,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/users', usersRouter);
 app.use('/budget', budgetRouter);
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3030;
 app.listen(port, () => {
     console.log("Listening on port " + port);
 });
