@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 const UserError = require('../helpers/errors/UserError');
+const authenticateToken = require('../middleware/authenticateToken');
 
-router.post('/saveMain', (req, res, next) => {
+router.post('/saveMain', authenticateToken, (req, res, next) => {
     let category = req.body.category;
     let expense = req.body.expense;
 
@@ -32,7 +33,7 @@ router.post('/saveMain', (req, res, next) => {
     })
 });
 
-router.get('/getMain', (req, res, next) => {
+router.get('/getMain', authenticateToken, (req, res, next) => {
 
     let baseSQL = "SELECT id, category, expense FROM mainBudget WHERE fk_userid=?;"
     db.execute(baseSQL, [fk_userid])
@@ -49,7 +50,7 @@ router.get('/getMain', (req, res, next) => {
     })
 });
 
-router.post('/editMain', (req, res, next) => {
+router.post('/editMain', authenticateToken, (req, res, next) => {
     let category = req.body.category;
     let expense = req.body.expense;
     let budgetId = req.body.id;
@@ -79,7 +80,7 @@ router.post('/editMain', (req, res, next) => {
     })
 });
 
-router.delete('/deleteMain', (req, res, next) => {
+router.delete('/deleteMain', authenticateToken, (req, res, next) => {
     let budgetId = req.body.id;
 
     let baseSQL = "DELETE FROM mainBudget where id=?;";
