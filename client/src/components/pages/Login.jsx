@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { useRef } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 
 function Login(){
     const usernameRef = useRef();
     const passwordRef = useRef();
-    const history = useHistory();
-
+    const navigate = useNavigate();
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
         axios.defaults.withCredentials = true;
@@ -20,7 +20,7 @@ function Login(){
 
             if (res.data.success) {
                 localStorage.setItem("username", res.data.username);
-                history.push("/dashboard");    
+                navigate("/");
             } else {
                 window.location.reload(false);
             }

@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../Navbar';
 
@@ -8,7 +8,7 @@ function Registration(){
     const emailRef = useRef();
     const passwordRef = useRef();
     const cpasswordRef = useRef();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -21,7 +21,7 @@ function Registration(){
             });
 
             if (res.data.success) {
-                history.push('/login');
+                navigate('/login');
             } else {
                 window.location.reload(false);
             }

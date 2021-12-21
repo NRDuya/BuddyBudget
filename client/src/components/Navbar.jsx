@@ -1,13 +1,11 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 function Navbar() {
-    const history = useHistory();
-    const [isLogged, setLogged] = useState(false);
-    localStorage.getItem("username");
+    const navigate = useNavigate();
+    const isLogged = localStorage.getItem('username');
 
     const handleLogout = async (event) => {
         event.preventDefault();
@@ -15,7 +13,7 @@ function Navbar() {
         try {
             const res = await axios.post('/users/logout', {});
             if (res.data.success) {
-                history.push('/login');
+                navigate('/login');
             } else {
                 window.location.reload(false);
             }
@@ -26,10 +24,6 @@ function Navbar() {
         localStorage.removeItem("username");
     };
 
-    useEffect(() => {
-        localStorage.getItem("username") ? setLogged(true) : setLogged(false);
-    }, [])
-
     return (
         <nav>
             <div id='navbar'>
@@ -37,7 +31,7 @@ function Navbar() {
                     BudGet
                 </Link>
                 {
-                    isLogged ? <button onClick={handleLogout}>Logout</button> : <><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></> 
+                    isLogged ? (<button onClick={handleLogout}>Logout</button>) : (<><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></>) 
                 }
             </div>
         </nav>
