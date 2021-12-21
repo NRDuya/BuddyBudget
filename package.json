@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "node server/app.js"
+    "start": "node server/app.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
