@@ -6,14 +6,16 @@ import Navbar from '../../Navbar';
 function Dashboard() {
     const [mainBudget, setMainBudget] = useState([]);
     const [mainIncome, setMainIncome] = useState([]);
-    
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
     if(loading) return "Loading...";
     if(error) return "Error loading...";
     return (
         <>
             <Navbar />
             <div className='app-container'>    
-            
+            STESTJSIE:JFAS
             </div>
         </>
     )

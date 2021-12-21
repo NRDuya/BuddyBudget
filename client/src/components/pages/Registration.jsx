@@ -1,35 +1,39 @@
-import { useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Navbar from '../Navbar';
 
 function Registration(){
     const usernameRef = useRef();
     const emailRef = useRef();
     const passwordRef = useRef();
     const cpasswordRef = useRef();
-    const history = useHistory();
+    const navigate = useNavigate();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        try {
+            const res = await axios.post('/users/register', {
+                username: usernameRef.current.value,
+                email: emailRef.current.value,
+                password: passwordRef.current.value,
+                cpassword: cpasswordRef.current.value
+            });
 
-        axios.post('http://localhost:3001/users/register', {
-            username: usernameRef.current.value,
-            email: emailRef.current.value,
-            password: passwordRef.current.value,
-            cpassword: cpasswordRef.current.value
-        })
-        .then((res) => {
-            if(res.data.success){
-                history.push("/login");
-            }
-            else{
+            if (res.data.success) {
+                navigate('/login');
+            } else {
                 window.location.reload(false);
             }
-        });
+        }
+        catch (err) {
+            window.location.reload(false);
+        }
     };
 
     return(
         <>
+            <Navbar />
             <form onSubmit={handleSubmit}>
                 <div className='form-field'>
                     <label>Username</label>

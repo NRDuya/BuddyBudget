@@ -1,23 +1,35 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 
-import PrivateRoute from '../src/components/PrivateRoute';
 import Dashboard from './components/pages/Dashboard/Dashboard';
 import MainBudget from './components/pages/MainBudget/MainBudget';
 import Registration from './components/pages/Registration';
 import Login from './components/pages/Login';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
 
   return (
     <Router>
-        <Switch>
-          <PrivateRoute exact path="/" component={Dashboard} />
-          <PrivateRoute exact path="/mainbudget" component={MainBudget} />
-          <Route path='/login' component={Login} />
-          <Route path='/signup' component={Registration} />
-        </Switch>
+        <Routes>
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }/>
+          <Route
+          path="/mainbudget"
+          element={
+            <PrivateRoute>
+              <MainBudget />
+            </PrivateRoute>
+          }/>
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Registration />} />
+        </Routes>
     </Router>
   );
 }
