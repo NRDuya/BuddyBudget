@@ -85,7 +85,7 @@ function MainBudget() {
         setMainBudget(newMainBudget);
         setEditBudgetId(null);
 
-        axios.post('http://localhost:3001/budget/editMain', editedBudget)
+        axios.post('/budget/editMain', editedBudget)
          .then((res) => {
            console.log('Successfully edited to db.');            
          })
