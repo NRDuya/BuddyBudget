@@ -1,8 +1,8 @@
 var db = require('../config/database');
-const MainBudgetModel = {};
+const VariableBudgetModel = {};
 
-MainBudgetModel.create = (category, expense, userId) => {
-    const baseSQL = "INSERT INTO mainBudget (category, expense, fk_userid) VALUES (?, ?, ?);"
+VariableBudgetModel.create = (category, expense, userId) => {
+    const baseSQL = "INSERT INTO variablebudget (category, expense, user) VALUES (?, ?, ?);"
     db.execute(baseSQL, [category, expense, userId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
@@ -12,8 +12,8 @@ MainBudgetModel.create = (category, expense, userId) => {
         .catch((err) => Promise.reject(err))
 }
 
-MainBudgetModel.get = (userId) => {
-    const baseSQL = "SELECT id, category, expense FROM mainBudget WHERE fk_userid = ?;"
+VariableBudgetModel.get = (userId) => {
+    const baseSQL = "SELECT id, category, expense FROM variablebudget WHERE user = ?;"
     return db.execute(baseSQL, [userId])
         .then(([results, fields]) => {
             if(results && results.length){
@@ -23,8 +23,8 @@ MainBudgetModel.get = (userId) => {
         .catch((err) => Promise.reject(err))
 }
 
-MainBudgetModel.edit = (category, expense, budgetId) => {
-    const baseSQL = "UPDATE mainBudget SET category = ?, expense = ? WHERE id = ?;"
+VariableBudgetModel.edit = (category, expense, budgetId) => {
+    const baseSQL = "UPDATE variablebudget SET category = ?, expense = ? WHERE id = ?;"
     db.execute(baseSQL, [category, expense, budgetId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
@@ -34,8 +34,8 @@ MainBudgetModel.edit = (category, expense, budgetId) => {
         .catch((err) => Promise.reject(err))
 }
 
-MainBudgetModel.delete = (budgetId) => {
-    let baseSQL = "DELETE FROM mainBudget where id = ?;";
+VariableBudgetModel.delete = (budgetId) => {
+    let baseSQL = "DELETE FROM variablebudget where id = ?;";
     db.execute(baseSQL, [budgetId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
@@ -46,4 +46,4 @@ MainBudgetModel.delete = (budgetId) => {
         .catch((err) => Promise.reject(err))
 }
 
-module.exports = MainBudgetModel;
+module.exports = VariableBudgetModel;
