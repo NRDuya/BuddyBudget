@@ -47,7 +47,7 @@ function MainBudget() {
         const newMainBudget = [...mainBudget, newBudget];
         setMainBudget(newMainBudget);
         
-        axios.post('/budget/saveMain', newBudget)
+        axios.post('/variableBudget/save', newBudget)
          .then((res) => {
             console.log('Successfully added to db.');            
          })
@@ -85,7 +85,7 @@ function MainBudget() {
         setMainBudget(newMainBudget);
         setEditBudgetId(null);
 
-        axios.post('/budget/editMain', editedBudget)
+        axios.post('/variableBudget/edit', editedBudget)
          .then((res) => {
            console.log('Successfully edited to db.');            
          })
@@ -118,7 +118,7 @@ function MainBudget() {
         newMainBudget.splice(index, 1);
         setMainBudget(newMainBudget);
 
-        axios.delete('/budget/deleteMain', {data: {id: budgetId}})
+        axios.delete('/variableBudget/delete', {data: {id: budgetId}})
          .then((res) => {
            console.log('Successfully deleted from db.');            
          })
@@ -130,7 +130,7 @@ function MainBudget() {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios('/budget/getMain')
+        axios('/variableBudget/')
          .then((res) => {
             setMainBudget(res.data.budget);
              
