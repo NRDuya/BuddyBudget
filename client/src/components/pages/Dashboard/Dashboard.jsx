@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../../Navbar';
+import MainBudget from '../MainBudget/MainBudget';
 
 function Dashboard() {
     const [mainBudget, setMainBudget] = useState([]);
@@ -14,8 +15,8 @@ function Dashboard() {
     return (
         <>
             <Navbar />
-            <div className='app-container'>    
-            STESTJSIE:JFAS
+            <div className='app-container'>  
+            <MainBudget />  
             </div>
         </>
     )
