@@ -47,7 +47,7 @@ function MainBudget() {
         const newMainBudget = [...mainBudget, newBudget];
         setMainBudget(newMainBudget);
         
-        axios.post('http://localhost:3001/budget/saveMain', newBudget)
+        axios.post('/budget/saveMain', newBudget)
          .then((res) => {
             console.log('Successfully added to db.');            
          })
@@ -118,7 +118,7 @@ function MainBudget() {
         newMainBudget.splice(index, 1);
         setMainBudget(newMainBudget);
 
-        axios.delete('http://localhost:3001/budget/deleteMain', {data: {id: budgetId}})
+        axios.delete('/budget/deleteMain', {data: {id: budgetId}})
          .then((res) => {
            console.log('Successfully deleted from db.');            
          })
