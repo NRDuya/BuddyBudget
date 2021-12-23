@@ -139,7 +139,7 @@ function MainBudget({ type }) {
          .finally(() => {
             setLoading(false);
          })
-    }, [])
+    }, [type])
 
     if(loading) return "Loading...";
     if(error) return "Error loading...";
