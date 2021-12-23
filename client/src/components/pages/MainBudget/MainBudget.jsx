@@ -1,11 +1,9 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../../Navbar';
 import ReadOnlyRow from './ReadMainBudgetRow';
 import EditableRow from './EditMainBudgetRow';
 
-function MainBudget() {
+function MainBudget({ type }) {
     const [mainBudget, setMainBudget] = useState([]);
 
     const [addFormData, setAddFormData] = useState({
@@ -47,7 +45,7 @@ function MainBudget() {
         const newMainBudget = [...mainBudget, newBudget];
         setMainBudget(newMainBudget);
         
-        axios.post('/variableBudget/save', newBudget)
+        axios.post(`/${type}Budget/save`, newBudget)
          .then((res) => {
             console.log('Successfully added to db.');            
          })
@@ -85,7 +83,7 @@ function MainBudget() {
         setMainBudget(newMainBudget);
         setEditBudgetId(null);
 
-        axios.post('/variableBudget/edit', editedBudget)
+        axios.post(`/${type}Budget/edit`, editedBudget)
          .then((res) => {
            console.log('Successfully edited to db.');            
          })
@@ -118,7 +116,7 @@ function MainBudget() {
         newMainBudget.splice(index, 1);
         setMainBudget(newMainBudget);
 
-        axios.delete('/variableBudget/delete', {data: {id: budgetId}})
+        axios.delete(`/${type}Budget/delete`, {data: {id: budgetId}})
          .then((res) => {
            console.log('Successfully deleted from db.');            
          })
@@ -130,10 +128,9 @@ function MainBudget() {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios('/variableBudget/')
+        axios(`/${type}Budget/`)
          .then((res) => {
             setMainBudget(res.data.budget);
-             
          })
          .catch((err) => {
             console.error("Error fetching data", err);
@@ -148,10 +145,9 @@ function MainBudget() {
     if(error) return "Error loading...";
     return (
         <>
-            <Navbar />
             <div className='app-container'>    
                 <h2>
-                    Main BudGet
+                    { type } Budget
                 </h2>
 
                 <form onSubmit={ handleEditFormSubmit }>

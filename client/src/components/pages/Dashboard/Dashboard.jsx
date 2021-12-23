@@ -16,7 +16,10 @@ function Dashboard() {
         <>
             <Navbar />
             <div className='app-container'>  
-            <MainBudget />  
+            <MainBudget type={ 'variable' }/>  
+            <MainBudget type={ 'fixed' }/>  
+            <MainBudget type={ 'income' }/>  
+
             </div>
         </>
     )

@@ -1,7 +1,7 @@
 function ReadOnlyRow({ data, handleEditClick, handleDeleteClick }){
     return(
         <>
-            <tr key={data.id}>
+            <tr>
                 <td>{data.category}</td>
                 <td>${data.expense}</td>
                 <td>

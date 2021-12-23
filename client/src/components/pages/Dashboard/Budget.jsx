@@ -1,19 +1,50 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../../Navbar';
+import ReadOnlyRow from './ReadMainBudgetRow';
+import EditableRow from './EditMainBudgetRow';
 
-function MainIncome() {
-    const [mainIncome, setMainIncome] = useState([]);
+function MainBudget({ type }) {
+    const [mainBudget, setMainBudget] = useState([]);
+
+    const [addFormData, setAddFormData] = useState({
+        category: '',
+        expense: 0
+    });
+
+    const [editFormData, setEditFormData] = useState({
+        category: '',
+        expense: 0
+    });
+
+    const [editBudgetId, setEditBudgetId] = useState(null); 
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+
+    useEffect(() => {
+        axios.defaults.withCredentials = true;
+
+        axios(`/${type}Budget/`)
+         .then((res) => {
+            setMainBudget(res.data.budget);
+         })
+         .catch((err) => {
+            console.error("Error fetching data", err);
+            setError(err);
+         })
+         .finally(() => {
+            setLoading(false);
+         })
+    }, [])
 
     if(loading) return "Loading...";
     if(error) return "Error loading...";
     return (
         <>
-            <Navbar />
             <div className='app-container'>    
                 <h2>
-                    Main Income
+                    { type } Budget
                 </h2>
 
                 <form onSubmit={ handleEditFormSubmit }>
@@ -21,7 +52,7 @@ function MainIncome() {
                         <thead>
                             <tr>
                                 <th>Category</th>
-                                <th>Set Income</th>
+                                <th>Set BudGet</th>
                                 <th>Actions</th>
                             </tr>
 
@@ -44,17 +75,9 @@ function MainIncome() {
                         </tbody>
                     </table>
                 </form>
-
-
-                <h2>Add a BudGet</h2>
-                <form onSubmit={ handleAddFormSubmit }>
-                    <input type='text' name="category" placeholder="Category" onChange={handleAddFormChange} required/>
-                    <input type='number' name="expense" placeholder="BudGeted" step='.01' onChange={handleAddFormChange} required/>
-                    <button type='submit'>Add</button>
-                </form>
             </div>
         </>
     )
 }
 
-export default MainIncome;
+export default MainBudget;
