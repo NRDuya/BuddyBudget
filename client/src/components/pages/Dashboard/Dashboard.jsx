@@ -1,25 +1,27 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import Navbar from '../../Navbar';
-import MainBudget from '../MainBudget/MainBudget';
+import MainBudget from './MainBudget/MainBudget';
+import DashboardBudget from './DashboardBudget';
 
 function Dashboard() {
-    const [mainBudget, setMainBudget] = useState([]);
-    const [mainIncome, setMainIncome] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [shownBudget, setShownBudget] = useState(null);
+    
+    const handleBudgetClick = (type) => {
+        setShownBudget(type);
+    }
 
-    if(loading) return "Loading...";
-    if(error) return "Error loading...";
+    const handlExitBudgetClick = () => {
+        setShownBudget(null);
+    }
+    
     return (
         <>
             <Navbar />
             <div className='app-container'>  
-            <MainBudget type={ 'variable' }/>  
-            <MainBudget type={ 'fixed' }/>  
-            <MainBudget type={ 'income' }/>  
-
+                <DashboardBudget type={ 'variable' } handleBudgetClick={ handleBudgetClick }/>  
+                <DashboardBudget type={ 'fixed' } handleBudgetClick={ handleBudgetClick }/>  
+                <DashboardBudget type={ 'income' } handleBudgetClick={ handleBudgetClick }/>
+                {shownBudget !== null && <MainBudget type={ shownBudget } handlExitBudgetClick={ handlExitBudgetClick }/>}
             </div>
         </>
     )

@@ -1,4 +1,4 @@
-function ReadOnlyRow({ data }){
+function DashboardBudgetRow({ data }){
     return(
         <>
             <tr>
@@ -9,4 +9,4 @@ function ReadOnlyRow({ data }){
     )
 }
 
-export default ReadOnlyRow;
+export default DashboardBudgetRow;

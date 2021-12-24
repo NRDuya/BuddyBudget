@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 
 import Dashboard from './components/pages/Dashboard/Dashboard';
-import MainBudget from './components/pages/MainBudget/MainBudget';
+import MainBudget from './components/pages/Dashboard/MainBudget/MainBudget';
 import Registration from './components/pages/Registration';
 import Login from './components/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
@@ -18,13 +18,6 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
-            </PrivateRoute>
-          }/>
-          <Route
-          path="/mainbudget"
-          element={
-            <PrivateRoute>
-              <MainBudget />
             </PrivateRoute>
           }/>
           <Route path='/login' element={<Login />} />
