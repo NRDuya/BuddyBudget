@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import DashboardBudgetRow from './DashboardBudgetRow';
 
 function DashboardBudget({ type, handleBudgetClick }) {
-    const [dashboardBudget, setDashboardBudget] = useState([]);
+    const [budget, setBudget] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ function DashboardBudget({ type, handleBudgetClick }) {
 
         axios(`/${type}Budget/`)
          .then((res) => {
-            setDashboardBudget(res.data.budget);
+            setBudget(res.data.budget);
          })
          .catch((err) => {
             console.error("Error fetching data", err);
@@ -43,7 +43,7 @@ function DashboardBudget({ type, handleBudgetClick }) {
 
                         </thead>
                         <tbody>
-                            {dashboardBudget.map((data) => (
+                            {budget.map((data) => (
                                 <>
                                     { 
                                      <DashboardBudgetRow data={ data }/> 

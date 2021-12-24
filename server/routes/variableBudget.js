@@ -3,6 +3,7 @@ const router = express.Router();
 const UserError = require('../helpers/errors/UserError');
 const VariableBudgetModel = require('../models/VariableBudget');
 const authenticateToken = require('../middleware/authenticateToken');
+const budgetCheck = require('../utils/budgetCheck');
 
 router.get('/', authenticateToken, async (req, res, next) => {
     const userId = req.user;
