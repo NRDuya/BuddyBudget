@@ -6,8 +6,9 @@ import EditableRow from './EditMainBudgetRow';
 function MainBudget({ type }) {
     const initialData = {
         category: '',
-        expense: 0
+        expense: 1
     }
+
     const [mainBudget, setMainBudget] = useState([]);
 
     const [addFormData, setAddFormData] = useState(initialData);
@@ -191,8 +192,8 @@ function MainBudget({ type }) {
 
                 <h2>Add a BudGet</h2>
                 <form onSubmit={ handleAddFormSubmit }>
-                    <input type='text' name="category" placeholder="Category" onChange={handleAddFormChange} required/>
-                    <input type='number' name="expense" placeholder="BudGeted" step='.01' onChange={handleAddFormChange} required/>
+                    <input type='text' name="category" placeholder="Category" value={addFormData.category} onChange={handleAddFormChange} required/>
+                    <input type='number' name="expense" placeholder="BudGeted" value={addFormData.expense} step='.01' onChange={handleAddFormChange} required/>
                     <button type='submit'>Add</button>
                 </form>
             </div>
