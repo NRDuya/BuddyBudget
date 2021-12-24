@@ -4,17 +4,15 @@ import ReadOnlyRow from './ReadMainBudgetRow';
 import EditableRow from './EditMainBudgetRow';
 
 function MainBudget({ type }) {
+    const initialData = {
+        category: '',
+        expense: 0
+    }
     const [mainBudget, setMainBudget] = useState([]);
 
-    const [addFormData, setAddFormData] = useState({
-        category: '',
-        expense: 0
-    });
+    const [addFormData, setAddFormData] = useState(initialData);
 
-    const [editFormData, setEditFormData] = useState({
-        category: '',
-        expense: 0
-    });
+    const [editFormData, setEditFormData] = useState(initialData);
 
     const [editBudgetId, setEditBudgetId] = useState(null); 
 
@@ -42,14 +40,21 @@ function MainBudget({ type }) {
             category: addFormData.category,
             expense: addFormData.expense
         };
-        const newMainBudget = [...mainBudget, newBudget];
-        setMainBudget(newMainBudget);
         
         axios.post(`/${type}Budget/save`, newBudget)
          .then((res) => {
-            console.log('Successfully added to db.');            
+            if (res.data.success) {
+                const newMainBudget = [...mainBudget, newBudget];
+                setMainBudget(newMainBudget);
+
+                console.log('Successfully added to db.');            
+            } else {
+                setAddFormData(initialData);
+                console.log(res.data.message);
+            };
          })
          .catch((err) => {
+             console.log(err);
              console.log("Cannot add");
          })
     };
@@ -75,17 +80,21 @@ function MainBudget({ type }) {
             category: editFormData.category,
             expense: editFormData.expense
         };
-        const newMainBudget = [...mainBudget];
-        const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
 
-        newMainBudget[index] = editedBudget;
-
-        setMainBudget(newMainBudget);
         setEditBudgetId(null);
 
         axios.post(`/${type}Budget/edit`, editedBudget)
          .then((res) => {
-           console.log('Successfully edited to db.');            
+            if (res.data.success) {
+                const newMainBudget = [...mainBudget];
+                const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
+                newMainBudget[index] = editedBudget;
+                setMainBudget(newMainBudget);
+
+                console.log('Successfully edited to db.');            
+            } else {
+                console.log(res.data.message);
+            };      
          })
          .catch((err) => {
             console.log("Cannot edit");

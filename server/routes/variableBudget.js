@@ -22,9 +22,14 @@ router.post('/save', authenticateToken, async (req, res, next) => {
     const category = req.body.category;
     const expense = req.body.expense;
     const user = req.user;
-    //TODO SERVER SIDE CHECK CATEGORY/COST
 
     try {
+        if (!budgetCheck.validCategory(category)) {
+            throw new UserError("Category too long!", 200);
+        } else if (!budgetCheck.validExpense(expense)) {
+            throw new UserError("Invalid expense!", 200);
+        }
+
         const results = await VariableBudgetModel.create(category, expense, user);
         if (results < 0) {
             throw new UserError("Server Error, main budget could not be created", 500);
@@ -42,9 +47,14 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
     let category = req.body.category;
     let expense = req.body.expense;
     let budgetId = req.body.id;
-    //TODO SERVER SIDE CHECK CATEGORY/COST
 
     try {
+        if (!budgetCheck.validCategory(category)) {
+            throw new UserError("Category too long!", 200);
+        } else if (!budgetCheck.validExpense(expense)) {
+            throw new UserError("Invalid expense!", 200);
+        }
+
         const results = await VariableBudgetModel.edit(category, expense, budgetId);
         if (results < 0) {
             throw new UserError("Server Error, main budget could not be edited");

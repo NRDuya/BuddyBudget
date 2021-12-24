@@ -22,6 +22,7 @@ function Login(){
                 localStorage.setItem("username", res.data.username);
                 navigate("/");
             } else {
+                console.log(res.data.message);
                 window.location.reload(false);
             }
         }
