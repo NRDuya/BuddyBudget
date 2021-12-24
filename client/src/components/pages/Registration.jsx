@@ -23,6 +23,7 @@ function Registration(){
             if (res.data.success) {
                 navigate('/login');
             } else {
+                console.log(res.data.message)
                 window.location.reload(false);
             }
         }

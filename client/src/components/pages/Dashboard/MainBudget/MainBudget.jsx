@@ -1,22 +1,19 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../../Navbar';
 import ReadOnlyRow from './ReadMainBudgetRow';
 import EditableRow from './EditMainBudgetRow';
 
-function MainBudget() {
+function MainBudget({ type }) {
+    const initialData = {
+        category: '',
+        expense: 1
+    }
+
     const [mainBudget, setMainBudget] = useState([]);
 
-    const [addFormData, setAddFormData] = useState({
-        category: '',
-        expense: 0
-    });
+    const [addFormData, setAddFormData] = useState(initialData);
 
-    const [editFormData, setEditFormData] = useState({
-        category: '',
-        expense: 0
-    });
+    const [editFormData, setEditFormData] = useState(initialData);
 
     const [editBudgetId, setEditBudgetId] = useState(null); 
 
@@ -27,7 +24,7 @@ function MainBudget() {
     const handleAddFormChange = (event) => {
         event.preventDefault();
 
-        const fieldName = event.target.getAttribute('name');
+        const fieldName = event.target.name;
         const fieldValue = event.target.value;
 
         const newFormData = {...addFormData};
@@ -44,14 +41,21 @@ function MainBudget() {
             category: addFormData.category,
             expense: addFormData.expense
         };
-        const newMainBudget = [...mainBudget, newBudget];
-        setMainBudget(newMainBudget);
         
-        axios.post('/variableBudget/save', newBudget)
+        axios.post(`/${type}Budget/save`, newBudget)
          .then((res) => {
-            console.log('Successfully added to db.');            
+            if (res.data.success) {
+                const newMainBudget = [...mainBudget, newBudget];
+                setMainBudget(newMainBudget);
+
+                console.log('Successfully added to db.');            
+            } else {
+                setAddFormData(initialData);
+                console.log(res.data.message);
+            };
          })
          .catch((err) => {
+             console.log(err);
              console.log("Cannot add");
          })
     };
@@ -60,7 +64,7 @@ function MainBudget() {
     const handleEditFormChange = (event) => {
         event.preventDefault();
 
-        const fieldName = event.target.getAttribute('name');
+        const fieldName = event.target.name;
         const fieldValue = event.target.value;
 
         const newFormData = {...editFormData};
@@ -77,17 +81,21 @@ function MainBudget() {
             category: editFormData.category,
             expense: editFormData.expense
         };
-        const newMainBudget = [...mainBudget];
-        const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
 
-        newMainBudget[index] = editedBudget;
-
-        setMainBudget(newMainBudget);
         setEditBudgetId(null);
 
-        axios.post('/variableBudget/edit', editedBudget)
+        axios.post(`/${type}Budget/edit`, editedBudget)
          .then((res) => {
-           console.log('Successfully edited to db.');            
+            if (res.data.success) {
+                const newMainBudget = [...mainBudget];
+                const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
+                newMainBudget[index] = editedBudget;
+                setMainBudget(newMainBudget);
+
+                console.log('Successfully edited to db.');            
+            } else {
+                console.log(res.data.message);
+            };      
          })
          .catch((err) => {
             console.log("Cannot edit");
@@ -118,7 +126,7 @@ function MainBudget() {
         newMainBudget.splice(index, 1);
         setMainBudget(newMainBudget);
 
-        axios.delete('/variableBudget/delete', {data: {id: budgetId}})
+        axios.delete(`/${type}Budget/delete`, {data: {id: budgetId}})
          .then((res) => {
            console.log('Successfully deleted from db.');            
          })
@@ -130,10 +138,9 @@ function MainBudget() {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios('/variableBudget/')
+        axios(`/${type}Budget/`)
          .then((res) => {
             setMainBudget(res.data.budget);
-             
          })
          .catch((err) => {
             console.error("Error fetching data", err);
@@ -142,16 +149,15 @@ function MainBudget() {
          .finally(() => {
             setLoading(false);
          })
-    }, [])
+    }, [type])
 
     if(loading) return "Loading...";
     if(error) return "Error loading...";
     return (
         <>
-            <Navbar />
             <div className='app-container'>    
                 <h2>
-                    Main BudGet
+                    { type } Budget
                 </h2>
 
                 <form onSubmit={ handleEditFormSubmit }>
@@ -186,8 +192,8 @@ function MainBudget() {
 
                 <h2>Add a BudGet</h2>
                 <form onSubmit={ handleAddFormSubmit }>
-                    <input type='text' name="category" placeholder="Category" onChange={handleAddFormChange} required/>
-                    <input type='number' name="expense" placeholder="BudGeted" step='.01' onChange={handleAddFormChange} required/>
+                    <input type='text' name="category" placeholder="Category" value={addFormData.category} onChange={handleAddFormChange} required/>
+                    <input type='number' name="expense" placeholder="BudGeted" value={addFormData.expense} step='.01' onChange={handleAddFormChange} required/>
                     <button type='submit'>Add</button>
                 </form>
             </div>
