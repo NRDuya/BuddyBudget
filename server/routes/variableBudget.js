@@ -10,8 +10,8 @@ router.get('/', authenticateToken, async (req, res, next) => {
     try {
         const results = await VariableBudgetModel.get(userId);
         if (results < 0) {
-            return res.status(200).json({success: true, message: "No Main Budget Data Found", budget: []})
-        } else return res.status(201).json({success: true, message: "Get Main Budget Successful", budget: results});
+            return res.status(200).json({success: true, message: "No Variable Budget Data Found", budget: []})
+        } else return res.status(201).json({success: true, message: "Get Variable Budget Successful", budget: results});
     }
     catch (err) {
         next(err);
@@ -32,8 +32,8 @@ router.post('/save', authenticateToken, async (req, res, next) => {
 
         const results = await VariableBudgetModel.create(category, expense, user);
         if (results < 0) {
-            throw new UserError("Server Error, main budget could not be created", 500);
-        } else return res.status(201).json({success: true, message: "Budget creation successful"});
+            throw new UserError("Server Error, variable budget could not be created", 500);
+        } else return res.status(201).json({success: true, message: "Variable budget creation successful"});
     }
     catch (err) {
         if(err instanceof UserError){
@@ -57,8 +57,8 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
 
         const results = await VariableBudgetModel.edit(category, expense, budgetId);
         if (results < 0) {
-            throw new UserError("Server Error, main budget could not be edited");
-        } else res.status(201).json({success: true, message: "Budget edit successful"});
+            throw new UserError("Server Error, variable budget could not be edited");
+        } else res.status(201).json({success: true, message: "Variable budget edit successful"});
     }
     catch (err) {
         if(err instanceof UserError){
@@ -73,8 +73,8 @@ router.delete('/delete', authenticateToken, async (req, res, next) => {
     try {
         const results = await VariableBudgetModel.delete(budgetId);
         if (results < 0) {
-            throw new UserError("Server Error, main budget could not be deleted");
-        } else return res.status(201).json({success: true, message: "Budget deletion successful"});
+            throw new UserError("Server Error, variable budget could not be deleted");
+        } else return res.status(201).json({success: true, message: "Variable budget deletion successful"});
     }
     catch (err) {
         if(err instanceof UserError){
