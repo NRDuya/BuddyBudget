@@ -6,9 +6,10 @@ const UserModel = require('../models/Users');
 const authenticateToken = require('../middleware/authenticateToken');
 const UserCheck = require('../utils/userCheck');
 
-router.get('/authenticate', authenticateToken, (req, res, next) => {
-    return res.status(201).json({success: true});
-})
+router.get('/verify', authenticateToken, (req, res, next) => {
+    if (req.user) return res.status(200).json({success: true, message: 'Success'});
+    else return res.status(401).json({success: false, message: 'Denied Access'});
+});
 
 router.post('/register', async function (req, res, next) {
     let username = req.body.username;
