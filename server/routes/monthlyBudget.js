@@ -9,12 +9,12 @@ router.get('/', authenticateToken, async (req, res, next) => {
     const userId = req.user;
     const month = req.query.month;
     const year = req.query.year;
-    budgetCheck.validUserId(userId);
 
     try {
         if (!budgetCheck.validUserId(userId)) {
             throw new UserError("Invalid user id!", 200);
         }
+
         const results = await MonthlyBudgetModel.get(userId, month, year);
         if (results < 0) {
             return res.status(200).json({success: true, message: "No Monthly Budget Data Found", budget: []})
