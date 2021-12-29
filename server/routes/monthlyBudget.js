@@ -30,7 +30,9 @@ router.get('/', authenticateToken, async (req, res, next) => {
         } else return res.status(201).json({success: true, message: "Get Monthly Budget Successful", budget: results, categories: categories});
     }
     catch (err) {
-        next(err);
+        if(err instanceof UserError){
+            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+        } else next(err);
     }
 });
 
@@ -103,8 +105,7 @@ router.delete('/delete', authenticateToken, async (req, res, next) => {
     catch (err) {
         if(err instanceof UserError){
             return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
-        }
-        else next(err);
+        } else next(err);
     }
 });
 
