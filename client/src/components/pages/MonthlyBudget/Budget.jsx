@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 function Budget({ type, handleBudgetClick }) {
     const { month, year } = useParams();
     const [budget, setBudget] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
