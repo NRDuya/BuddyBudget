@@ -20,7 +20,7 @@ function Dashboard() {
     }
 
     const handleCalendar = (value) => {
-        const link = (value.getMonth() + 1) + "/" + value.getFullYear();
+        const link = value.getFullYear() + "/" + (value.getMonth() + 1);
         navigate(`/${link}`);
     }
     

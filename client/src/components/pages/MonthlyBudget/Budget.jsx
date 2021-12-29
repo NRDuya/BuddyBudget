@@ -12,7 +12,12 @@ function Budget({ type, handleBudgetClick }) {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios(`/${type}Budget/`)
+        axios.get('/monthlyBudget/', {
+            params: {
+              month: month,
+              year: year
+            }
+        })
          .then((res) => {
             setBudget(res.data.budget);
          })
@@ -30,7 +35,7 @@ function Budget({ type, handleBudgetClick }) {
     return (
         <>
             <div className='app-container'>    
-                BUDGET {month} {year}
+                BUDGET  {budget}
                 {/* <h2>
                     { type } Budget
                 </h2>

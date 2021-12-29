@@ -1,9 +1,10 @@
 var db = require('../config/database');
 const VariableBudgetModel = {};
+const type = "var";
 
 VariableBudgetModel.create = (category, expense, userId) => {
-    const baseSQL = "INSERT INTO variablebudget (category, expense, user) VALUES (?, ?, ?);"
-    db.execute(baseSQL, [category, expense, userId])
+    const baseSQL = "INSERT INTO mainbudget (type, category, expense, user) VALUES (?, ?, ?, ?);";
+    db.execute(baseSQL, [type, category, expense, userId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
                 return Promise.resolve(1);
@@ -13,8 +14,8 @@ VariableBudgetModel.create = (category, expense, userId) => {
 }
 
 VariableBudgetModel.get = (userId) => {
-    const baseSQL = "SELECT id, category, expense FROM variablebudget WHERE user = ?;"
-    return db.execute(baseSQL, [userId])
+    const baseSQL = "SELECT id, category, expense FROM mainbudget WHERE user = ? AND type = ?;"
+    return db.execute(baseSQL, [userId, type])
         .then(([results, fields]) => {
             if(results && results.length){
                 return Promise.resolve(results);
@@ -24,7 +25,7 @@ VariableBudgetModel.get = (userId) => {
 }
 
 VariableBudgetModel.edit = (category, expense, budgetId) => {
-    const baseSQL = "UPDATE variablebudget SET category = ?, expense = ? WHERE id = ?;"
+    const baseSQL = "UPDATE mainbudget SET category = ?, expense = ? WHERE id = ?;"
     db.execute(baseSQL, [category, expense, budgetId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
@@ -35,7 +36,7 @@ VariableBudgetModel.edit = (category, expense, budgetId) => {
 }
 
 VariableBudgetModel.delete = (budgetId) => {
-    let baseSQL = "DELETE FROM variablebudget where id = ?;";
+    let baseSQL = "DELETE FROM mainbudget where id = ?;";
     db.execute(baseSQL, [budgetId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){

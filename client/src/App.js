@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 
 import Dashboard from './components/pages/Dashboard/Dashboard';
-import Budget from './components/pages/Budget/Budget';
+import Budget from './components/pages/MonthlyBudget/Budget';
 import Registration from './components/pages/Registration';
 import Login from './components/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
@@ -21,7 +21,7 @@ function App() {
             </PrivateRoute>
           }/>
           <Route
-           path='/:month/:year'
+           path='/:year/:month'
            element={
              <PrivateRoute>
                <Budget />

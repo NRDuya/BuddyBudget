@@ -13,6 +13,7 @@ function Navbar() {
         try {
             const res = await axios.post('/users/logout', {});
             if (res.data.success) {
+                window.location.reload(false);
                 navigate('/login');
             }
         }
