@@ -35,14 +35,6 @@ UserModel.emailExists = (email) => {
         .catch((err) => Promise.reject(err));
 };
 
-UserModel.userIdExists = (userId) => {
-    return db.execute("SELECT * FROM users WHERE id = ?", [userId])
-        .then(([results, fields]) => {
-            return Promise.resolve(!(results && results.length == 0));
-        })
-        .catch((err) => Promise.reject(err));
-};
-
 UserModel.authenticate = (username, password) => {
     let userId;
     const baseSQL = "SELECT id, username, password FROM users WHERE username = ?;"

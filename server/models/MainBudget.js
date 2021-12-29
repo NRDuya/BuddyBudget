@@ -1,9 +1,19 @@
 var db = require('../config/database');
-const FixedBudgetModel = {};
-const type = "fix";
+const MainBudgetModel = {};
 
-FixedBudgetModel.create = (category, expense, userId) => {
-    const baseSQL = "INSERT INTO mainbudget (type, category, expense, user) VALUES (?, ?, ?, ?);"
+MainBudgetModel.get = (type, userId) => {
+    const baseSQL = "SELECT id, category, expense FROM mainbudget WHERE type = ? AND user = ?;"
+    return db.execute(baseSQL, [type, userId])
+        .then(([results, fields]) => {
+            if(results && results.length){
+                return Promise.resolve(results);
+            } else return Promise.resolve(-1);
+        })
+        .catch((err) => Promise.reject(err))
+}
+
+MainBudgetModel.create = (type, category, expense, userId) => {
+    const baseSQL = "INSERT INTO mainbudget (type, category, expense, user) VALUES (?, ?, ?, ?);";
     db.execute(baseSQL, [type, category, expense, userId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
@@ -13,18 +23,7 @@ FixedBudgetModel.create = (category, expense, userId) => {
         .catch((err) => Promise.reject(err))
 }
 
-FixedBudgetModel.get = (userId) => {
-    const baseSQL = "SELECT id, category, expense FROM mainbudget WHERE user = ? AND type = ?;"
-    return db.execute(baseSQL, [userId, type])
-        .then(([results, fields]) => {
-            if(results && results.length){
-                return Promise.resolve(results);
-            } else return Promise.resolve(-1);
-        })
-        .catch((err) => Promise.reject(err))
-}
-
-FixedBudgetModel.edit = (category, expense, budgetId) => {
+MainBudgetModel.edit = (category, expense, budgetId) => {
     const baseSQL = "UPDATE mainbudget SET category = ?, expense = ? WHERE id = ?;"
     db.execute(baseSQL, [category, expense, budgetId])
         .then(([results, fields]) => {
@@ -35,7 +34,7 @@ FixedBudgetModel.edit = (category, expense, budgetId) => {
         .catch((err) => Promise.reject(err))
 }
 
-FixedBudgetModel.delete = (budgetId) => {
+MainBudgetModel.delete = (budgetId) => {
     let baseSQL = "DELETE FROM mainbudget where id = ?;";
     db.execute(baseSQL, [budgetId])
         .then(([results, fields]) => {
@@ -47,4 +46,4 @@ FixedBudgetModel.delete = (budgetId) => {
         .catch((err) => Promise.reject(err))
 }
 
-module.exports = FixedBudgetModel;
+module.exports = MainBudgetModel;

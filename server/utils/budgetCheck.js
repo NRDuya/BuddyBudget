@@ -1,4 +1,4 @@
-const UserModel = require('../models/Users');
+const ValidationModel = require('../models/Validation');
 const BudgetCheck = {};
 
 BudgetCheck.validCategory = (category) => {
@@ -15,11 +15,22 @@ BudgetCheck.validExpense = (expense) => {
     return regexp.test(expense_);
 }
 
-BudgetCheck.validUserId = (userId) => {
-    if(UserModel.userIdExists(userId) || typeof userId !== 'number'){
-        return false;
+BudgetCheck.validUserId = async (userId) => {
+    const userIdExists = ValidationModel.userIdExists(userId);
+
+    if(userIdExists && typeof userId === 'number'){
+        return true;
     }
-    return true;
+    return false;
+}
+
+BudgetCheck.validMainBudgetId = async (budgetId) => {
+    const mainBudgetIdExists = ValidationModel.mainBudgetIdExists(budgetId);
+
+    if(mainBudgetIdExists && typeof budgetId === 'number'){
+        return true;
+    }
+    return false;
 }
 
 module.exports = BudgetCheck;
