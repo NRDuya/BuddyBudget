@@ -138,7 +138,7 @@ function MainBudget({ type }) {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios(`/${type}Budget/`)
+        axios.get(`/${type}Budget/`)
          .then((res) => {
             setMainBudget(res.data.budget);
          })

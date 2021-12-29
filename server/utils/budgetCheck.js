@@ -1,4 +1,32 @@
+const ValidationModel = require('../models/Validation');
 const BudgetCheck = {};
+
+BudgetCheck.validUserId = async (userId) => {
+    const userIdExists = ValidationModel.userIdExists(userId);
+
+    if(userIdExists && typeof userId === 'number'){
+        return true;
+    }
+    return false;
+}
+
+BudgetCheck.validMainBudgetId = async (budgetId) => {
+    const mainBudgetIdExists = ValidationModel.mainBudgetIdExists(budgetId);
+
+    if(mainBudgetIdExists && typeof budgetId === 'number'){
+        return true;
+    }
+    return false;
+}
+
+BudgetCheck.validMonthlyBudgetId = async (budgetId) => {
+    const monthlyBudgetIdExists = ValidationModel.monthlyBudgetIdExists(budgetId);
+
+    if(monthlyBudgetIdExists && typeof budgetId === 'number'){
+        return true;
+    }
+    return false;
+}
 
 BudgetCheck.validCategory = (category) => {
     if (category.length > 60) {
@@ -12,6 +40,20 @@ BudgetCheck.validExpense = (expense) => {
     if (expense_.length > 13) return false;
     const regexp = /^\d+(\.\d{1,2})?$/;
     return regexp.test(expense_);
+}
+
+BudgetCheck.validMonth = (month) => {
+    if (typeof month === 'number' && month > 0 &&(month.toString().length === 2 || month.toString().length === 1)) {
+        return true;
+    }
+    return false;
+}
+
+BudgetCheck.validYear = (year) => {
+    if (typeof year === 'number' && year > 0 && year.toString().length === 4) {
+        return true;
+    }
+    return false;  
 }
 
 module.exports = BudgetCheck;

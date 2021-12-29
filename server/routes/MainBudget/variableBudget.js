@@ -1,20 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const UserError = require('../helpers/errors/UserError');
-const VariableBudgetModel = require('../models/VariableBudget');
-const authenticateToken = require('../middleware/authenticateToken');
-const budgetCheck = require('../utils/budgetCheck');
+const UserError = require('../../helpers/errors/UserError');
+const MainBudgetModel = require('../../models/MainBudget');
+const authenticateToken = require('../../middleware/authenticateToken');
+const budgetCheck = require('../../utils/budgetCheck');
+const type = "var";
 
 router.get('/', authenticateToken, async (req, res, next) => {
-    const userId = req.user;
+    const user = req.user;
+    
     try {
-        const results = await VariableBudgetModel.get(userId);
+        if (!budgetCheck.validUserId(user)) {
+            throw new UserError("Invalid user id!", 200);
+        }
+
+        const results = await MainBudgetModel.get(type, user);
         if (results < 0) {
             return res.status(200).json({success: true, message: "No Variable Budget Data Found", budget: []})
         } else return res.status(201).json({success: true, message: "Get Variable Budget Successful", budget: results});
     }
     catch (err) {
-        next(err);
+        if(err instanceof UserError){
+            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+        } else next(err);
     }
 });
 
@@ -28,9 +36,11 @@ router.post('/save', authenticateToken, async (req, res, next) => {
             throw new UserError("Category too long!", 200);
         } else if (!budgetCheck.validExpense(expense)) {
             throw new UserError("Invalid expense!", 200);
+        } else if (!budgetCheck.validUserId(user)) {
+            throw new UserError("Invalid user id!", 200);
         }
 
-        const results = await VariableBudgetModel.create(category, expense, user);
+        const results = await MainBudgetModel.create(type, category, expense, user);
         if (results < 0) {
             throw new UserError("Server Error, variable budget could not be created", 500);
         } else return res.status(201).json({success: true, message: "Variable budget creation successful"});
@@ -53,9 +63,11 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
             throw new UserError("Category too long!", 200);
         } else if (!budgetCheck.validExpense(expense)) {
             throw new UserError("Invalid expense!", 200);
+        } else if (!budgetCheck.validMainBudgetId(budgetId)) {
+            throw new UserError("Invalid budget id!", 200);
         }
 
-        const results = await VariableBudgetModel.edit(category, expense, budgetId);
+        const results = await MainBudgetModel.edit(category, expense, budgetId);
         if (results < 0) {
             throw new UserError("Server Error, variable budget could not be edited");
         } else res.status(201).json({success: true, message: "Variable budget edit successful"});
@@ -71,7 +83,11 @@ router.delete('/delete', authenticateToken, async (req, res, next) => {
     let budgetId = req.body.id;
     
     try {
-        const results = await VariableBudgetModel.delete(budgetId);
+        if (!budgetCheck.validMainBudgetId(budgetId)) {
+            throw new UserError("Invalid budget id!", 200);
+        }
+
+        const results = await MainBudgetModel.delete(budgetId);
         if (results < 0) {
             throw new UserError("Server Error, variable budget could not be deleted");
         } else return res.status(201).json({success: true, message: "Variable budget deletion successful"});
@@ -79,8 +95,7 @@ router.delete('/delete', authenticateToken, async (req, res, next) => {
     catch (err) {
         if(err instanceof UserError){
             return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
-        }
-        else next(err);
+        } else next(err);
     }
 });
 

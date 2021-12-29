@@ -7,9 +7,10 @@ const bodyParser = require('body-parser');
 
 // Import Routes
 const usersRouter = require('./routes/users');
-const variableBudgetRouter = require('./routes/variableBudget');
-const fixedBudgetRouter = require('./routes/fixedBudget');
-const incomeBudgetRouter = require('./routes/incomeBudget');
+const variableBudgetRouter = require('./routes/MainBudget/variableBudget');
+const fixedBudgetRouter = require('./routes/MainBudget/fixedBudget');
+const incomeBudgetRouter = require('./routes/MainBudget/incomeBudget');
+const monthlyBudgetRouter = require('./routes/monthlyBudget');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/users', usersRouter);
 app.use('/variableBudget', variableBudgetRouter);
 app.use('/fixedBudget', fixedBudgetRouter);
 app.use('/incomeBudget', incomeBudgetRouter);
+app.use('/monthlyBudget', monthlyBudgetRouter);
 
 app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build/index.html')); });
 app.use((req, res) => { res.status(404).json({ message: 'Route Not Found' }); });
