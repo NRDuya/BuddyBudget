@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 
-function Budget({ type, handleBudgetClick }) {
+function Budget() {
     const { month, year } = useParams();
     const [budget, setBudget] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -20,7 +20,8 @@ function Budget({ type, handleBudgetClick }) {
             }
         })
          .then((res) => {
-            console.log(res.data.budget);
+            console.log(res.data.categories);
+            setCategories(res.data.categories);
             setBudget(res.data.budget);
          })
          .catch((err) => {
@@ -30,7 +31,7 @@ function Budget({ type, handleBudgetClick }) {
          .finally(() => {
             setLoading(false);
          })
-    }, [type])
+    }, [month, year])
 
     if(loading) return "Loading...";
     if(error) return "Error loading...";
