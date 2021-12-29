@@ -19,6 +19,15 @@ BudgetCheck.validMainBudgetId = async (budgetId) => {
     return false;
 }
 
+BudgetCheck.validMonthlyBudgetId = async (budgetId) => {
+    const monthlyBudgetIdExists = ValidationModel.monthlyBudgetIdExists(budgetId);
+
+    if(monthlyBudgetIdExists && typeof budgetId === 'number'){
+        return true;
+    }
+    return false;
+}
+
 BudgetCheck.validCategory = (category) => {
     if (category.length > 60) {
         return false;
@@ -34,14 +43,14 @@ BudgetCheck.validExpense = (expense) => {
 }
 
 BudgetCheck.validMonth = (month) => {
-    if(typeof month === 'number' && month.toString().length === 2){
+    if (typeof month === 'number' && month > 0 &&(month.toString().length === 2 || month.toString().length === 1)) {
         return true;
     }
     return false;
 }
 
 BudgetCheck.validYear = (year) => {
-    if(typeof year === 'number' && year.toString().length === 4){
+    if (typeof year === 'number' && year > 0 && year.toString().length === 4) {
         return true;
     }
     return false;  

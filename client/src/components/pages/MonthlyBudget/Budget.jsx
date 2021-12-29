@@ -19,6 +19,7 @@ function Budget({ type, handleBudgetClick }) {
             }
         })
          .then((res) => {
+            console.log(res.data.budget);
             setBudget(res.data.budget);
          })
          .catch((err) => {
@@ -35,7 +36,7 @@ function Budget({ type, handleBudgetClick }) {
     return (
         <>
             <div className='app-container'>    
-                BUDGET  {budget}
+                BUDGET 
                 {/* <h2>
                     { type } Budget
                 </h2>

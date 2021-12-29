@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const UserError = require('../helpers/errors/UserError');
-const MainBudgetModel = require('../models/MainBudget');
-const authenticateToken = require('../middleware/authenticateToken');
-const budgetCheck = require('../utils/budgetCheck');
+const UserError = require('../../helpers/errors/UserError');
+const MainBudgetModel = require('../../models/MainBudget');
+const authenticateToken = require('../../middleware/authenticateToken');
+const budgetCheck = require('../../utils/budgetCheck');
 const type = "var";
 
 router.get('/', authenticateToken, async (req, res, next) => {
