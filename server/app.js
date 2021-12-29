@@ -7,9 +7,9 @@ const bodyParser = require('body-parser');
 
 // Import Routes
 const usersRouter = require('./routes/users');
-const variableBudgetRouter = require('./routes/variableBudget');
-const fixedBudgetRouter = require('./routes/fixedBudget');
-const incomeBudgetRouter = require('./routes/incomeBudget');
+const variableBudgetRouter = require('./routes/MainBudget/variableBudget');
+const fixedBudgetRouter = require('./routes/MainBudget/fixedBudget');
+const incomeBudgetRouter = require('./routes/MainBudget/incomeBudget');
 const monthlyBudgetRouter = require('./routes/monthlyBudget');
 
 const app = express();

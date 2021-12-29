@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 function Budget({ type, handleBudgetClick }) {
     const { month, year } = useParams();
     const [budget, setBudget] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -19,6 +20,7 @@ function Budget({ type, handleBudgetClick }) {
             }
         })
          .then((res) => {
+            console.log(res.data.budget);
             setBudget(res.data.budget);
          })
          .catch((err) => {
@@ -35,7 +37,7 @@ function Budget({ type, handleBudgetClick }) {
     return (
         <>
             <div className='app-container'>    
-                BUDGET  {budget}
+                BUDGET 
                 {/* <h2>
                     { type } Budget
                 </h2>

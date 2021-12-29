@@ -17,4 +17,12 @@ ValidationModel.mainBudgetIdExists = (budgetId) => {
     .catch((err) => Promise.reject(err));
 }
 
+ValidationModel.monthlyBudgetIdExists = (budgetId) => {
+    return db.execute("SELECT * FROM monthlybudget WHERE id = ?", [budgetId])
+    .then(([results, fields]) => {
+        return Promise.resolve(!(results && results.length == 0));
+    })
+    .catch((err) => Promise.reject(err));
+}
+
 module.exports = ValidationModel;
