@@ -1,3 +1,4 @@
+const UserModel = require('../models/Users');
 const BudgetCheck = {};
 
 BudgetCheck.validCategory = (category) => {
@@ -12,6 +13,13 @@ BudgetCheck.validExpense = (expense) => {
     if (expense_.length > 13) return false;
     const regexp = /^\d+(\.\d{1,2})?$/;
     return regexp.test(expense_);
+}
+
+BudgetCheck.validUserId = (userId) => {
+    if(UserModel.userIdExists(userId) || typeof userId !== 'number'){
+        return false;
+    }
+    return true;
 }
 
 module.exports = BudgetCheck;
