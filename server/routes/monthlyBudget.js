@@ -21,7 +21,7 @@ router.get('/', authenticateToken, async (req, res, next) => {
         
         const categories = await MonthlyBudgetModel.getAllCategories(user);
         if (categories < 0) {
-            throw new UserError("No categories found", 200);
+            throw new UserError("No categories found. Make a category to start budgeting!", 200);
         }
 
         const results = await MonthlyBudgetModel.get(user, month, year);

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
+import MainBudgetTable from './MainBudgetTable';
 
 function Budget() {
     const { month, year } = useParams();
@@ -20,9 +21,13 @@ function Budget() {
             }
         })
          .then((res) => {
-            console.log(res.data.categories);
-            setCategories(res.data.categories);
-            setBudget(res.data.budget);
+            if (res.data.success) {
+                setCategories(res.data.categories);
+                setBudget(res.data.budget);
+            }
+            else {
+                
+            }
          })
          .catch((err) => {
             console.error("Error fetching data", err);
@@ -38,10 +43,12 @@ function Budget() {
     return (
         <>
             <div className='app-container'>    
-                BUDGET 
-                {/* <h2>
-                    { type } Budget
+                <h2>
+                    {month} {year} Budget
                 </h2>
+                <MainBudgetTable type={ 'var' } budget={budget} allCategories={ categories }/>
+                <MainBudgetTable type={ 'inc' } budget={budget} allCategories={ categories }/>
+                {/*
                 <button onClick={() => handleBudgetClick(type)}>budget</button>
                 <div>
                     <table>
