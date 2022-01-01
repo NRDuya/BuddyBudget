@@ -2,13 +2,18 @@ import { useState, useEffect } from 'react';
 import MainBudgetTableRow from './MainBudgetTableRow';
 import MainBudgetTableTotal from './MainBudgetTableTotal';
 
-function MainBudgetTable({ type, budget, allCategories }) {
+function MainBudgetTable({ type, allBudget, allCategories }) {
     const [categories, setCategories] = useState(allCategories);
+    const [budget, setBudget] = useState(allBudget);
 
     useEffect(() => {
         setCategories(allCategories.filter((category) => category.type === type));
     }, [allCategories, type]);
 
+    useEffect(() => {
+        setBudget(allBudget.filter((budget_) => categories.some(category => category.id === budget_.category)))
+    }, [allBudget, categories]);
+    
     return (
         <>
             <div className='app-container'>    
@@ -34,6 +39,7 @@ function MainBudgetTable({ type, budget, allCategories }) {
                                     }
                                 </>
                             ))}
+                            <MainBudgetTableTotal categories={ categories } budget={ budget }/>
                         </tbody>
                     </table>
                 </div>

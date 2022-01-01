@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function MainBudgetTableRow({ category, budget}){
+function MainBudgetTableRow({ category, budget }){
     const [catBudget, setCatBudget] = useState(budget);
     const [catActual, setCatActual] = useState(0);
     

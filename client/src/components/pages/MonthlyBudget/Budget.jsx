@@ -46,8 +46,8 @@ function Budget() {
                 <h2>
                     {month} {year} Budget
                 </h2>
-                <MainBudgetTable type={ 'var' } budget={budget} allCategories={ categories }/>
-                <MainBudgetTable type={ 'inc' } budget={budget} allCategories={ categories }/>
+                <MainBudgetTable type={ 'var' } allBudget={budget} allCategories={ categories }/>
+                <MainBudgetTable type={ 'inc' } allBudget={budget} allCategories={ categories }/>
                 {/*
                 <button onClick={() => handleBudgetClick(type)}>budget</button>
                 <div>

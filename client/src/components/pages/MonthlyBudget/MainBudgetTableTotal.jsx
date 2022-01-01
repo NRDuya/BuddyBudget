@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 
-function MainBudgetTableTotal({ categories, total }){
+function MainBudgetTableTotal({ categories, budget }){
     const [totalCat, setTotalCat] = useState(0);
     const [actualTotal, setActualTotal] = useState(0);
 
     useEffect(() => {
         setTotalCat(categories.map(category => parseFloat(category.expense)).reduce((prev, curr) => prev + curr, 0));
-        setActualTotal(total.reduce((prev, curr) => prev + curr, 0));
-    }, [categories, total]);
+        setActualTotal(budget.map(budget_ => parseFloat(budget_.expense)).reduce((prev, curr) => prev + curr, 0));
+    }, [categories, budget]);
 
     return(
         <>
