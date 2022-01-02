@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import MainBudgetTable from './MainBudgetTable';
+import MainBudgetTable from './MainBudgetTable/MainBudgetTable';
+import MonthlyBudgetTable from './MonthlyBudgetTable/MonthlyBudgetTable';
 
 function Budget() {
     const { month, year } = useParams();
@@ -46,8 +47,9 @@ function Budget() {
                 <h2>
                     {month} {year} Budget
                 </h2>
-                <MainBudgetTable type={ 'var' } allBudget={budget} allCategories={ categories }/>
-                <MainBudgetTable type={ 'inc' } allBudget={budget} allCategories={ categories }/>
+                <MonthlyBudgetTable budget={ budget } categories={ categories }/>
+                <MainBudgetTable type={ 'var' } allBudget={ budget } allCategories={ categories }/>
+                <MainBudgetTable type={ 'inc' } allBudget={ budget } allCategories={ categories }/>
                 {/*
                 <button onClick={() => handleBudgetClick(type)}>budget</button>
                 <div>

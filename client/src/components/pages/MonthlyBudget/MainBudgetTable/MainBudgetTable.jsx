@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import MainBudgetTableRow from './MainBudgetTableRow';
 import MainBudgetTableTotal from './MainBudgetTableTotal';
 
@@ -33,11 +33,11 @@ function MainBudgetTable({ type, allBudget, allCategories }) {
                         </thead>
                         <tbody>
                             {categories.map((category) => (
-                                <>
+                                <Fragment key={ category.id }>
                                     { 
                                      <MainBudgetTableRow category={ category } budget={ budget }/> 
                                     }
-                                </>
+                                </Fragment>
                             ))}
                             <MainBudgetTableTotal categories={ categories } budget={ budget }/>
                         </tbody>
