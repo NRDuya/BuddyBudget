@@ -39,6 +39,8 @@ router.get('/', authenticateToken, async (req, res, next) => {
 router.post('/save', authenticateToken, async (req, res, next) => {
     const category = req.body.category;
     const expense = req.body.expense;
+    const date = req.body.date;
+    const comment = req.body.comment;
     const user = req.user;
 
     try {
@@ -50,7 +52,7 @@ router.post('/save', authenticateToken, async (req, res, next) => {
             throw new UserError("Invalid user id!", 200);
         }
 
-        const results = await IncomeBudgetModel.create(category, expense, user);
+        const results = await MonthlyBudgetModel.create(category, expense, date, comment, user);
         if (results < 0) {
             throw new UserError("Server Error, income budget could not be created", 500);
         } else return res.status(201).json({success: true, message: "Income budget creation successful"});
@@ -77,7 +79,7 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
             throw new UserError("Invalid budget id!", 200);
         }
 
-        const results = await IncomeBudgetModel.edit(category, expense, budgetId);
+        const results = await MonthlyBudgetModel.edit(category, expense, budgetId);
         if (results < 0) {
             throw new UserError("Server Error, income budget could not be edited");
         } else res.status(201).json({success: true, message: "Income budget edit successful"});
@@ -97,7 +99,7 @@ router.delete('/delete', authenticateToken, async (req, res, next) => {
             throw new UserError("Invalid budget id!", 200);
         }
 
-        const results = await IncomeBudgetModel.delete(budgetId);
+        const results = await MonthlyBudgetModel.delete(budgetId);
         if (results < 0) {
             throw new UserError("Server Error, income budget could not be deleted");
         } else return res.status(201).json({success: true, message: "Income budget deletion successful"});

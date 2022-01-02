@@ -47,7 +47,7 @@ function Budget() {
                 <h2>
                     {month} {year} Budget
                 </h2>
-                <MonthlyBudgetTable budget={ budget } categories={ categories }/>
+                <MonthlyBudgetTable budget={ budget } categories={ categories } setBudget={ setBudget }/>
                 <MainBudgetTable type={ 'var' } allBudget={ budget } allCategories={ categories }/>
                 <MainBudgetTable type={ 'inc' } allBudget={ budget } allCategories={ categories }/>
                 {/*
