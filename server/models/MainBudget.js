@@ -14,10 +14,10 @@ MainBudgetModel.get = (type, userId) => {
 
 MainBudgetModel.create = (type, category, expense, userId) => {
     const baseSQL = "INSERT INTO mainbudget (type, category, expense, user) VALUES (?, ?, ?, ?);";
-    db.execute(baseSQL, [type, category, expense, userId])
+    return db.execute(baseSQL, [type, category, expense, userId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
-                return Promise.resolve(1);
+                return Promise.resolve(results.insertId);
             } else return Promise.reject(-1);
         })
         .catch((err) => Promise.reject(err))
@@ -25,7 +25,7 @@ MainBudgetModel.create = (type, category, expense, userId) => {
 
 MainBudgetModel.edit = (category, expense, budgetId) => {
     const baseSQL = "UPDATE mainbudget SET category = ?, expense = ? WHERE id = ?;"
-    db.execute(baseSQL, [category, expense, budgetId])
+    return db.execute(baseSQL, [category, expense, budgetId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
                 return Promise.resolve(1);
@@ -36,7 +36,7 @@ MainBudgetModel.edit = (category, expense, budgetId) => {
 
 MainBudgetModel.delete = (budgetId) => {
     let baseSQL = "DELETE FROM mainbudget where id = ?;";
-    db.execute(baseSQL, [budgetId])
+    return db.execute(baseSQL, [budgetId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
                 return Promise.resolve(1);

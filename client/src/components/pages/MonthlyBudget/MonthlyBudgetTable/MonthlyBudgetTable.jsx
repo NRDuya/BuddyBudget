@@ -1,12 +1,22 @@
 import axios from 'axios';
 import { useState, useEffect, Fragment } from 'react';
-import ReadOnlyRow from './ReadMainBudgetRow';
-import EditableRow from './EditMainBudgetRow';
+import { useParams } from "react-router-dom";
+import ReadMonthlyBudgetRow from './ReadMonthlyBudgetRow';
+import EditableRow from './EditMonthlyBudgetRow';
 
-function MainBudget({ type }) {
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import Form from 'react-bootstrap/Form';
+
+function MonthlyBudgetTable({ budget, categories, setBudget }) {
+    const { month, year } = useParams();
+
     const initialData = {
-        category: '',
-        expense: 1
+        date: new Date(`${year}-${month}-2`),
+        category: -1,
+        expense: 1,
+        comment: '',
+        categoryName: ''
     }
 
     const [mainBudget, setMainBudget] = useState([]);
@@ -14,7 +24,6 @@ function MainBudget({ type }) {
     const [addFormData, setAddFormData] = useState(initialData);
 
     const [editFormData, setEditFormData] = useState(initialData);
-
     const [editBudgetId, setEditBudgetId] = useState(null); 
 
     const [loading, setLoading] = useState(true);
@@ -33,23 +42,36 @@ function MainBudget({ type }) {
         setAddFormData(newFormData);
     };
 
+    const handleCalendarAdd = (date) => {
+        addFormData.date = date;
+    }
+
+    const handleDropdownAdd = (categoryId) => {
+        addFormData.category = parseInt(categoryId);
+        const category = categories.find(category => category.id === parseInt(categoryId));
+        addFormData.categoryName = category.category;
+    }
+
     const handleAddFormSubmit = (event) => {
         event.preventDefault(); 
         axios.defaults.withCredentials = true;
 
         const newBudget = {
             id: -1,
+            date: addFormData.date,
             category: addFormData.category,
-            expense: addFormData.expense
+            expense: addFormData.expense,
+            comment: addFormData.comment,
+            categoryName: addFormData.categoryName
         };
-        
-        axios.post(`/${type}Budget/save`, newBudget)
+
+        axios.post(`/monthlyBudget/save`, newBudget)
          .then((res) => {
             if (res.data.success) {
                 newBudget.id = res.data.budgetId;
                 const newMainBudget = [...mainBudget, newBudget];
                 setMainBudget(newMainBudget);
-
+                setBudget(newMainBudget);
                 console.log('Successfully added to db.');            
             } else {
                 setAddFormData(initialData);
@@ -86,22 +108,22 @@ function MainBudget({ type }) {
 
         setEditBudgetId(null);
 
-        axios.post(`/${type}Budget/edit`, editedBudget)
-         .then((res) => {
-            if (res.data.success) {
-                const newMainBudget = [...mainBudget];
-                const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
-                newMainBudget[index] = editedBudget;
-                setMainBudget(newMainBudget);
+        // axios.post(`/${type}Budget/edit`, editedBudget)
+        //  .then((res) => {
+        //     if (res.data.success) {
+        //         const newMainBudget = [...mainBudget];
+        //         const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
+        //         newMainBudget[index] = editedBudget;
+        //         setMainBudget(newMainBudget);
 
-                console.log('Successfully edited to db.');            
-            } else {
-                console.log(res.data.message);
-            };      
-         })
-         .catch((err) => {
-            console.log("Cannot edit");
-         })
+        //         console.log('Successfully edited to db.');            
+        //     } else {
+        //         console.log(res.data.message);
+        //     };      
+        //  })
+        //  .catch((err) => {
+        //     console.log("Cannot edit");
+        //  })
     };
 
     const handleEditClick = (event, budget) => {
@@ -109,8 +131,10 @@ function MainBudget({ type }) {
         setEditBudgetId(budget.id);
 
         const formValues = {
+            date: budget.date,
             category: budget.category,
-            expense: budget.expense
+            expense: budget.expense,
+            comment: budget.comment
         }
 
         setEditFormData(formValues);
@@ -127,8 +151,9 @@ function MainBudget({ type }) {
 
         newMainBudget.splice(index, 1);
         setMainBudget(newMainBudget);
+        setBudget(newMainBudget);
 
-        axios.delete(`/${type}Budget/delete`, {data: {id: budgetId}})
+        axios.delete('/monthlyBudget/delete', {data: {id: budgetId}})
          .then((res) => {
            console.log('Successfully deleted from db.');            
          })
@@ -138,36 +163,23 @@ function MainBudget({ type }) {
     };
 
     useEffect(() => {
-        axios.defaults.withCredentials = true;
-
-        axios.get(`/${type}Budget/`)
-         .then((res) => {
-            setMainBudget(res.data.budget);
-         })
-         .catch((err) => {
-            console.error("Error fetching data", err);
-            setError(err);
-         })
-         .finally(() => {
-            setLoading(false);
-         })
-    }, [type])
+        setMainBudget(budget);
+        setLoading(false);
+    }, [budget])
 
     if(loading) return "Loading...";
     if(error) return "Error loading...";
     return (
         <>
             <div className='app-container'>    
-                <h2>
-                    { type } Budget
-                </h2>
-
                 <form onSubmit={ handleEditFormSubmit }>
                     <table>
                         <thead>
                             <tr>
+                                <th>Date</th>
                                 <th>Category</th>
-                                <th>Set BudGet</th>
+                                <th>Expense</th>
+                                <th>Comments</th>
                                 <th>Actions</th>
                             </tr>
 
@@ -176,12 +188,12 @@ function MainBudget({ type }) {
                             {mainBudget.map((data) => (
                                 <Fragment key={ data.id }>
                                     { 
-                                        data.id === editBudgetId ? 
-                                        <EditableRow 
+                                     data.id === editBudgetId ? 
+                                     <EditableRow 
                                         editFormData={ editFormData } 
                                         handleEditFormChange={ handleEditFormChange } 
                                         handleEditCancelClick={ handleEditCancelClick } /> : 
-                                        <ReadOnlyRow 
+                                     <ReadMonthlyBudgetRow 
                                         data={ data } 
                                         handleEditClick={ handleEditClick }
                                         handleDeleteClick={ handleDeleteClick }/> 
@@ -195,8 +207,19 @@ function MainBudget({ type }) {
 
                 <h2>Add a BudGet</h2>
                 <form onSubmit={ handleAddFormSubmit }>
-                    <input type='text' name="category" placeholder="Category" value={addFormData.category} onChange={handleAddFormChange} required/>
+                    <Calendar maxDetail="month" showNavigation={false} defaultValue={new Date(`${year}-${month}-2`)} showNeighboringMonth={false} onChange={handleCalendarAdd}/>
+                    <Form.Select name="category" onChange={e => handleDropdownAdd(e.target.value)}>
+                        <option>
+                            Category
+                        </option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.category}
+                            </option>
+                        ))}
+                    </Form.Select>          
                     <input type='number' name="expense" placeholder="BudGeted" value={addFormData.expense} step='.01' onChange={handleAddFormChange} required/>
+                    <input type='text' name="comment" placeholder="Comments" value={addFormData.comment} onChange={handleAddFormChange}/>
                     <button type='submit'>Add</button>
                 </form>
             </div>
@@ -204,4 +227,4 @@ function MainBudget({ type }) {
     )
 }
 
-export default MainBudget;
+export default MonthlyBudgetTable;
