@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
+import MainBudgetTable from './MainBudgetTable/MainBudgetTable';
+import MonthlyBudgetTable from './MonthlyBudgetTable/MonthlyBudgetTable';
 
-function Budget({ type, handleBudgetClick }) {
+function Budget() {
     const { month, year } = useParams();
     const [budget, setBudget] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -20,8 +22,13 @@ function Budget({ type, handleBudgetClick }) {
             }
         })
          .then((res) => {
-            console.log(res.data.budget);
-            setBudget(res.data.budget);
+            if (res.data.success) {
+                setCategories(res.data.categories);
+                setBudget(res.data.budget);
+            }
+            else {
+                
+            }
          })
          .catch((err) => {
             console.error("Error fetching data", err);
@@ -30,17 +37,20 @@ function Budget({ type, handleBudgetClick }) {
          .finally(() => {
             setLoading(false);
          })
-    }, [type])
+    }, [month, year])
 
     if(loading) return "Loading...";
     if(error) return "Error loading...";
     return (
         <>
             <div className='app-container'>    
-                BUDGET 
-                {/* <h2>
-                    { type } Budget
+                <h2>
+                    {month} {year} Budget
                 </h2>
+                <MonthlyBudgetTable budget={ budget } categories={ categories } setBudget={ setBudget }/>
+                <MainBudgetTable type={ 'var' } allBudget={ budget } allCategories={ categories }/>
+                <MainBudgetTable type={ 'inc' } allBudget={ budget } allCategories={ categories }/>
+                {/*
                 <button onClick={() => handleBudgetClick(type)}>budget</button>
                 <div>
                     <table>

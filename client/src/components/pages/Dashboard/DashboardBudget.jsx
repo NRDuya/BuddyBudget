@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import DashboardBudgetRow from './DashboardBudgetRow';
 
 function DashboardBudget({ type, handleBudgetClick }) {
@@ -44,11 +44,11 @@ function DashboardBudget({ type, handleBudgetClick }) {
                         </thead>
                         <tbody>
                             {budget.map((data) => (
-                                <>
+                                <Fragment key={data.id}>
                                     { 
                                      <DashboardBudgetRow data={ data }/> 
                                     }
-                                </>
+                                </Fragment>
                             ))}
                         </tbody>
                     </table>
