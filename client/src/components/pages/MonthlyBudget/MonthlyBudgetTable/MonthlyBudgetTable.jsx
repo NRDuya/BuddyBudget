@@ -43,14 +43,19 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
     };
 
     const handleCalendarAdd = (date) => {
-        addFormData.date = date;
+        const newFormData = {...addFormData};
+        newFormData.date = date;
+        setAddFormData(newFormData);
     }
 
     const handleDropdownAdd = (event) => {
         const categoryId = event.target.value;
-        addFormData.category = parseInt(categoryId);
+        const newFormData = {...addFormData};
+
+        newFormData.category = parseInt(categoryId);
         const category = categories.find(category => category.id === parseInt(categoryId));
-        addFormData.categoryName = category.category;
+        newFormData.categoryName = category.category;
+        setAddFormData(newFormData);
     }
 
     const handleAddFormSubmit = (event) => {
@@ -75,14 +80,15 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
                 setBudget(newMainBudget);
                 console.log('Successfully added to db.');            
             } else {
-                setAddFormData(initialData);
                 console.log(res.data.message);
             };
+            setAddFormData(initialData);
          })
          .catch((err) => {
              console.log(err);
              console.log("Cannot add");
          })
+        
     };
     
     // Edit Functions
@@ -99,14 +105,19 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
     };
 
     const handleCalendarEdit = (date) => {
-        editFormData.date = date;
+        const newFormData = {...editFormData};
+        newFormData.date = date;
+        setEditFormData(newFormData);
     }
 
     const handleDropdownEdit = (event) => {
         const categoryId = event.target.value;
-        editFormData.category = parseInt(categoryId);
+        const newFormData = {...editFormData};
+
+        newFormData.category = parseInt(categoryId);
         const category = categories.find(category => category.id === parseInt(categoryId));
-        editFormData.categoryName = category.category;
+        newFormData.categoryName = category.category;
+        setEditFormData(newFormData);
     }
 
     const handleEditFormSubmit = (event) => {
@@ -129,7 +140,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
                 const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
                 newMainBudget[index] = editedBudget;
                 setMainBudget(newMainBudget);
-
+                setBudget(newMainBudget);
                 console.log('Successfully edited to db.');            
             } else {
                 console.log(res.data.message);
@@ -227,7 +238,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
                 <form onSubmit={ handleAddFormSubmit }>
                     <Calendar maxDetail="month" showNavigation={false} defaultValue={new Date(`${year}-${month}-2`)} showNeighboringMonth={false} onChange={handleCalendarAdd}/>
                     <Form.Select onChange={handleDropdownAdd}>
-                        <option>
+                        <option disabled key={-1} value={-1}>
                             Category
                         </option>
                         {categories.map((category) => (

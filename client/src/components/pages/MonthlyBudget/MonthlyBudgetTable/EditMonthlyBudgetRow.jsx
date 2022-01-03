@@ -12,7 +12,7 @@ function EditableRow({ categories, editFormData, handleEditFormChange, handleCal
 
                 <td>
                     <Form.Select value={editFormData.category} onChange={handleDropdownEdit}>
-                        <option>
+                        <option disabled key={-1} value={-1}>
                             Category
                         </option>
                         {categories.map((category) => (

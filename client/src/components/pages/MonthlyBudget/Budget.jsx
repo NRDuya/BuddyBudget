@@ -50,25 +50,6 @@ function Budget() {
                 <MonthlyBudgetTable budget={ budget } categories={ categories } setBudget={ setBudget }/>
                 <MainBudgetTable type={ 'var' } allBudget={ budget } allCategories={ categories }/>
                 <MainBudgetTable type={ 'inc' } allBudget={ budget } allCategories={ categories }/>
-                {/*
-                <button onClick={() => handleBudgetClick(type)}>budget</button>
-                <div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th>Set BudGet</th>
-                            </tr>
-
-                        </thead>
-                        <tbody>
-                            {budget.map((data) => (
-                                <>
-                                </>
-                            ))}
-                        </tbody>
-                    </table>
-                </div> */}
             </div>
         </>
     )
