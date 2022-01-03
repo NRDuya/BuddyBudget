@@ -28,10 +28,10 @@ MonthlyBudgetModel.getAllCategories = (userId) => {
 
 MonthlyBudgetModel.create = (category, expense, date, comment, userId) => {
     const baseSQL = "INSERT INTO monthlybudget (category, expense, date, comment, user) VALUES (?, ?, ?, ?, ?);"
-    db.execute(baseSQL, [category, expense, date, comment, userId])
+    return db.execute(baseSQL, [category, expense, date, comment, userId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
-                return Promise.resolve(1);
+                return Promise.resolve(results.insertId);
             } else return Promise.reject(-1);
         })
         .catch((err) => Promise.reject(err))
@@ -39,7 +39,7 @@ MonthlyBudgetModel.create = (category, expense, date, comment, userId) => {
 
 MonthlyBudgetModel.edit = (category, expense, date, comment, budgetId) => {
     const baseSQL = "UPDATE monthlybudget SET category = ?, expense = ?, date = ?, comment = ? WHERE id = ?;"
-    db.execute(baseSQL, [category, expense, date, comment, budgetId])
+    return db.execute(baseSQL, [category, expense, date, comment, budgetId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
                 return Promise.resolve(1);
@@ -50,12 +50,11 @@ MonthlyBudgetModel.edit = (category, expense, date, comment, budgetId) => {
 
 MonthlyBudgetModel.delete = (budgetId) => {
     let baseSQL = "DELETE FROM monthlybudget where id = ?;";
-    db.execute(baseSQL, [budgetId])
+    return db.execute(baseSQL, [budgetId])
         .then(([results, fields]) => {
             if(results && results.affectedRows){
                 return Promise.resolve(1);
-            }
-            else return Promise.reject(-1);
+            } else return Promise.reject(-1);
         })
         .catch((err) => Promise.reject(err))
 }

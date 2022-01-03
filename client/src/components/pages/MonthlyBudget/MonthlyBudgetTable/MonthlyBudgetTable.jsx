@@ -6,8 +6,6 @@ import EditableRow from './EditMonthlyBudgetRow';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Form from 'react-bootstrap/Form';
 
 function MonthlyBudgetTable({ budget, categories, setBudget }) {
@@ -59,6 +57,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
         axios.defaults.withCredentials = true;
 
         const newBudget = {
+            id: -1,
             date: addFormData.date,
             category: addFormData.category,
             expense: addFormData.expense,
@@ -69,6 +68,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
         axios.post(`/monthlyBudget/save`, newBudget)
          .then((res) => {
             if (res.data.success) {
+                newBudget.id = res.data.budgetId;
                 const newMainBudget = [...mainBudget, newBudget];
                 setMainBudget(newMainBudget);
                 setBudget(newMainBudget);
@@ -148,7 +148,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
     const handleDeleteClick = (budgetId) => {
         const newMainBudget = [...mainBudget];
         const index = mainBudget.findIndex((budget) => budget.id === budgetId);
-        console.log(budgetId);
+
         newMainBudget.splice(index, 1);
         setMainBudget(newMainBudget);
         setBudget(newMainBudget);

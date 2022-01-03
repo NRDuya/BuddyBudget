@@ -38,6 +38,7 @@ function MainBudget({ type }) {
         axios.defaults.withCredentials = true;
 
         const newBudget = {
+            id: -1,
             category: addFormData.category,
             expense: addFormData.expense
         };
@@ -45,6 +46,7 @@ function MainBudget({ type }) {
         axios.post(`/${type}Budget/save`, newBudget)
          .then((res) => {
             if (res.data.success) {
+                newBudget.id = res.data.budgetId;
                 const newMainBudget = [...mainBudget, newBudget];
                 setMainBudget(newMainBudget);
 

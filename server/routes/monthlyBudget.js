@@ -52,10 +52,10 @@ router.post('/save', authenticateToken, async (req, res, next) => {
             throw new UserError("Invalid user id!", 200);
         }
 
-        const results = await MonthlyBudgetModel.create(category, expense, date, comment, user);
-        if (results < 0) {
-            throw new UserError("Server Error, income budget could not be created", 500);
-        } else return res.status(201).json({success: true, message: "Income budget creation successful"});
+        const budgetId = await MonthlyBudgetModel.create(category, expense, date, comment, user);
+        if (budgetId < 0) {
+            throw new UserError("Server Error, monthly budget could not be created", 500);
+        } else return res.status(201).json({success: true, message: "Monthly budget creation successful", budgetId: budgetId});
     }
     catch (err) {
         if(err instanceof UserError){
