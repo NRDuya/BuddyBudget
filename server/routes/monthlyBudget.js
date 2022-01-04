@@ -77,9 +77,13 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
             throw new UserError("Category too long!", 200);
         } else if (!budgetCheck.validExpense(expense)) {
             throw new UserError("Invalid expense!", 200);
+        } else if (!budgetCheck.validDate(date)) {
+            throw new UserError("Invalid date!", 200);
+        } else if (!budgetCheck.validComment(comment)) {
+            throw new UserError("Comment too long!", 200);
         } else if (!budgetCheck.validMonthlyBudgetId(budgetId)) {
             throw new UserError("Invalid budget id!", 200);
-        }
+        } 
 
         const results = await MonthlyBudgetModel.edit(category, expense, date, comment, budgetId);
         if (results < 0) {

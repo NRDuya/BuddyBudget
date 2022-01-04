@@ -61,34 +61,37 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
     const handleAddFormSubmit = (event) => {
         event.preventDefault(); 
         axios.defaults.withCredentials = true;
-
-        const newBudget = {
-            id: -1,
-            date: addFormData.date,
-            category: addFormData.category,
-            expense: addFormData.expense,
-            comment: addFormData.comment,
-            categoryName: addFormData.categoryName
-        };
-
-        axios.post(`/monthlyBudget/save`, newBudget)
-         .then((res) => {
-            if (res.data.success) {
-                newBudget.id = res.data.budgetId;
-                const newMainBudget = [...mainBudget, newBudget];
-                setMainBudget(newMainBudget);
-                setBudget(newMainBudget);
-                console.log('Successfully added to db.');            
-            } else {
-                console.log(res.data.message);
-            };
-            setAddFormData(initialData);
-         })
-         .catch((err) => {
-             console.log(err);
-             console.log("Cannot add");
-         })
         
+        if (addFormData.category === -1) {
+            console.log("send error message")
+        } else {
+            const newBudget = {
+                id: -1,
+                date: addFormData.date,
+                category: addFormData.category,
+                expense: addFormData.expense,
+                comment: addFormData.comment,
+                categoryName: addFormData.categoryName
+            };
+
+            axios.post(`/monthlyBudget/save`, newBudget)
+            .then((res) => {
+                if (res.data.success) {
+                    newBudget.id = res.data.budgetId;
+                    const newMainBudget = [...mainBudget, newBudget];
+                    setMainBudget(newMainBudget);
+                    setBudget(newMainBudget);
+                    console.log('Successfully added to db.');            
+                } else {
+                    console.log(res.data.message);
+                };
+                setAddFormData(initialData);
+            })
+            .catch((err) => {
+                console.log(err);
+                console.log("Cannot add");
+            })
+        }
     };
     
     // Edit Functions
@@ -181,7 +184,11 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
 
         axios.delete('/monthlyBudget/delete', {data: {id: budgetId}})
          .then((res) => {
-           console.log('Successfully deleted from db.');            
+            if (res.data.success) {
+                console.log('Successfully deleted from db.');            
+            } else {
+                console.log(res.data.message);
+            }
          })
          .catch((err) => {
             console.log("Cannot delete");
@@ -238,7 +245,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
                 <form onSubmit={ handleAddFormSubmit }>
                     <Calendar maxDetail="month" showNavigation={false} defaultValue={new Date(`${year}-${month}-2`)} showNeighboringMonth={false} onChange={handleCalendarAdd}/>
                     <Form.Select onChange={handleDropdownAdd}>
-                        <option disabled key={-1} value={-1}>
+                        <option key={-1} value={-1}>
                             Category
                         </option>
                         {categories.map((category) => (
