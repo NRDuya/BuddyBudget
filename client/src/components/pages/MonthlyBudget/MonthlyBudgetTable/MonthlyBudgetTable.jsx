@@ -43,45 +43,55 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
     };
 
     const handleCalendarAdd = (date) => {
-        addFormData.date = date;
+        const newFormData = {...addFormData};
+        newFormData.date = date;
+        setAddFormData(newFormData);
     }
 
-    const handleDropdownAdd = (categoryId) => {
-        addFormData.category = parseInt(categoryId);
+    const handleDropdownAdd = (event) => {
+        const categoryId = event.target.value;
+        const newFormData = {...addFormData};
+
+        newFormData.category = parseInt(categoryId);
         const category = categories.find(category => category.id === parseInt(categoryId));
-        addFormData.categoryName = category.category;
+        newFormData.categoryName = category.category;
+        setAddFormData(newFormData);
     }
 
     const handleAddFormSubmit = (event) => {
         event.preventDefault(); 
         axios.defaults.withCredentials = true;
-
-        const newBudget = {
-            id: -1,
-            date: addFormData.date,
-            category: addFormData.category,
-            expense: addFormData.expense,
-            comment: addFormData.comment,
-            categoryName: addFormData.categoryName
-        };
-
-        axios.post(`/monthlyBudget/save`, newBudget)
-         .then((res) => {
-            if (res.data.success) {
-                newBudget.id = res.data.budgetId;
-                const newMainBudget = [...mainBudget, newBudget];
-                setMainBudget(newMainBudget);
-                setBudget(newMainBudget);
-                console.log('Successfully added to db.');            
-            } else {
-                setAddFormData(initialData);
-                console.log(res.data.message);
+        
+        if (addFormData.category === -1) {
+            console.log("send error message")
+        } else {
+            const newBudget = {
+                id: -1,
+                date: addFormData.date,
+                category: addFormData.category,
+                expense: addFormData.expense,
+                comment: addFormData.comment,
+                categoryName: addFormData.categoryName
             };
-         })
-         .catch((err) => {
-             console.log(err);
-             console.log("Cannot add");
-         })
+
+            axios.post(`/monthlyBudget/save`, newBudget)
+            .then((res) => {
+                if (res.data.success) {
+                    newBudget.id = res.data.budgetId;
+                    const newMainBudget = [...mainBudget, newBudget];
+                    setMainBudget(newMainBudget);
+                    setBudget(newMainBudget);
+                    console.log('Successfully added to db.');            
+                } else {
+                    console.log(res.data.message);
+                };
+                setAddFormData(initialData);
+            })
+            .catch((err) => {
+                console.log(err);
+                console.log("Cannot add");
+            })
+        }
     };
     
     // Edit Functions
@@ -97,33 +107,51 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
         setEditFormData(newFormData);
     };
 
+    const handleCalendarEdit = (date) => {
+        const newFormData = {...editFormData};
+        newFormData.date = date;
+        setEditFormData(newFormData);
+    }
+
+    const handleDropdownEdit = (event) => {
+        const categoryId = event.target.value;
+        const newFormData = {...editFormData};
+
+        newFormData.category = parseInt(categoryId);
+        const category = categories.find(category => category.id === parseInt(categoryId));
+        newFormData.categoryName = category.category;
+        setEditFormData(newFormData);
+    }
+
     const handleEditFormSubmit = (event) => {
         event.preventDefault();
 
         const editedBudget = {
             id: editBudgetId,
+            date: editFormData.date,
             category: editFormData.category,
-            expense: editFormData.expense
+            expense: editFormData.expense,
+            comment: editFormData.comment,
+            categoryName: editFormData.categoryName
         };
-
         setEditBudgetId(null);
 
-        // axios.post(`/${type}Budget/edit`, editedBudget)
-        //  .then((res) => {
-        //     if (res.data.success) {
-        //         const newMainBudget = [...mainBudget];
-        //         const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
-        //         newMainBudget[index] = editedBudget;
-        //         setMainBudget(newMainBudget);
-
-        //         console.log('Successfully edited to db.');            
-        //     } else {
-        //         console.log(res.data.message);
-        //     };      
-        //  })
-        //  .catch((err) => {
-        //     console.log("Cannot edit");
-        //  })
+        axios.post('/monthlyBudget/edit', editedBudget)
+         .then((res) => {
+            if (res.data.success) {
+                const newMainBudget = [...mainBudget];
+                const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
+                newMainBudget[index] = editedBudget;
+                setMainBudget(newMainBudget);
+                setBudget(newMainBudget);
+                console.log('Successfully edited to db.');            
+            } else {
+                console.log(res.data.message);
+            };      
+         })
+         .catch((err) => {
+            console.log("Cannot edit");
+         })
     };
 
     const handleEditClick = (event, budget) => {
@@ -134,7 +162,8 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
             date: budget.date,
             category: budget.category,
             expense: budget.expense,
-            comment: budget.comment
+            comment: budget.comment,
+            categoryName: budget.categoryName
         }
 
         setEditFormData(formValues);
@@ -155,7 +184,11 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
 
         axios.delete('/monthlyBudget/delete', {data: {id: budgetId}})
          .then((res) => {
-           console.log('Successfully deleted from db.');            
+            if (res.data.success) {
+                console.log('Successfully deleted from db.');            
+            } else {
+                console.log(res.data.message);
+            }
          })
          .catch((err) => {
             console.log("Cannot delete");
@@ -190,8 +223,11 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
                                     { 
                                      data.id === editBudgetId ? 
                                      <EditableRow 
+                                        categories={ categories }
                                         editFormData={ editFormData } 
-                                        handleEditFormChange={ handleEditFormChange } 
+                                        handleEditFormChange={ handleEditFormChange }
+                                        handleCalendarEdit={ handleCalendarEdit }
+                                        handleDropdownEdit={ handleDropdownEdit } 
                                         handleEditCancelClick={ handleEditCancelClick } /> : 
                                      <ReadMonthlyBudgetRow 
                                         data={ data } 
@@ -208,8 +244,8 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
                 <h2>Add a BudGet</h2>
                 <form onSubmit={ handleAddFormSubmit }>
                     <Calendar maxDetail="month" showNavigation={false} defaultValue={new Date(`${year}-${month}-2`)} showNeighboringMonth={false} onChange={handleCalendarAdd}/>
-                    <Form.Select name="category" onChange={e => handleDropdownAdd(e.target.value)}>
-                        <option>
+                    <Form.Select onChange={handleDropdownAdd}>
+                        <option key={-1} value={-1}>
                             Category
                         </option>
                         {categories.map((category) => (

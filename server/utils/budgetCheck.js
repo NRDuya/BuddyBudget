@@ -2,29 +2,29 @@ const ValidationModel = require('../models/Validation');
 const BudgetCheck = {};
 
 BudgetCheck.validUserId = async (userId) => {
-    const userIdExists = ValidationModel.userIdExists(userId);
+    if (typeof userId !== 'number' || userId < 0) return false;
 
-    if(userIdExists && typeof userId === 'number'){
-        return true;
-    }
+    const userIdExists = ValidationModel.userIdExists(userId);
+    if(userIdExists) return true;
+    
     return false;
 }
 
 BudgetCheck.validMainBudgetId = async (budgetId) => {
-    const mainBudgetIdExists = ValidationModel.mainBudgetIdExists(budgetId);
+    if (typeof budgetId !== 'number' || budgetId < 0) return false;
 
-    if(mainBudgetIdExists && typeof budgetId === 'number'){
-        return true;
-    }
+    const mainBudgetIdExists = ValidationModel.mainBudgetIdExists(budgetId);
+    if(mainBudgetIdExists) return true;
+    
     return false;
 }
 
 BudgetCheck.validMonthlyBudgetId = async (budgetId) => {
-    const monthlyBudgetIdExists = ValidationModel.monthlyBudgetIdExists(budgetId);
+    if (typeof budgetId !== 'number' || budgetId < 0) return false;
 
-    if(monthlyBudgetIdExists && typeof budgetId === 'number'){
-        return true;
-    }
+    const monthlyBudgetIdExists = ValidationModel.monthlyBudgetIdExists(budgetId);
+    if(monthlyBudgetIdExists) return true;
+
     return false;
 }
 
@@ -43,7 +43,9 @@ BudgetCheck.validExpense = (expense) => {
 }
 
 BudgetCheck.validMonth = (month) => {
-    if (typeof month === 'number' && month > 0 &&(month.toString().length === 2 || month.toString().length === 1)) {
+    if (month < 0 || month > 12) return false;
+
+    if (typeof month === 'number' && (month.toString().length === 2 || month.toString().length === 1)) {
         return true;
     }
     return false;
@@ -54,6 +56,18 @@ BudgetCheck.validYear = (year) => {
         return true;
     }
     return false;  
+}
+
+BudgetCheck.validDate = (date_) => {
+    const date = new Date(date_);
+    return date.getTime() === date.getTime();
+}
+
+BudgetCheck.validComment= (comment) => {
+    if (comment.length <= 60) {
+        return true;
+    }
+    return false;
 }
 
 module.exports = BudgetCheck;

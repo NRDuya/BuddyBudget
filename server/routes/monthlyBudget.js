@@ -66,20 +66,26 @@ router.post('/save', authenticateToken, async (req, res, next) => {
 });
 
 router.post('/edit', authenticateToken, async (req, res, next) => {
-    let category = req.body.category;
-    let expense = req.body.expense;
-    let budgetId = req.body.id;
+    const category = req.body.category;
+    const expense = req.body.expense;
+    const date = req.body.date;
+    const comment = req.body.comment;
+    const budgetId = req.body.id;
 
     try {
         if (!budgetCheck.validCategory(category)) {
             throw new UserError("Category too long!", 200);
         } else if (!budgetCheck.validExpense(expense)) {
             throw new UserError("Invalid expense!", 200);
+        } else if (!budgetCheck.validDate(date)) {
+            throw new UserError("Invalid date!", 200);
+        } else if (!budgetCheck.validComment(comment)) {
+            throw new UserError("Comment too long!", 200);
         } else if (!budgetCheck.validMonthlyBudgetId(budgetId)) {
             throw new UserError("Invalid budget id!", 200);
-        }
+        } 
 
-        const results = await MonthlyBudgetModel.edit(category, expense, budgetId);
+        const results = await MonthlyBudgetModel.edit(category, expense, date, comment, budgetId);
         if (results < 0) {
             throw new UserError("Server Error, income budget could not be edited");
         } else res.status(201).json({success: true, message: "Income budget edit successful"});
@@ -92,7 +98,7 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
 });
 
 router.delete('/delete', authenticateToken, async (req, res, next) => {
-    let budgetId = req.body.id;
+    const budgetId = req.body.id;
     
     try {
         if (!budgetCheck.validMonthlyBudgetId(budgetId)) {
