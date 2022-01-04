@@ -1,9 +1,13 @@
 import axios from 'axios';
 import { useState, useEffect, Fragment } from 'react';
+import { useParams } from "react-router-dom";
+import Navbar from '../../../Navbar';
 import ReadOnlyRow from './ReadMainBudgetRow';
 import EditableRow from './EditMainBudgetRow';
 
-function MainBudget({ type }) {
+function MainBudget() {
+    const { type } = useParams();
+
     const initialData = {
         category: '',
         expense: 1
@@ -157,6 +161,7 @@ function MainBudget({ type }) {
     if(error) return "Error loading...";
     return (
         <>
+            <Navbar />
             <div className='app-container'>    
                 <h2>
                     { type } Budget
