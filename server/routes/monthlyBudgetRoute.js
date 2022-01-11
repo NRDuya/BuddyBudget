@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserError = require('../helpers/errors/UserError');
-const MonthlyBudgetModel = require('../models/MonthlyBudget');
+const MonthlyBudgetModel = require('../models/MonthlyBudgetModel');
 const authenticateToken = require('../middleware/authenticateToken');
 const budgetCheck = require('../utils/budgetCheck');
 

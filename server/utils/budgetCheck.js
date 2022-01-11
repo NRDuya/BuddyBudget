@@ -1,4 +1,4 @@
-const ValidationModel = require('../models/Validation');
+const ValidationModel = require('../models/ValidationModel');
 const BudgetCheck = {};
 
 BudgetCheck.validUserId = async (userId) => {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import Navbar from '../../Navbar';
+import Navigation from '../../Navbar';
 import MainBudgetTable from './MainBudgetTable/MainBudgetTable';
 import MonthlyBudgetTable from './MonthlyBudgetTable/MonthlyBudgetTable';
 
@@ -44,7 +44,7 @@ function Budget() {
     if(error) return "Error loading...";
     return (
         <>
-            <Navbar />
+            <Navigation />
             <div className='app-container'>    
                 <h2>
                     {month} {year} Budget

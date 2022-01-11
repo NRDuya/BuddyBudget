@@ -5,7 +5,8 @@ MonthlyBudgetModel.get = (userId, month, year) => {
     const baseSQL = "SELECT budget.id, budget.category AS 'category', cat.category AS 'categoryName', " + 
                         "budget.expense, budget.date, budget.comment FROM monthlybudget budget " +
                         "JOIN mainbudget cat ON budget.category = cat.id " +
-                        "WHERE budget.user = ? AND MONTH(budget.date) = ? AND YEAR(budget.date) = ?;"
+                        "WHERE budget.user = ? AND MONTH(budget.date) = ? AND YEAR(budget.date) = ? " +
+                        "ORDER BY budget.date DESC;";
     return db.execute(baseSQL, [userId, month, year])
         .then(([results, fields]) => {
             if(results && results.length){
