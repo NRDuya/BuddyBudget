@@ -1,10 +1,14 @@
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import './Navbar.css';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Navbar, Nav, Container, Modal } from 'react-bootstrap';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
-function Navbar() {
+function Navigation() {
     const navigate = useNavigate();
     const isLogged = localStorage.getItem('username');
+    const [showCalendar, setShowCalendar] = useState(false);
 
     const handleLogout = async (event) => {
         event.preventDefault();
@@ -21,19 +25,58 @@ function Navbar() {
             console.log(err);
         }
     };
+    
+    const handleCalendar = (value) => {
+        const link = value.getFullYear() + "/" + (value.getMonth() + 1);
+        navigate(`/${link}`);
+    }
+
+    const handleShowCalendar = () => {
+        setShowCalendar(!showCalendar);
+    }
 
     return (
-        <nav>
-            <div id='navbar'>
-                <Link to='/' className='navbar-logo'>
-                    BudGet
-                </Link>
+        <Navbar bg="light" expand="lg" className="py-3">
+            <Container>
+                <Navbar.Brand href="/">Buddy Budget</Navbar.Brand>
+
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="ms-auto">
+                        {
+                            isLogged ? 
+                             (<>
+                                <Nav.Link onClick={handleShowCalendar}> Monthly Budget </Nav.Link>
+                                <Nav.Link onClick={handleLogout}> Logout </Nav.Link>
+                              </>) :
+                             (<>
+                                <Nav.Link href='/login'>Login</Nav.Link>
+                                <Nav.Link href='/signup'>Signup</Nav.Link>
+                             </>) 
+                        }
+                    </Nav>
+                </Navbar.Collapse>
                 {
-                    isLogged ? (<button onClick={handleLogout}>Logout</button>) : (<><Link to='/login'>Login</Link>  <Link to='/signup' className='navbar-logo'>Signup</Link></>) 
+                    showCalendar && 
+                    <Modal
+                    show={showCalendar}
+                    onHide={handleShowCalendar}
+                    size="lg"
+                    centered
+                  >
+                    <Modal.Header className="text-center" closeButton>
+                      <Modal.Title >
+                        Choose a Month to Budget
+                      </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className="m-auto">
+                        <Calendar maxDetail="year" prev2Label={null} next2Label={null} onChange={handleCalendar} />
+                    </Modal.Body>
+                  </Modal>
                 }
-            </div>
-        </nav>
+            </Container>
+        </Navbar>
     )
 }
 
-export default Navbar;
+export default Navigation;

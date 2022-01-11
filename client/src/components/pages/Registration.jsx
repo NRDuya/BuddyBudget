@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../Navbar';
+import Navigation from '../Navbar';
 
 function Registration(){
     const usernameRef = useRef();
@@ -34,7 +34,7 @@ function Registration(){
 
     return(
         <>
-            <Navbar />
+            <Navigation />
             <form onSubmit={handleSubmit}>
                 <div className='form-field'>
                     <label>Username</label>

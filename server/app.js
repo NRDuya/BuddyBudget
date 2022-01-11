@@ -6,11 +6,11 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 // Import Routes
-const usersRouter = require('./routes/users');
-const variableBudgetRouter = require('./routes/MainBudget/variableBudget');
-const fixedBudgetRouter = require('./routes/MainBudget/fixedBudget');
-const incomeBudgetRouter = require('./routes/MainBudget/incomeBudget');
-const monthlyBudgetRouter = require('./routes/monthlyBudget');
+const usersRouter = require('./routes/usersRoute');
+const variableBudgetRouter = require('./routes/MainBudget/variableBudgetRoute');
+const fixedBudgetRouter = require('./routes/MainBudget/fixedBudgetRoute');
+const incomeBudgetRouter = require('./routes/MainBudget/incomeBudgetRoute');
+const monthlyBudgetRouter = require('./routes/monthlyBudgetRoute');
 
 const app = express();
 

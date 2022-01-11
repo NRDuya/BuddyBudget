@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '../Navbar';
+import Navigation from '../Navbar';
 
 function Login(){
     const usernameRef = useRef();
@@ -33,24 +33,38 @@ function Login(){
 
     return(
         <>
-            <Navbar />
-            <form onSubmit={handleSubmit}>
-                <div className='form-field'>
-                    <label>Username</label>
-                    <input id="username" type="text" placeholder="Username" ref={usernameRef} required />
-                </div>
-                <div className='form-field'>
-                    <label>Password</label>
-                    <input id="password" type="text" placeholder="Password" ref={passwordRef} required />
+            <Navigation />
+            <div       
+                className="container d-flex align-items-center justify-content-center"
+                style={{ minHeight: '100vh' }}
+            >
+                <div className="card w-100" style={{ maxWidth: '400px' }}>
+                    <div className="card-body">
+                        <h3 className="card-header text-center mb-4">
+                            Login
+                        </h3>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group mb-3">
+                                <label>Username</label>
+                                <input className="form-control" type="text" placeholder="Username" ref={usernameRef} required />
+                            </div>
+                            <div className="form-group mb-3">
+                                <label>Password</label>
+                                <input className="form-control" type="text" placeholder="Password" ref={passwordRef} required />
+                            </div>
+
+                            <button className='btn btn-primary btn-block' type="submit">
+                                Login
+                            </button>
+                            <p className="forgot-password text-end">
+                                Need an account? <Link to='/signup'> Register</Link>
+                            </p>
+
+                        </form>
+                    </div>
                 </div>
 
-                <div id='login-options'>
-                    <Link to='/signup'>
-                        Register
-                    </Link>
-                    <button type="submit">Submit</button>
-                </div>
-            </form>
+            </div>
         </>
 
     );
