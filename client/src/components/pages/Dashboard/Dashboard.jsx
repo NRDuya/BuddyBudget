@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import Navigation from '../../Navbar';
 import DashboardBudget from './DashboardBudget/DashboardBudget';
 
 function Dashboard() {
@@ -11,7 +10,6 @@ function Dashboard() {
     
     return (
         <>
-            <Navigation />
             <div className='app-container'>  
                 <DashboardBudget type={ 'variable' } handleBudgetClick={ handleBudgetClick }/>  
                 <DashboardBudget type={ 'fixed' } handleBudgetClick={ handleBudgetClick }/>  
