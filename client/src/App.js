@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Navigation from './components/Navbar';
 import Dashboard from './components/pages/Dashboard/Dashboard';
 import MainBudget from './components/pages/Dashboard/MainBudget/MainBudget';
 import Budget from './components/pages/MonthlyBudget/Budget';
@@ -14,6 +15,7 @@ function App() {
 
   return (
     <Router>
+        <Navigation />
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Registration />} />

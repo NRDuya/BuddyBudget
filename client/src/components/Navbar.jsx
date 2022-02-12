@@ -64,7 +64,7 @@ function Navigation() {
                     size="lg"
                     centered
                   >
-                    <Modal.Header className="text-center" closeButton>
+                    <Modal.Header closeButton>
                       <Modal.Title >
                         Choose a Month to Budget
                       </Modal.Title>

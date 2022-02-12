@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect, Fragment } from 'react';
 import { useParams } from "react-router-dom";
-import Navigation from '../../../Navbar';
 import ReadOnlyRow from './ReadMainBudgetRow';
 import EditableRow from './EditMainBudgetRow';
 
@@ -161,7 +160,6 @@ function MainBudget() {
     if(error) return "Error loading...";
     return (
         <>
-            <Navigation />
             <div className='app-container'>    
                 <h2>
                     { type } Budget

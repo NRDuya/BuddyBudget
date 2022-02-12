@@ -50,7 +50,7 @@ function Login(){
                             </div>
                             <div className="form-group mb-3">
                                 <label>Password</label>
-                                <input className="form-control" type="text" placeholder="Password" ref={passwordRef} required />
+                                <input className="form-control" type="password" placeholder="Password" ref={passwordRef} required />
                             </div>
 
                             <button className='btn btn-primary btn-block' type="submit">
