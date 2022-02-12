@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Navigation from '../Navbar';
 
 function Login(){
     const usernameRef = useRef();
@@ -33,7 +32,6 @@ function Login(){
 
     return(
         <>
-            <Navigation />
             <div       
                 className="container d-flex align-items-center justify-content-center"
                 style={{ minHeight: '100vh' }}
