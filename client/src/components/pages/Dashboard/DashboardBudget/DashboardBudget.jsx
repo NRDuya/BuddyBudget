@@ -28,14 +28,15 @@ function DashboardBudget({ type, handleBudgetClick }) {
     if(error) return "Error loading...";
     return (
         <>
-            <div className='app-container'>    
-                <h2>
+            <div className='container d-flex flex-column '>    
+                <h2 className="card-header text-center">
                     { type } Budget
                 </h2>
-                <button onClick={() => handleBudgetClick(type)}>budget</button>
-                <div>
-                    <table>
-                        <thead>
+                <button className='btn btn-primary m-2' onClick={() => handleBudgetClick(type)}>Edit { type } Budget</button>
+
+                <div>                
+                    <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
+                        <thead className='table-light'>
                             <tr>
                                 <th>Category</th>
                                 <th>Set BudGet</th>

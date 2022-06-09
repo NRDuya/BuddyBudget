@@ -33,32 +33,44 @@ function Registration(){
 
     return(
         <>
-            <form onSubmit={handleSubmit}>
-                <div className='form-field'>
-                    <label>Username</label>
-                    <input id="username" type="name" placeholder="Username" ref={usernameRef} required />
-                </div>
-                <div className='form-field'>
-                    <label>Email</label>
-                    <input id="email" type="email" placeholder="Email" ref={emailRef} required />
-                </div>
-                <div className='form-field'>
-                    <label>Password</label>
-                    <input id="password" type="password" placeholder="Password" ref={passwordRef} required />
-                </div>
-                <div className='form-field'>
-                    <label>Confirm Password</label>
-                    <input id="cpassword" type="password" placeholder="Confirm Password" ref={cpasswordRef} required />
-                </div>
+            <div       
+                className="container d-flex align-items-center justify-content-center"
+                style={{ minHeight: '85vh' }}
+            >
+                <div className="card w-100" style={{ maxWidth: '400px' }}>
+                    <div className="card-body">
+                        <h3 className="card-header text-center mb-4">
+                            Registration
+                        </h3>
 
-                <div>
-                    <Link to='/login'>
-                        Have An Account?
-                    </Link>
-                </div>
-                <button type="submit">Submit</button>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group mb-3">
+                                <label>Username</label>
+                                <input className="form-control" type="name" placeholder="Username" ref={usernameRef} required />
+                            </div>
+                            <div className="form-group mb-3">
+                                <label>Email</label>
+                                <input className="form-control" type="email" placeholder="Email" ref={emailRef} required />
+                            </div>
+                            <div className="form-group mb-3">
+                                <label>Password</label>
+                                <input className="form-control" type="password" placeholder="Password" ref={passwordRef} required />
+                            </div>
+                            <div className="form-group mb-3">
+                                <label>Confirm Password</label>
+                                <input className="form-control" type="password" placeholder="Confirm Password" ref={cpasswordRef} required />
+                            </div>
 
-            </form>
+                            <button className='btn btn-primary btn-block' type="submit">
+                                Submit
+                            </button>
+                            <p className="forgot-password text-end">
+                                Have an account? <Link to='/login'> Login</Link>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </>
         
     );

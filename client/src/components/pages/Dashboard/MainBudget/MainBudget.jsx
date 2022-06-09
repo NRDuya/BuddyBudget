@@ -160,7 +160,7 @@ function MainBudget() {
     if(error) return "Error loading...";
     return (
         <>
-            <div className='app-container'>    
+            <div className='container'>    
                 <h2>
                     { type } Budget
                 </h2>

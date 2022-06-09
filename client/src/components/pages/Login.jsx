@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Login(){
     const usernameRef = useRef();
     const passwordRef = useRef();
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
     
     const handleSubmit = async (event) => {
@@ -21,7 +22,7 @@ function Login(){
                 localStorage.setItem("username", res.data.username);
                 navigate("/");
             } else {
-                console.log(res.data.message);
+                setMessage(res.data.message);
                 window.location.reload(false);
             }
         }
@@ -34,13 +35,14 @@ function Login(){
         <>
             <div       
                 className="container d-flex align-items-center justify-content-center"
-                style={{ minHeight: '100vh' }}
+                style={{ minHeight: '85vh' }}
             >
                 <div className="card w-100" style={{ maxWidth: '400px' }}>
                     <div className="card-body">
                         <h3 className="card-header text-center mb-4">
                             Login
                         </h3>
+
                         <form onSubmit={handleSubmit}>
                             <div className="form-group mb-3">
                                 <label>Username</label>
@@ -57,7 +59,6 @@ function Login(){
                             <p className="forgot-password text-end">
                                 Need an account? <Link to='/signup'> Register</Link>
                             </p>
-
                         </form>
                     </div>
                 </div>

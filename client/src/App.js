@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navigation from './components/Navbar';
 import Dashboard from './components/pages/Dashboard/Dashboard';
 import MainBudget from './components/pages/Dashboard/MainBudget/MainBudget';
-import Budget from './components/pages/MonthlyBudget/Budget';
+import MonthlyBudget from './components/pages/MonthlyBudget/MonthlyBudget';
 import Registration from './components/pages/Registration';
 import Login from './components/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
@@ -39,7 +39,7 @@ function App() {
            path='/:year/:month'
            element={
              <PrivateRoute>
-               <Budget />
+               <MonthlyBudget />
              </PrivateRoute>
            }
           />
