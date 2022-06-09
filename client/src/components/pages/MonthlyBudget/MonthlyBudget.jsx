@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import MainBudgetTable from './MainBudgetTable/MainBudgetTable';
 import MonthlyBudgetTable from './MonthlyBudgetTable/MonthlyBudgetTable';
 
-function Budget() {
+function MonthlyBudget() {
     const { month, year } = useParams();
     const [budget, setBudget] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -43,7 +43,7 @@ function Budget() {
     if(error) return "Error loading...";
     return (
         <>
-            <div className='app-container'>    
+            <div className='container'>    
                 <h2>
                     {month} {year} Budget
                 </h2>
@@ -55,4 +55,4 @@ function Budget() {
     )
 }
 
-export default Budget;
+export default MonthlyBudget;
