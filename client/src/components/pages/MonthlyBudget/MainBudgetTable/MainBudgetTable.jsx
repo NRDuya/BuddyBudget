@@ -3,20 +3,34 @@ import MainBudgetTableRow from './MainBudgetTableRow';
 import MainBudgetTableTotal from './MainBudgetTableTotal';
 
 function MainBudgetTable({ type, allBudget, allCategories }) {
+    // Holds all categories for the current type
     const [categories, setCategories] = useState(allCategories);
-    const [budget, setBudget] = useState(allBudget);
+    // Holds all the budgets for the current type
+    const [totalBudget, setTotalBudget] = useState([]);
+    // Holds the filtered budgets used by each row
+    const [budgets, setBudget] = useState([]);
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        // Remove categories that are different types
         setCategories(allCategories.filter((category) => category.type === type));
     }, [allCategories, type]);
 
     useEffect(() => {
-        setBudget(allBudget.filter((budget_) => categories.some(category => category.id === budget_.category)))
+        // Remove budgets of different types
+        const filteredBudget = allBudget.filter((budget_) => categories.some(category => category.id === budget_.category));
+        setBudget(filteredBudget);
+        setTotalBudget(filteredBudget);
+        setLoading(false);
     }, [allBudget, categories]);
     
+    if(loading) return "Loading...";
+    if(error) return "Error loading...";
     return (
         <>
-            <div className='app-container'>    
+            <div className='container'>    
                 <h2>
                     { type } Budget
                 </h2>
@@ -35,11 +49,11 @@ function MainBudgetTable({ type, allBudget, allCategories }) {
                             {categories.map((category) => (
                                 <Fragment key={ category.id }>
                                     { 
-                                     <MainBudgetTableRow category={ category } budget={ budget }/> 
+                                     <MainBudgetTableRow category={ category } budget={ budgets } setBudget={ setBudget }/> 
                                     }
                                 </Fragment>
                             ))}
-                            <MainBudgetTableTotal categories={ categories } budget={ budget }/>
+                            <MainBudgetTableTotal categories={ categories } totalBudget={ totalBudget }/>
                         </tbody>
                     </table>
                 </div>
