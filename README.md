@@ -1,4 +1,4 @@
-# BudGet
+# Buddy Budget
 Budgeting App made with React and Express
 
-https://bud-getmemoney.herokuapp.com/
+https://buddybudget.herokuapp.com/login

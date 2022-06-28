@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { useState, useEffect, Fragment } from 'react';
 import { useParams } from "react-router-dom";
-import ReadMonthlyBudgetRow from './ReadMonthlyBudgetRow';
-import EditableRow from './EditMonthlyBudgetRow';
+import ReadMonthlyExpensesRow from './ReadMonthlyExpensesRow';
+import EditMonthlyExpensesRow from './EditMonthlyExpensesRow';
 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Form from 'react-bootstrap/Form';
 
-function MonthlyBudgetTable({ budget, categories, setBudget }) {
+function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
     const { month, year } = useParams();
 
     const initialData = {
@@ -19,7 +19,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
         categoryName: ''
     }
 
-    const [mainBudget, setMainBudget] = useState([]);
+    const [mainExpenses, setMainExpenses] = useState([]);
 
     const [addFormData, setAddFormData] = useState(initialData);
 
@@ -53,7 +53,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
         const newFormData = {...addFormData};
 
         newFormData.category = parseInt(categoryId);
-        const category = categories.find(category => category.id === parseInt(categoryId));
+        const category = budget.find(budget_ => budget_.id === parseInt(categoryId));
         newFormData.categoryName = category.category;
         setAddFormData(newFormData);
     }
@@ -78,9 +78,9 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
             .then((res) => {
                 if (res.data.success) {
                     newBudget.id = res.data.budgetId;
-                    const newMainBudget = [...mainBudget, newBudget];
-                    setMainBudget(newMainBudget);
-                    setBudget(newMainBudget);
+                    const newMainBudget = [...mainExpenses, newBudget];
+                    setMainExpenses(newMainBudget);
+                    setExpenses(newMainBudget);
                     console.log('Successfully added to db.');            
                 } else {
                     console.log(res.data.message);
@@ -118,7 +118,7 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
         const newFormData = {...editFormData};
 
         newFormData.category = parseInt(categoryId);
-        const category = categories.find(category => category.id === parseInt(categoryId));
+        const category = budget.find(budget_ => budget_.id === parseInt(categoryId));
         newFormData.categoryName = category.category;
         setEditFormData(newFormData);
     }
@@ -139,11 +139,11 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
         axios.post('/monthlyBudget/edit', editedBudget)
          .then((res) => {
             if (res.data.success) {
-                const newMainBudget = [...mainBudget];
-                const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
+                const newMainBudget = [...mainExpenses];
+                const index = mainExpenses.findIndex((budget) => budget.id === editBudgetId);
                 newMainBudget[index] = editedBudget;
-                setMainBudget(newMainBudget);
-                setBudget(newMainBudget);
+                setMainExpenses(newMainBudget);
+                setExpenses(newMainBudget);
                 console.log('Successfully edited to db.');            
             } else {
                 console.log(res.data.message);
@@ -175,12 +175,12 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
 
     // Delete Functions
     const handleDeleteClick = (budgetId) => {
-        const newMainBudget = [...mainBudget];
-        const index = mainBudget.findIndex((budget) => budget.id === budgetId);
+        const newMainBudget = [...mainExpenses];
+        const index = mainExpenses.findIndex((budget) => budget.id === budgetId);
 
         newMainBudget.splice(index, 1);
-        setMainBudget(newMainBudget);
-        setBudget(newMainBudget);
+        setMainExpenses(newMainBudget);
+        setExpenses(newMainBudget);
 
         axios.delete('/monthlyBudget/delete', {data: {id: budgetId}})
          .then((res) => {
@@ -196,9 +196,9 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
     };
 
     useEffect(() => {
-        setMainBudget(budget);
+        setMainExpenses(expenses);
         setLoading(false);
-    }, [budget])
+    }, [expenses])
 
     if(loading) return "Loading...";
     if(error) return "Error loading...";
@@ -218,19 +218,19 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
 
                         </thead>
                         <tbody>
-                            {mainBudget.map((data) => (
+                            {mainExpenses.map((data) => (
                                 <Fragment key={ data.id }>
                                     { 
                                      data.id === editBudgetId ? 
-                                     <EditableRow 
-                                        categories={ categories }
+                                     <EditMonthlyExpensesRow 
+                                        budget={ budget }
                                         editFormData={ editFormData } 
                                         handleEditFormChange={ handleEditFormChange }
                                         handleCalendarEdit={ handleCalendarEdit }
                                         handleDropdownEdit={ handleDropdownEdit } 
                                         handleEditCancelClick={ handleEditCancelClick } /> : 
-                                     <ReadMonthlyBudgetRow 
-                                        data={ data } 
+                                     <ReadMonthlyExpensesRow 
+                                        expense={ data } 
                                         handleEditClick={ handleEditClick }
                                         handleDeleteClick={ handleDeleteClick }/> 
                                     }
@@ -248,9 +248,9 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
                         <option key={-1} value={-1}>
                             Category
                         </option>
-                        {categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.category}
+                        {budget.map((budget_) => (
+                            <option key={budget_.id} value={budget_.id}>
+                                {budget_.budget_}
                             </option>
                         ))}
                     </Form.Select>          
@@ -263,4 +263,4 @@ function MonthlyBudgetTable({ budget, categories, setBudget }) {
     )
 }
 
-export default MonthlyBudgetTable;
+export default MonthlyExpensesTable;

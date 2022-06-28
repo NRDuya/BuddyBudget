@@ -1,21 +1,37 @@
 import { useState, useEffect } from 'react';
 
-function MainBudgetTableRow({ category, budget }){
-    const [catBudget, setCatBudget] = useState(budget);
-    const [catActual, setCatActual] = useState(0);
+function MainBudgetTableRow({ budget, expenses, setExpenses }){
+    const [catTotal, setCatTotal] = useState(0);
+    const [remaining, setRemaining] = useState(0);
     
     useEffect(() => {
-        setCatBudget(budget.filter((budget_) => budget_.category === category.id));
-        setCatActual(catBudget.map(budget_ => parseFloat(budget_.expense)).reduce((prev, curr) => prev + curr, 0));
-    }, [category, budget, catBudget]);
+        let currentCatBudget = []
+        // Removes current budget category from the parent budget array
+        let filteredCatBudget = expenses.filter((budget_) => {
+            if (budget_.category === budget.id) {
+                currentCatBudget.push(budget_);
+                return false;
+            } else {
+                return true;
+            }
+        })
+        setExpenses(filteredCatBudget);
+
+        // Calculate sum of current category expenses
+        let budgetExpenses = currentCatBudget.map(budget_ => parseFloat(budget_.expense))
+        let budgetSum = budgetExpenses.reduce((prev, curr) => parseFloat(prev) + parseFloat(curr), 0);
+        setCatTotal(budgetSum.toFixed(2));
+
+        setRemaining((budget.expense - catTotal).toFixed(2));
+    }, [catTotal]);
     
     return(
         <>
             <tr>
-                <td>{category.category}</td>
-                <td>${catActual}</td>
-                <td>${category.expense}</td>
-                <td>${category.expense - catActual}</td>
+                <td>{budget.category}</td>
+                <td>${catTotal}</td>
+                <td>${budget.expense}</td>
+                <td>${remaining}</td>
             </tr> 
         </>
     )
