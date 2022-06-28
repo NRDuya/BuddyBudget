@@ -2,7 +2,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Form from 'react-bootstrap/Form';
 
-function EditableRow({ categories, editFormData, handleEditFormChange, handleCalendarEdit, handleDropdownEdit, handleEditCancelClick }){
+function EditMonthlyExpensesRow({ budget, editFormData, handleEditFormChange, handleCalendarEdit, handleDropdownEdit, handleEditCancelClick }){
     return(
         <>
             <tr>
@@ -15,7 +15,7 @@ function EditableRow({ categories, editFormData, handleEditFormChange, handleCal
                         <option disabled key={-1} value={-1}>
                             Category
                         </option>
-                        {categories.map((category) => (
+                        {budget.map((category) => (
                             <option key={category.id} value={category.id}>
                                 {category.category}
                             </option>
@@ -40,4 +40,4 @@ function EditableRow({ categories, editFormData, handleEditFormChange, handleCal
     )
 }
 
-export default EditableRow;
+export default EditMonthlyExpensesRow;
