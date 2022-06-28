@@ -29,6 +29,7 @@ function Navigation() {
     const handleCalendar = (value) => {
         const link = value.getFullYear() + "/" + (value.getMonth() + 1);
         navigate(`/${link}`);
+        setShowCalendar(!showCalendar);
     }
 
     const handleShowCalendar = () => {
@@ -63,16 +64,17 @@ function Navigation() {
                     onHide={handleShowCalendar}
                     size="lg"
                     centered
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title >
-                        Choose a Month to Budget
-                      </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className="m-auto">
-                        <Calendar maxDetail="year" prev2Label={null} next2Label={null} onChange={handleCalendar} />
-                    </Modal.Body>
-                  </Modal>
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>
+                                Choose a Month to Budget
+                            </Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body className="m-auto">
+                            <Calendar maxDetail="year" prev2Label={null} next2Label={null} onChange={handleCalendar} />
+                        </Modal.Body>
+                    </Modal>
                 }
             </Container>
         </Navbar>
