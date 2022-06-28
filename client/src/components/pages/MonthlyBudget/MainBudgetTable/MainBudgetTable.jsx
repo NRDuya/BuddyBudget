@@ -2,29 +2,29 @@ import { useState, useEffect, Fragment } from 'react';
 import MainBudgetTableRow from './MainBudgetTableRow';
 import MainBudgetTableTotal from './MainBudgetTableTotal';
 
-function MainBudgetTable({ type, allBudget, allCategories }) {
-    // Holds all categories for the current type
-    const [categories, setCategories] = useState(allCategories);
-    // Holds all the budgets for the current type
-    const [totalBudget, setTotalBudget] = useState([]);
-    // Holds the filtered budgets used by each row
-    const [budgets, setBudget] = useState([]);
+function MainBudgetTable({ type, allExpenses, allBudget }) {
+    // Holds all budget for the current type
+    const [budget, setBudget] = useState(allBudget);
+    // Holds all the expenses for the current type
+    const [totalExpenses, setTotalExpenses] = useState([]);
+    // Holds the filtered expenses used by each row
+    const [expenses, setExpenses] = useState([]);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Remove categories that are different types
-        setCategories(allCategories.filter((category) => category.type === type));
-    }, [allCategories, type]);
+        // Remove budget that are different types
+        setBudget(allBudget.filter(budget => budget.type === type));
+    }, [allBudget, type]);
 
     useEffect(() => {
-        // Remove budgets of different types
-        const filteredBudget = allBudget.filter((budget_) => categories.some(category => category.id === budget_.category));
-        setBudget(filteredBudget);
-        setTotalBudget(filteredBudget);
+        // Remove expenses of different types
+        const filteredExpenses = allExpenses.filter((budget_) => budget.some(category => category.id === budget_.category));
+        setExpenses(filteredExpenses);
+        setTotalExpenses(filteredExpenses);
         setLoading(false);
-    }, [allBudget, categories]);
+    }, [allExpenses, budget]);
     
     if(loading) return "Loading...";
     if(error) return "Error loading...";
@@ -46,14 +46,14 @@ function MainBudgetTable({ type, allBudget, allCategories }) {
 
                         </thead>
                         <tbody>
-                            {categories.map((category) => (
-                                <Fragment key={ category.id }>
+                            {budget.map((budget_) => (
+                                <Fragment key={ budget_.id }>
                                     { 
-                                     <MainBudgetTableRow category={ category } budget={ budgets } setBudget={ setBudget }/> 
+                                     <MainBudgetTableRow budget={ budget_ } expenses={ expenses } setExpenses={ setExpenses }/> 
                                     }
                                 </Fragment>
                             ))}
-                            <MainBudgetTableTotal categories={ categories } totalBudget={ totalBudget }/>
+                            <MainBudgetTableTotal budget={ budget } allExpenses={ totalExpenses }/>
                         </tbody>
                     </table>
                 </div>

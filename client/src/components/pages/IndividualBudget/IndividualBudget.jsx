@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useState, useEffect, Fragment } from 'react';
 import { useParams } from "react-router-dom";
-import ReadOnlyRow from './ReadMainBudgetRow';
-import EditableRow from './EditMainBudgetRow';
+import ReadIndividualBudgetRow from './ReadIndividualBudgetRow';
+import EditIndividualBudgetRow from './EditIndividualBudgetRow';
 
-function MainBudget() {
+function IndividualBudget() {
     const { type } = useParams();
 
     const initialData = {
@@ -12,7 +12,7 @@ function MainBudget() {
         expense: 1
     }
 
-    const [mainBudget, setMainBudget] = useState([]);
+    const [individualBudget, setIndividualBudget] = useState([]);
 
     const [addFormData, setAddFormData] = useState(initialData);
 
@@ -50,8 +50,8 @@ function MainBudget() {
          .then((res) => {
             if (res.data.success) {
                 newBudget.id = res.data.budgetId;
-                const newMainBudget = [...mainBudget, newBudget];
-                setMainBudget(newMainBudget);
+                const newMainBudget = [...individualBudget, newBudget];
+                setIndividualBudget(newMainBudget);
 
                 console.log('Successfully added to db.');            
             } else {
@@ -92,10 +92,10 @@ function MainBudget() {
         axios.post(`/${type}Budget/edit`, editedBudget)
          .then((res) => {
             if (res.data.success) {
-                const newMainBudget = [...mainBudget];
-                const index = mainBudget.findIndex((budget) => budget.id === editBudgetId);
+                const newMainBudget = [...individualBudget];
+                const index = individualBudget.findIndex((budget) => budget.id === editBudgetId);
                 newMainBudget[index] = editedBudget;
-                setMainBudget(newMainBudget);
+                setIndividualBudget(newMainBudget);
 
                 console.log('Successfully edited to db.');            
             } else {
@@ -125,11 +125,11 @@ function MainBudget() {
 
     // Delete Functions
     const handleDeleteClick = (budgetId) => {
-        const newMainBudget = [...mainBudget];
-        const index = mainBudget.findIndex((budget) => budget.id === budgetId);
+        const newMainBudget = [...individualBudget];
+        const index = individualBudget.findIndex((budget) => budget.id === budgetId);
 
         newMainBudget.splice(index, 1);
-        setMainBudget(newMainBudget);
+        setIndividualBudget(newMainBudget);
 
         axios.delete(`/${type}Budget/delete`, {data: {id: budgetId}})
          .then((res) => {
@@ -145,7 +145,7 @@ function MainBudget() {
 
         axios.get(`/${type}Budget/`)
          .then((res) => {
-            setMainBudget(res.data.budget);
+            setIndividualBudget(res.data.budget);
          })
          .catch((err) => {
             console.error("Error fetching data", err);
@@ -176,15 +176,15 @@ function MainBudget() {
 
                         </thead>
                         <tbody>
-                            {mainBudget.map((data) => (
+                            {individualBudget.map((data) => (
                                 <Fragment key={ data.id }>
                                     { 
                                         data.id === editBudgetId ? 
-                                        <EditableRow 
+                                        <EditIndividualBudgetRow 
                                         editFormData={ editFormData } 
                                         handleEditFormChange={ handleEditFormChange } 
                                         handleEditCancelClick={ handleEditCancelClick } /> : 
-                                        <ReadOnlyRow 
+                                        <ReadIndividualBudgetRow 
                                         data={ data } 
                                         handleEditClick={ handleEditClick }
                                         handleDeleteClick={ handleDeleteClick }/> 
@@ -207,4 +207,4 @@ function MainBudget() {
     )
 }
 
-export default MainBudget;
+export default IndividualBudget;

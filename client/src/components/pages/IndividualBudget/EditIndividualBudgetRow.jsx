@@ -1,4 +1,4 @@
-function EditableRow({ editFormData, handleEditFormChange, handleEditCancelClick }){
+function EditIndividualBudgetRow({ editFormData, handleEditFormChange, handleEditCancelClick }){
     return(
         <>
             <tr>
@@ -17,4 +17,4 @@ function EditableRow({ editFormData, handleEditFormChange, handleEditCancelClick
     )
 }
 
-export default EditableRow;
+export default EditIndividualBudgetRow;
