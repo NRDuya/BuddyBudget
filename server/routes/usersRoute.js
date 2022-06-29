@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const UserError = require('../helpers/errors/UserError');
+const Alert = require('../helpers/Alert');
 const UserModel = require('../models/UsersModel');
 const authenticateToken = require('../middleware/authenticateToken');
 const UserCheck = require('../utils/userCheck');
@@ -22,8 +23,10 @@ router.post('/register', async function (req, res, next) {
             throw new UserError("Invalid username", 200);
         } else if (!UserCheck.isEmailValid(email)) {
             throw new UserError("Invalid email", 200);
-        } else if (!UserCheck.isPasswordSecure(password) && password !== cpassword) {
-            throw new UserError("Invalid password", 200);
+        } else if (!UserCheck.isPasswordSecure(password)) {
+            throw new UserError("Invalid password: Passwords must be at least 8 characters long, have one capital and lowercase character, one digit, and one special character", 200);
+        } else if (password !== cpassword) {
+            throw new UserError("Passwords do not match", 200);
         }
 
         const usernameExists = await UserModel.usernameExists(username);
@@ -37,13 +40,13 @@ router.post('/register', async function (req, res, next) {
             if (userId < 0) {
                 throw new UserError("Server Error, user could not be created", 500);
             } else {
-                return res.status(201).json({success: true, message: "User registration successful"});
+                return res.status(201).json({ success: true, alert: new Alert("User registration successful!", 'success') });
             }
         }
     }
     catch (err) {
         if (err instanceof UserError) {
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 });
@@ -64,14 +67,19 @@ router.post('/login', async function (req, res, next) {
             const token = jwt.sign(userId, process.env.ACCESS_TOKEN_SECRET);
 
             res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });  
-            return res.status(201).json({success: true, token: token, username: username});
+            return res.status(201).json({ 
+                success: true, 
+                token: token, 
+                username: username,
+                alert: new Alert("Successfully logged in!", 'success') 
+            });
         } else {
             throw new UserError("Invalid username and/or password", 200);
         }
     }
     catch (err) {
         if (err instanceof UserError) {
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 });
@@ -88,6 +96,6 @@ router.post('/logout', authenticateToken, (req, res, next) => {
     //       }
     // })
     res.cookie('token', '', { httpOnly: true, maxAge: 1});  
-    return res.status(201).json({success: true});
+    return res.status(201).json({ success: true, alert: new Alert("Successfully logged out!", 'success') });
 });
 module.exports = router;

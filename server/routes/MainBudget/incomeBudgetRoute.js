@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserError = require('../../helpers/errors/UserError');
+const Alert = require('../../helpers/Alert');
 const MainBudgetModel = require('../../models/MainBudgetModel');
 const authenticateToken = require('../../middleware/authenticateToken');
 const budgetCheck = require('../../utils/budgetCheck');
@@ -16,12 +17,12 @@ router.get('/', authenticateToken, async (req, res, next) => {
 
         const results = await MainBudgetModel.get(type, user);
         if (results < 0) {
-            return res.status(200).json({success: true, message: "No Income Budget Data Found", budget: []})
-        } else return res.status(201).json({success: true, message: "Get Income Budget Successful", budget: results});
+            return res.status(200).json({ success: true, alert: new Alert("No Income Budget Data Found", 'success'), budget: [] })
+        } else return res.status(201).json({ success: true, alert: new Alert("Get Income Budget Successful", 'success'), budget: results });
     }
     catch (err) {
         if(err instanceof UserError){
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 });
@@ -43,11 +44,11 @@ router.post('/save', authenticateToken, async (req, res, next) => {
         const budgetId = await MainBudgetModel.create(type, category, expense, user);
         if (budgetId < 0) {
             throw new UserError("Server Error, income budget could not be created", 500);
-        } else return res.status(201).json({success: true, message: "Income budget creation successful", budgetId: budgetId});
+        } else return res.status(201).json({ success: true, alert: new Alert("Income budget creation successful", 'success'), budgetId: budgetId });
     }
     catch (err) {
         if(err instanceof UserError){
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 
@@ -70,11 +71,11 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
         const results = await MainBudgetModel.edit(category, expense, budgetId);
         if (results < 0) {
             throw new UserError("Server Error, income budget could not be edited");
-        } else res.status(201).json({success: true, message: "Income budget edit successful"});
+        } else res.status(201).json({ success: true, alert: new Alert("Income budget edit successful", 'success') });
     }
     catch (err) {
         if(err instanceof UserError){
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 });
@@ -90,11 +91,11 @@ router.delete('/delete', authenticateToken, async (req, res, next) => {
         const results = await MainBudgetModel.delete(budgetId);
         if (results < 0) {
             throw new UserError("Server Error, income budget could not be deleted");
-        } else return res.status(201).json({success: true, message: "Income budget deletion successful"});
+        } else return res.status(201).json({ success: true, alert: new Alert("Income budget deletion successful", 'success') });
     }
     catch (err) {
         if(err instanceof UserError){
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 });

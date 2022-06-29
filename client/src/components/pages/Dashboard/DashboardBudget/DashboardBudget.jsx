@@ -28,10 +28,11 @@ function DashboardBudget({ type, handleBudgetClick }) {
     if(error) return "Error loading...";
     return (
         <>
-            <div className='container d-flex flex-column '>    
+            <div className='container d-flex flex-column'>    
                 <h2 className="card-header text-center">
                     { type } Budget
                 </h2>
+                
                 <button className='btn btn-primary m-2' onClick={() => handleBudgetClick(type)}>Edit { type } Budget</button>
 
                 <div>                

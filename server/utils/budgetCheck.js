@@ -2,7 +2,7 @@ const ValidationModel = require('../models/ValidationModel');
 const BudgetCheck = {};
 
 BudgetCheck.validUserId = async (userId) => {
-    if (typeof userId !== 'number' || userId < 0) return false;
+    if (!userId || typeof userId !== 'number' || userId < 0) return false;
 
     const userIdExists = ValidationModel.userIdExists(userId);
     if(userIdExists) return true;
@@ -20,7 +20,7 @@ BudgetCheck.validMainBudgetId = async (budgetId) => {
 }
 
 BudgetCheck.validMonthlyBudgetId = async (budgetId) => {
-    if (typeof budgetId !== 'number' || budgetId < 0) return false;
+    if (!budgetId || typeof budgetId !== 'number' || budgetId < 0) return false;
 
     const monthlyBudgetIdExists = ValidationModel.monthlyBudgetIdExists(budgetId);
     if(monthlyBudgetIdExists) return true;
@@ -29,13 +29,15 @@ BudgetCheck.validMonthlyBudgetId = async (budgetId) => {
 }
 
 BudgetCheck.validCategory = (category) => {
-    if (category.length > 60) {
+    if (!category || category.length > 60) {
         return false;
     }
     return true;
 }
 
 BudgetCheck.validExpense = (expense) => {
+    if (!expense) return false;
+
     const expense_ = expense.toString();
     if (expense_.length > 13) return false;
     const regexp = /^\d+(\.\d{1,2})?$/;
@@ -43,7 +45,7 @@ BudgetCheck.validExpense = (expense) => {
 }
 
 BudgetCheck.validMonth = (month) => {
-    if (month < 0 || month > 12) return false;
+    if (!month || month < 0 || month > 12) return false;
 
     if (typeof month === 'number' && (month.toString().length === 2 || month.toString().length === 1)) {
         return true;
@@ -52,7 +54,7 @@ BudgetCheck.validMonth = (month) => {
 }
 
 BudgetCheck.validYear = (year) => {
-    if (typeof year === 'number' && year > 0 && year.toString().length === 4) {
+    if (!year || typeof year === 'number' && year > 0 && year.toString().length === 4) {
         return true;
     }
     return false;  
@@ -64,7 +66,7 @@ BudgetCheck.validDate = (date_) => {
 }
 
 BudgetCheck.validComment= (comment) => {
-    if (comment.length <= 60) {
+    if (!comment || comment.length <= 60) {
         return true;
     }
     return false;
