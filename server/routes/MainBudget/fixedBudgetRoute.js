@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserError = require('../../helpers/errors/UserError');
+const Alert = require('../../helpers/Alert');
 const MainBudgetModel = require('../../models/MainBudgetModel');
 const authenticateToken = require('../../middleware/authenticateToken');
 const budgetCheck = require('../../utils/budgetCheck');
@@ -11,17 +12,17 @@ router.get('/', authenticateToken, async (req, res, next) => {
 
     try {
         if (!budgetCheck.validUserId(user)) {
-            throw new UserError("Invalid user id!", 200);
+            throw new UserError("Invalid user id!", 201);
         }
 
         const results = await MainBudgetModel.get(type, user);
         if (results < 0) {
-            return res.status(200).json({success: true, message: "No Fixed Budget Data Found", budget: []})
-        } else return res.status(201).json({success: true, message: "Get Fixed Budget Successful", budget: results});
+            return res.status(200).json({ success: true, alert: new Alert("No Fixed Budget Data Found", 'success'), budget: [] });
+        } else return res.status(200).json({ success: true, alert: new Alert("Get Fixed Budget Successful", 'success'), budget: results });
     }
     catch (err) {
         if(err instanceof UserError){
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 });
@@ -43,11 +44,11 @@ router.post('/save', authenticateToken, async (req, res, next) => {
         const budgetId = await MainBudgetModel.create(type, category, expense, user);
         if (budgetId < 0) {
             throw new UserError("Server Error, fixed budget could not be created", 500);
-        } else return res.status(201).json({success: true, message: "Fixed budget creation successful", budgetId: budgetId});
+        } else return res.status(201).json({ success: true, alert: new Alert("Fixed budget creation successful", 'success'), budgetId: budgetId });
     }
     catch (err) {
         if(err instanceof UserError){
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 
@@ -70,11 +71,11 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
         const results = await MainBudgetModel.edit(category, expense, budgetId);
         if (results < 0) {
             throw new UserError("Server Error, fixed budget could not be edited");
-        } else res.status(201).json({success: true, message: "Fixed budget edit successful"});
+        } else res.status(201).json({ success: true, alert: new Alert("Fixed budget edit successful", 'success') });
     }
     catch (err) {
         if(err instanceof UserError){
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 });
@@ -90,11 +91,11 @@ router.delete('/delete', authenticateToken, async (req, res, next) => {
         const results = await MainBudgetModel.delete(budgetId);
         if (results < 0) {
             throw new UserError("Server Error, fixed budget could not be deleted");
-        } else return res.status(201).json({success: true, message: "Fixed budget deletion successful"});
+        } else return res.status(201).json({ success: true, alert: new Alert("Fixed budget deletion successful", 'success') });
     }
     catch (err) {
         if(err instanceof UserError){
-            return res.status(err.getStatus()).json({success: false, message: err.getMessage()});
+            return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
         } else next(err);
     }
 });
