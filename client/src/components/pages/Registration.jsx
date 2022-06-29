@@ -37,7 +37,12 @@ function Registration(){
             }
         }
         catch (err) {
-            window.location.reload(false);
+            const alert = {
+                show: true,
+                message: "Server error",
+                type: 'danger'
+            }
+            setAlert(alert);
         }
     };
 

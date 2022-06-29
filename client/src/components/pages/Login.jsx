@@ -34,6 +34,12 @@ function Login(){
             }
         }
         catch (err) {
+            const alert = {
+                show: true,
+                message: "Server error",
+                type: 'danger'
+            }
+            setAlert(alert);
             console.log(err);
         }
     }
