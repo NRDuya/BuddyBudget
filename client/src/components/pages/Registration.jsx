@@ -1,6 +1,7 @@
-import { useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import AlertComponent from '../AlertComponent';
 
 function Registration(){
     const usernameRef = useRef();
@@ -8,6 +9,12 @@ function Registration(){
     const passwordRef = useRef();
     const cpasswordRef = useRef();
     const navigate = useNavigate();
+
+    const [alert, setAlert] = useState({
+        show: false,
+        message: '',
+        type: ''
+    });
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -22,8 +29,11 @@ function Registration(){
             if (res.data.success) {
                 navigate('/login');
             } else {
-                console.log(res.data.message)
-                window.location.reload(false);
+                usernameRef.current.value = '';
+                emailRef.current.value = '';
+                passwordRef.current.value = '';
+                cpasswordRef.current.value = '';
+                setAlert(res.data.alert);
             }
         }
         catch (err) {
@@ -33,10 +43,11 @@ function Registration(){
 
     return(
         <>
-            <div       
-                className="container d-flex align-items-center justify-content-center"
-                style={{ minHeight: '85vh' }}
-            >
+            {
+                alert.show &&
+                <AlertComponent alert={alert} setAlert={setAlert} />
+            }
+            <div className="container d-flex align-items-center justify-content-center" style={{ minHeight: '85vh' }}>
                 <div className="card w-100" style={{ maxWidth: '400px' }}>
                     <div className="card-body">
                         <h3 className="card-header text-center mb-4">

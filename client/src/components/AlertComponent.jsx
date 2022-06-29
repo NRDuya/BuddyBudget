@@ -8,7 +8,7 @@ function AlertComponent({ alert, setAlert }){
     }
     return(
         <>
-            <Alert variant={alert.variant} onClose={closeAlert} dismissible>
+            <Alert variant={alert.type} onClose={closeAlert} dismissible>
                 { alert.message }
             </Alert>
         </>

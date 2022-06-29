@@ -1,13 +1,19 @@
 import axios from 'axios';
 import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import AlertComponent from '../AlertComponent';
 
 function Login(){
     const usernameRef = useRef();
     const passwordRef = useRef();
-    const [message, setMessage] = useState('');
     const navigate = useNavigate();
     
+    const [alert, setAlert] = useState({
+        show: false,
+        message: '',
+        type: ''
+    });
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         axios.defaults.withCredentials = true;
@@ -22,8 +28,9 @@ function Login(){
                 localStorage.setItem("username", res.data.username);
                 navigate("/");
             } else {
-                setMessage(res.data.message);
-                window.location.reload(false);
+                usernameRef.current.value = '';
+                passwordRef.current.value = '';
+                setAlert(res.data.alert);
             }
         }
         catch (err) {
@@ -33,10 +40,11 @@ function Login(){
 
     return(
         <>
-            <div       
-                className="container d-flex align-items-center justify-content-center"
-                style={{ minHeight: '85vh' }}
-            >
+            {
+                alert.show &&
+                <AlertComponent alert={alert} setAlert={setAlert} />
+            }
+            <div className="container d-flex align-items-center justify-content-center" style={{ minHeight: '85vh' }}>
                 <div className="card w-100" style={{ maxWidth: '400px' }}>
                     <div className="card-body">
                         <h3 className="card-header text-center mb-4">
