@@ -1,16 +1,22 @@
 import axios from 'axios';
 import { useState, useEffect, Fragment } from 'react';
 import { useParams } from "react-router-dom";
+import { Modal } from 'react-bootstrap';
+import CurrencyInput from 'react-currency-input-field';
 import ReadIndividualBudgetRow from './ReadIndividualBudgetRow';
 import EditIndividualBudgetRow from './EditIndividualBudgetRow';
+import AlertComponent from '../../AlertComponent';
 
 function IndividualBudget() {
     const { type } = useParams();
 
     const initialData = {
         category: '',
-        expense: 1
+        expense: null
     }
+
+    const [title, setTitle] = useState(type);
+    const [showAddForm, setShowAddForm] = useState(false);
 
     const [individualBudget, setIndividualBudget] = useState([]);
 
@@ -21,20 +27,31 @@ function IndividualBudget() {
     const [editBudgetId, setEditBudgetId] = useState(null); 
 
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [alert, setAlert] = useState({
+        show: false,
+        message: '',
+        type: ''
+    });
 
     // Add functions
-    const handleAddFormChange = (event) => {
-        event.preventDefault();
+    const handleShowAddForm = () => {
+        setShowAddForm(!showAddForm);
+    }
 
-        const fieldName = event.target.name;
-        const fieldValue = event.target.value;
+    const handleAddFormCat = (event) => {
+        event.preventDefault();
+        const value = event.target.value;
 
         const newFormData = {...addFormData};
-        newFormData[fieldName] = fieldValue;
-
+        newFormData.category = value;
         setAddFormData(newFormData);
-    };
+    }
+
+    const handleAddFormExpense = (value) => {
+        const newFormData = {...addFormData};
+        newFormData.expense = value;
+        setAddFormData(newFormData);
+    }
 
     const handleAddFormSubmit = (event) => {
         event.preventDefault(); 
@@ -45,7 +62,7 @@ function IndividualBudget() {
             category: addFormData.category,
             expense: addFormData.expense
         };
-        
+
         axios.post(`/${type}Budget/save`, newBudget)
          .then((res) => {
             if (res.data.success) {
@@ -62,22 +79,26 @@ function IndividualBudget() {
          .catch((err) => {
              console.log(err);
              console.log("Cannot add");
-         })
+         });
+
+        setShowAddForm(!showAddForm);
     };
     
     // Edit Functions
-    const handleEditFormChange = (event) => {
+    const handleEditFormCat = (event) => {
         event.preventDefault();
-
-        const fieldName = event.target.name;
-        const fieldValue = event.target.value;
+        const value = event.target.value;
 
         const newFormData = {...editFormData};
-        newFormData[fieldName] = fieldValue;
-
+        newFormData.category = value;
         setEditFormData(newFormData);
-    };
+    }
 
+    const handleEditFormExpense = (value) => {
+        const newFormData = {...editFormData};
+        newFormData.expense = value;
+        setEditFormData(newFormData);
+    }
     const handleEditFormSubmit = (event) => {
         event.preventDefault();
 
@@ -149,32 +170,41 @@ function IndividualBudget() {
          })
          .catch((err) => {
             console.error("Error fetching data", err);
-            setError(err);
+            setAlert(err);
          })
          .finally(() => {
             setLoading(false);
-         })
+         });
+        
+        setTitle(type.charAt(0).toUpperCase() + type.slice(1));
     }, [type])
 
     if(loading) return "Loading...";
-    if(error) return "Error loading...";
     return (
         <>
-            <div className='container'>    
-                <h2>
-                    { type } Budget
+            {
+                alert.show &&
+                <AlertComponent alert={alert} setAlert={setAlert} />
+            }
+            <div className='container d-flex flex-column mt-3' style={{ width: '75%' }}>    
+                <h2 className="card-header text-center">
+                    { title } Budget
                 </h2>
 
+                <button onClick={handleShowAddForm} className="btn btn-primary m-3">
+                    Add a Budget
+                </button>
+
                 <form onSubmit={ handleEditFormSubmit }>
-                    <table>
-                        <thead>
+                    <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
+                        <thead className='table-light'>
                             <tr>
                                 <th>Category</th>
                                 <th>Set BudGet</th>
                                 <th>Actions</th>
                             </tr>
-
                         </thead>
+
                         <tbody>
                             {individualBudget.map((data) => (
                                 <Fragment key={ data.id }>
@@ -182,7 +212,8 @@ function IndividualBudget() {
                                         data.id === editBudgetId ? 
                                         <EditIndividualBudgetRow 
                                         editFormData={ editFormData } 
-                                        handleEditFormChange={ handleEditFormChange } 
+                                        handleEditFormCat={ handleEditFormCat } 
+                                        handleEditFormExpense={ handleEditFormExpense }
                                         handleEditCancelClick={ handleEditCancelClick } /> : 
                                         <ReadIndividualBudgetRow 
                                         data={ data } 
@@ -195,13 +226,43 @@ function IndividualBudget() {
                     </table>
                 </form>
 
+                {
+                    showAddForm && 
+                    <Modal
+                    show={showAddForm}
+                    onHide={handleShowAddForm}
+                    size="lg"
+                    centered
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>
+                                Add a Budget
+                            </Modal.Title>
+                        </Modal.Header>
 
-                <h2>Add a BudGet</h2>
-                <form onSubmit={ handleAddFormSubmit }>
-                    <input type='text' name="category" placeholder="Category" value={addFormData.category} onChange={handleAddFormChange} required/>
-                    <input type='number' name="expense" placeholder="BudGeted" value={addFormData.expense} step='.01' onChange={handleAddFormChange} required/>
-                    <button type='submit'>Add</button>
-                </form>
+                        <Modal.Body className="m-auto">
+                            <form onSubmit={ handleAddFormSubmit }>
+                                <div className='form-group mb-3'>
+                                    <input type='text' placeholder='Category' value={addFormData.category} onChange={handleAddFormCat} required/>
+                                </div>
+
+                                <div className='form-group mb-3'>
+                                    <CurrencyInput 
+                                        placeholder='$100 Budgeted'
+                                        value={addFormData.expense} 
+                                        step={.01} fixedDecimalLength={2} prefix={'$'} 
+                                        onValueChange={handleAddFormExpense}
+                                        required
+                                    />
+                                </div>
+
+                                <button type='submit' className='btn btn-primary' style={{ width: '100%' }}>
+                                    Add
+                                </button>
+                            </form>
+                        </Modal.Body>
+                    </Modal>
+                }
             </div>
         </>
     )
