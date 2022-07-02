@@ -47,9 +47,14 @@ function MonthlyBudget() {
                 <h2>
                     {month} {year} Budget
                 </h2>
-                <MonthlyExpensesTable expenses={ expenses } budget={ budget } setExpenses={ setExpenses }/>
-                <MainBudgetTable type={ 'var' } allExpenses={ expenses } allBudget={ budget }/>
-                <MainBudgetTable type={ 'inc' } allExpenses={ expenses } allBudget={ budget }/>
+
+                <div className='d-flex'>
+                    <MonthlyExpensesTable expenses={ expenses } budget={ budget } setExpenses={ setExpenses }/>
+                    <div>                        
+                        <MainBudgetTable type={ 'var' } allExpenses={ expenses } allBudget={ budget }/>
+                        <MainBudgetTable type={ 'inc' } allExpenses={ expenses } allBudget={ budget }/>
+                    </div>
+                </div>
             </div>
         </>
     )
