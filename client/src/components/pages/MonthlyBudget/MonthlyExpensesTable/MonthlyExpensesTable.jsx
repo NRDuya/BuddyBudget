@@ -250,7 +250,7 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
                         </option>
                         {budget.map((budget_) => (
                             <option key={budget_.id} value={budget_.id}>
-                                {budget_.budget_}
+                                {budget_.category}
                             </option>
                         ))}
                     </Form.Select>          
