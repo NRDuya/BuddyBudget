@@ -1,31 +1,29 @@
-import axios from 'axios';
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useContext, Fragment } from 'react';
+import { VariableBudgetContext, FixedBudgetContext, IncomeBudgetContext } from '../../../contexts/MainBudgetContext';
 import DashboardBudgetRow from './DashboardBudgetRow';
 
 function DashboardBudget({ type, handleBudgetClick }) {
+    const [variableBudget, setVariableBudget] = useContext(VariableBudgetContext);
+    const [fixedBudget, setFixedBudget] = useContext(FixedBudgetContext);
+    const [incomeBudget, setIncomeBudget] = useContext(IncomeBudgetContext);
     const [budget, setBudget] = useState([]);
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
     useEffect(() => {
-        axios.defaults.withCredentials = true;
+        switch(type) {
+            case "variable":
+              setBudget(variableBudget);
+              break;
+            case "fixed":
+              setBudget(fixedBudget);
+              break;
+            case "income":
+              setBudget(incomeBudget);
+              break;
+            default:
+              break;
+          }
+    }, [type, variableBudget, fixedBudget, incomeBudget])
 
-        axios(`/${type}Budget/`)
-         .then((res) => {
-            setBudget(res.data.budget);
-         })
-         .catch((err) => {
-            console.error("Error fetching data", err);
-            setError(err);
-         })
-         .finally(() => {
-            setLoading(false);
-         })
-    }, [type])
-
-    if(loading) return "Loading...";
-    if(error) return "Error loading...";
     return (
         <>
             <div className='container d-flex flex-column'>    

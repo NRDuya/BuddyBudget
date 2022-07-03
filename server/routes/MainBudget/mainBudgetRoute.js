@@ -12,12 +12,8 @@ router.get('/', authenticateToken, async (req, res, next) => {
     try {
         if (!budgetCheck.validUserId(user)) {
             throw new UserError("Invalid user id!", 200);
-        } else if (!budgetCheck.validMonth(month)) {
-            throw new UserError("Invalid month!", 200);
-        } else if (!budgetCheck.validYear(year)) {
-            throw new UserError("Invalid year!", 200);
-        }
-        
+        } 
+
         const budgets = await MainBudgetModel.getAllBudgets(user);
         if (budgets < 0) {
             return res.status(200).json({ success: true, alert: new Alert("No Monthly Budget Data Found", 'success'), budgets: [] })
