@@ -7,13 +7,13 @@ function MainBudgetTableTotal({ type, budgets, expenses }){
 
     useEffect(() => {
         // Calculate sum of actual expenses
-        const totalExpenses = expenses.map(expense_ => parseFloat(expense_.expense));
-        const totalSum = totalExpenses.reduce((prev, curr) => prev + curr, 0);
+        const totalSum = expenses.map(expense_ => parseFloat(expense_.expense))
+            .reduce((prev, curr) => prev + curr, 0);
         setActualTotal(totalSum.toFixed(2));
         
         // Calculate sum of expected budget of expenses
-        const budgetExpenses = budgets.map(budget_ => parseFloat(budget_.expense));
-        const budgetSum = budgetExpenses.reduce((prev, curr) => prev + curr, 0)
+        const budgetSum = budgets.map(budget_ => parseFloat(budget_.expense))
+            .reduce((prev, curr) => prev + curr, 0)
         setBudgetedTotal(budgetSum.toFixed(2));
 
         switch(type) {
