@@ -37,13 +37,14 @@ function MainBudgetTable({ type }) {
     if(loading) return "Loading...";
     return (
         <>
-            <div className='container'>    
+            <div className='container mt-4'>    
                 <h2>
                     { type } Budget
                 </h2>
+
                 <div>
-                    <table>
-                        <thead>
+                    <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
+                        <thead className='table-light'>
                             <tr>
                                 <th>Category</th>
                                 <th>Actual</th>

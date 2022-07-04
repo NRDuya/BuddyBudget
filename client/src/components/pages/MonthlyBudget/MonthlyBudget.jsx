@@ -41,13 +41,14 @@ function MonthlyBudget() {
     if(loading) return "Loading...";
     return (
         <>
-            <div className='container'>    
-                <h2>
+            <div className='container' style={{ maxWidth: '100%' }}>    
+                <h2 className='text-center mt-2'>
                     {month} {year} Budget
                 </h2>
 
                 <div className='d-flex'>
                     <MonthlyExpensesTable />
+
                     <div>                        
                         <MainBudgetTable type={ 'variable' } />
                         <MainBudgetTable type={ 'income' } />
