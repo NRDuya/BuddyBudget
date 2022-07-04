@@ -10,41 +10,47 @@ import MonthlyBudget from './components/pages/MonthlyBudget/MonthlyBudget';
 import Registration from './components/pages/Registration';
 import Login from './components/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
+import MainBudgetProvider from './components/contexts/MainBudgetContext';
+import MonthlyExpenseProvider from './components/contexts/MonthlyExpensesContext';
 
 function App() {
 
   return (
-    <Router>
-        <Navigation />
-        <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Registration />} />
-          <Route
-            path='/'
+    <MainBudgetProvider>
+      <Router>
+          <Navigation />
+          <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Registration />} />
+            <Route
+              path='/'
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+            path='/:type'
             element={
               <PrivateRoute>
-                <Dashboard />
+                <IndividualBudget />
               </PrivateRoute>
             }
-          />
-          <Route
-           path='/:type'
-           element={
-             <PrivateRoute>
-               <IndividualBudget />
-             </PrivateRoute>
-           }
-          />
-          <Route
-           path='/:year/:month'
-           element={
-             <PrivateRoute>
-               <MonthlyBudget />
-             </PrivateRoute>
-           }
-          />
-        </Routes>
-    </Router>
+            />
+            <Route
+            path='/:year/:month'
+            element={
+              <MonthlyExpenseProvider>
+                <PrivateRoute>
+                  <MonthlyBudget />
+                </PrivateRoute>
+              </MonthlyExpenseProvider>
+            }
+            />
+          </Routes>
+      </Router>
+    </MainBudgetProvider>
   );
 }
 

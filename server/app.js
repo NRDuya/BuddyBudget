@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 
 // Import Routes
 const usersRouter = require('./routes/usersRoute');
+const mainBudgetRouter = require('./routes/MainBudget/mainBudgetRoute')
 const variableBudgetRouter = require('./routes/MainBudget/variableBudgetRoute');
 const fixedBudgetRouter = require('./routes/MainBudget/fixedBudgetRoute');
 const incomeBudgetRouter = require('./routes/MainBudget/incomeBudgetRoute');
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Routes
 app.use('/users', usersRouter);
+app.use('/mainBudget', mainBudgetRouter);
 app.use('/variableBudget', variableBudgetRouter);
 app.use('/fixedBudget', fixedBudgetRouter);
 app.use('/incomeBudget', incomeBudgetRouter);

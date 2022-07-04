@@ -20,31 +20,16 @@ router.get('/', authenticateToken, async (req, res, next) => {
             throw new UserError("Invalid year!", 200);
         }
         
-        const categories = await MonthlyBudgetModel.getAllCategories(user);
-        if (categories < 0) {
-            throw new UserError("No categories found. Make a category to start budgeting!", 500);
-        }
-
         const results = await MonthlyBudgetModel.get(user, month, year);
         if (results < 0) {
-            return res.status(200).json({
-                success: true, 
-                alert: new Alert("No Monthly Budget Data Found", 'success'), 
-                budget: [], 
-                categories: categories
-            })
+            return res.status(200).json({ success: true, alert: new Alert("No Monthly Budget Data Found", 'success'), budget: [] })
         } else 
-            return res.status(201).json({
-                success: true, 
-                alert: new Alert("Get Monthly Budget Successful", 'success'), 
-                budget: results, 
-                categories: categories
-            });
+            return res.status(201).json({ success: true, alert: new Alert("Get Monthly Budget Successful", 'success'), budget: results });
     }
     catch (err) {
         if(err instanceof UserError){
             return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
-        } else next(err);
+        } else return res.status(500).json({ success: false, alert: new Alert("Server Error", 'danger') });
     }
 });
 
@@ -72,7 +57,7 @@ router.post('/save', authenticateToken, async (req, res, next) => {
     catch (err) {
         if(err instanceof UserError){
             return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
-        } else next(err);
+        } else return res.status(500).json({ success: false, alert: new Alert("Server Error", 'danger') });
     }
 
 });
@@ -105,7 +90,7 @@ router.post('/edit', authenticateToken, async (req, res, next) => {
     catch (err) {
         if(err instanceof UserError){
             return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
-        } else next(err);
+        } else return res.status(500).json({ success: false, alert: new Alert("Server Error", 'danger') });
     }
 });
 
@@ -125,7 +110,7 @@ router.delete('/delete', authenticateToken, async (req, res, next) => {
     catch (err) {
         if(err instanceof UserError){
             return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
-        } else next(err);
+        } else return res.status(500).json({ success: false, alert: new Alert("Server Error", 'danger') });
     }
 });
 
