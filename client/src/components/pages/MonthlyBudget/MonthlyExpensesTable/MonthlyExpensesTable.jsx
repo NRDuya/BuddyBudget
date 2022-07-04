@@ -5,26 +5,29 @@ import { VariableBudgetContext, IncomeBudgetContext } from '../../../contexts/Ma
 import { ExpensesContext } from '../../../contexts/MonthlyExpensesContext';
 import ReadMonthlyExpensesRow from './ReadMonthlyExpensesRow';
 import EditMonthlyExpensesRow from './EditMonthlyExpensesRow';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import Form from 'react-bootstrap/Form';
+import CurrencyInput from 'react-currency-input-field';
+import { Modal } from 'react-bootstrap';
 
 function MonthlyExpensesTable() {
     const { month, year } = useParams();
 
     const initialData = {
-        date: new Date(`${year}-${month}-2`),
+        date: new Date(`${year}-${month}-1`).toISOString().split("T")[0],
         category: -1,
-        expense: 1,
+        expense: null,
         comment: '',
         categoryName: ''
     }
+
+    const [minDate] = useState(new Date(year, month - 1, 1).toISOString().split("T")[0]);
+    const [maxDate] = useState(new Date(year, month, 0).toISOString().split("T")[0]);
 
     const [expenses, setExpenses] = useContext(ExpensesContext);
     const [variableBudget, setVariableBudget] = useContext(VariableBudgetContext);
     const [incomeBudget, setIncomeBudget] = useContext(IncomeBudgetContext);
     const [budget, setBudget] = useState([]);
 
+    const [showAddForm, setShowAddForm] = useState(false);
     const [addFormData, setAddFormData] = useState(initialData);
 
     const [editBudgetId, setEditBudgetId] = useState(null); 
@@ -35,6 +38,10 @@ function MonthlyExpensesTable() {
     }, [variableBudget, incomeBudget])
 
     // Add functions
+    const handleShowAddForm = () => {
+        setShowAddForm(!showAddForm);
+    }
+
     const handleAddFormChange = (event) => {
         event.preventDefault();
 
@@ -47,58 +54,73 @@ function MonthlyExpensesTable() {
         setAddFormData(newFormData);
     };
 
-    const handleCalendarAdd = (date) => {
+    const handleAddFormExpense = (value) => {
         const newFormData = {...addFormData};
-        newFormData.date = date;
-        setAddFormData(newFormData);
-    }
-
-    const handleDropdownAdd = (event) => {
-        const categoryId = event.target.value;
-        const newFormData = {...addFormData};
-
-        newFormData.category = parseInt(categoryId);
-        const category = budget.find(budget_ => budget_.id === parseInt(categoryId));
-        newFormData.categoryName = category.category;
+        newFormData.expense = value;
         setAddFormData(newFormData);
     }
 
     const handleAddFormSubmit = (event) => {
         event.preventDefault(); 
         axios.defaults.withCredentials = true;
-        
+
         if (addFormData.category === -1) {
             console.log("send error message")
         } else {
+            // Set category name based on the expense category
+            const category = budget.find(budget_ => budget_.id === parseInt(addFormData.category));
+            addFormData.categoryName = category.category;
+            
             const newExpense = {
                 id: -1,
                 date: addFormData.date,
-                category: addFormData.category,
+                category: parseInt(addFormData.category),
                 expense: addFormData.expense,
                 comment: addFormData.comment,
                 categoryName: addFormData.categoryName
             };
 
             axios.post(`/monthlyBudget/save`, newExpense)
-            .then((res) => {
-                if (res.data.success) {
-                    newExpense.id = res.data.budgetId;
-                    const newExpenses = [...expenses, newExpense];
-                    setExpenses(newExpenses);
-                    console.log('Successfully added to db.');            
-                } else {
-                    console.log(res.data.message);
-                };
-                setAddFormData(initialData);
-            })
-            .catch((err) => {
-                console.log(err);
-                console.log("Cannot add");
-            })
+                .then((res) => {
+                    if (res.data.success) {
+                        newExpense.id = res.data.budgetId;
+                        const newExpenses = [newExpense, ...expenses];
+                        setExpenses(newExpenses);
+                        console.log('Successfully added to db.');            
+                    } else {
+                        console.log(res.data.message);
+                    };
+                    setAddFormData(initialData);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    console.log("Cannot add");
+                });
+            
+            setShowAddForm(!showAddForm);
         }
     };
     
     // Edit Functions
+    const handleEditClick = (event, budget) => {
+        event.preventDefault();
+        setEditBudgetId(budget.id);
+
+        const formValues = {
+            date: new Date(budget.date).toISOString().split("T")[0],
+            category: budget.category,
+            expense: budget.expense,
+            comment: budget.comment,
+            categoryName: budget.categoryName
+        }
+
+        setEditFormData(formValues);
+    };
+
+    const handleEditCancelClick = () => {
+        setEditBudgetId(null);
+    };
+
     const handleEditFormChange = (event) => {
         event.preventDefault();
 
@@ -111,34 +133,27 @@ function MonthlyExpensesTable() {
         setEditFormData(newFormData);
     };
 
-    const handleCalendarEdit = (date) => {
+    const handleEditFormExpense = (value) => {
         const newFormData = {...editFormData};
-        newFormData.date = date;
-        setEditFormData(newFormData);
-    }
-
-    const handleDropdownEdit = (event) => {
-        const categoryId = event.target.value;
-        const newFormData = {...editFormData};
-
-        newFormData.category = parseInt(categoryId);
-        const category = budget.find(budget_ => budget_.id === parseInt(categoryId));
-        newFormData.categoryName = category.category;
+        newFormData.expense = value;
         setEditFormData(newFormData);
     }
 
     const handleEditFormSubmit = (event) => {
         event.preventDefault();
 
+        // Set category name based on the expense category
+        const category = budget.find(budget_ => budget_.id === parseInt(editFormData.category));
+        editFormData.categoryName = category.category;
+
         const editedExpense = {
             id: editBudgetId,
             date: editFormData.date,
-            category: editFormData.category,
+            category: parseInt(editFormData.category),
             expense: editFormData.expense,
             comment: editFormData.comment,
             categoryName: editFormData.categoryName
         };
-        setEditBudgetId(null);
 
         axios.post('/monthlyBudget/edit', editedExpense)
          .then((res) => {
@@ -155,24 +170,7 @@ function MonthlyExpensesTable() {
          .catch((err) => {
             console.log("Cannot edit");
          })
-    };
 
-    const handleEditClick = (event, budget) => {
-        event.preventDefault();
-        setEditBudgetId(budget.id);
-
-        const formValues = {
-            date: budget.date,
-            category: budget.category,
-            expense: budget.expense,
-            comment: budget.comment,
-            categoryName: budget.categoryName
-        }
-
-        setEditFormData(formValues);
-    };
-
-    const handleEditCancelClick = () => {
         setEditBudgetId(null);
     };
 
@@ -200,9 +198,15 @@ function MonthlyExpensesTable() {
     return (
         <>
             <div className='container'>    
+                <div className='text-center'>
+                    <button onClick={handleShowAddForm} className="btn btn-primary m-3">
+                        Add an expense
+                    </button>
+                </div>
+                
                 <form onSubmit={ handleEditFormSubmit }>
-                    <table>
-                        <thead>
+                    <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
+                        <thead className='table-light'>
                             <tr>
                                 <th>Date</th>
                                 <th>Category</th>
@@ -210,8 +214,8 @@ function MonthlyExpensesTable() {
                                 <th>Comments</th>
                                 <th>Actions</th>
                             </tr>
-
                         </thead>
+
                         <tbody>
                             {expenses.map((expense) => (
                                 <Fragment key={ expense.id }>
@@ -221,9 +225,10 @@ function MonthlyExpensesTable() {
                                         budget={ budget }
                                         editFormData={ editFormData } 
                                         handleEditFormChange={ handleEditFormChange }
-                                        handleCalendarEdit={ handleCalendarEdit }
-                                        handleDropdownEdit={ handleDropdownEdit } 
-                                        handleEditCancelClick={ handleEditCancelClick } /> : 
+                                        handleEditFormExpense={ handleEditFormExpense }
+                                        handleEditCancelClick={ handleEditCancelClick } 
+                                        minDate={ minDate }
+                                        maxDate={ maxDate }/> : 
                                      <ReadMonthlyExpensesRow 
                                         expense={ expense } 
                                         handleEditClick={ handleEditClick }
@@ -235,24 +240,69 @@ function MonthlyExpensesTable() {
                     </table>
                 </form>
 
+                {
+                    showAddForm && 
+                    <Modal
+                    show={showAddForm}
+                    onHide={handleShowAddForm}
+                    size="lg"
+                    centered
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>
+                                Add a Budget
+                            </Modal.Title>
+                        </Modal.Header>
 
-                <h2>Add a BudGet</h2>
-                <form onSubmit={ handleAddFormSubmit }>
-                    <Calendar maxDetail="month" showNavigation={false} defaultValue={new Date(`${year}-${month}-2`)} showNeighboringMonth={false} onChange={handleCalendarAdd}/>
-                    <Form.Select onChange={handleDropdownAdd}>
-                        <option key={-1} value={-1}>
-                            Category
-                        </option>
-                        {budget.map((budget_) => (
-                            <option key={budget_.id} value={budget_.id}>
-                                {budget_.category} - {budget_.type}
-                            </option>
-                        ))}
-                    </Form.Select>          
-                    <input type='number' name="expense" placeholder="BudGeted" value={addFormData.expense} step='.01' onChange={handleAddFormChange} required/>
-                    <input type='text' name="comment" placeholder="Comments" value={addFormData.comment} onChange={handleAddFormChange}/>
-                    <button type='submit'>Add</button>
-                </form>
+                        <Modal.Body className="m-auto">
+                            <form onSubmit={ handleAddFormSubmit }>
+                                <div className='form-group mb-3'>
+                                    <input className='form-control' type="date" name="date" value={addFormData.date} 
+                                        min={minDate} 
+                                        max={maxDate} 
+                                        onChange={handleAddFormChange} 
+                                        required 
+                                    />
+                                </div>
+
+                                <div className='form-group mb-3'>
+                                    <select className='form-select' name="category" value={addFormData.category} onChange={handleAddFormChange}>
+                                        <option value={-1} disabled>
+                                            Category
+                                        </option>
+                                        {budget.map((budget_) => (
+                                            <option key={budget_.id} value={budget_.id}>
+                                                {budget_.category} - {budget_.type}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className='form-group mb-3'>
+                                    <CurrencyInput 
+                                        placeholder='$100 spent'
+                                        value={addFormData.expense} 
+                                        step={.01} fixedDecimalLength={2} prefix={'$'} 
+                                        onValueChange={handleAddFormExpense}
+                                        required
+                                        style={{ width: '100%' }}
+                                    />
+                                </div>
+
+                                <div className='form-group mb-3'>
+                                    <input type='text' name="comment" placeholder="Comments" 
+                                        value={addFormData.comment} onChange={handleAddFormChange}
+                                        style={{ width: '100%' }} 
+                                    />
+                                </div>
+
+                                <button type='submit' className='btn btn-primary' style={{ width: '100%' }}>
+                                    Add
+                                </button>
+                            </form>
+                        </Modal.Body>
+                    </Modal>
+                }
             </div>
         </>
     )
