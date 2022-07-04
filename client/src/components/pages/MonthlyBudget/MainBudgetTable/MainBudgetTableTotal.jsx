@@ -1,30 +1,39 @@
 import { useState, useEffect } from 'react';
 
-function MainBudgetTableTotal({ budget, allExpenses }){
+function MainBudgetTableTotal({ type, budgets, expenses }){
     const [actualTotal, setActualTotal] = useState(0);
-    const [budgetTotal, setBudgetTotal] = useState(0);
+    const [budgetedTotal, setBudgetedTotal] = useState(0);
     const [remaining, setRemaining] = useState(0);
 
     useEffect(() => {
-        // Calculate sum of all actual expenses
-        const totalExpenses = allExpenses.map(expense_ => parseFloat(expense_.expense));
+        // Calculate sum of actual expenses
+        const totalExpenses = expenses.map(expense_ => parseFloat(expense_.expense));
         const totalSum = totalExpenses.reduce((prev, curr) => prev + curr, 0);
         setActualTotal(totalSum.toFixed(2));
         
         // Calculate sum of expected budget of expenses
-        const budgetExpenses = budget.map(budget_ => parseFloat(budget_.expense));
+        const budgetExpenses = budgets.map(budget_ => parseFloat(budget_.expense));
         const budgetSum = budgetExpenses.reduce((prev, curr) => prev + curr, 0)
-        setBudgetTotal(budgetSum.toFixed(2));
+        setBudgetedTotal(budgetSum.toFixed(2));
 
-        setRemaining((budgetTotal - actualTotal).toFixed(2));
-    }, [budget, allExpenses, budgetTotal, actualTotal]);
+        switch(type) {
+            case "variable":
+                setRemaining((budgetedTotal - actualTotal).toFixed(2));
+                break;
+            case "income":
+                setRemaining((actualTotal - budgetedTotal).toFixed(2));
+                break;
+            default:
+                break;
+        }
+    }, [type, budgets, expenses, budgetedTotal, actualTotal]);
 
     return(
         <>
             <tr>
                 <td>Total</td>
                 <td>${actualTotal}</td>
-                <td>${budgetTotal}</td>
+                <td>${budgetedTotal}</td>
                 <td>${remaining}</td>
             </tr> 
         </>

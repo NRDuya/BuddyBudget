@@ -1,14 +1,15 @@
 import axios from 'axios';
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useContext, Fragment } from 'react';
 import { useParams } from "react-router-dom";
+import { VariableBudgetContext, IncomeBudgetContext } from '../../../contexts/MainBudgetContext';
+import { ExpensesContext } from '../../../contexts/MonthlyExpensesContext';
 import ReadMonthlyExpensesRow from './ReadMonthlyExpensesRow';
 import EditMonthlyExpensesRow from './EditMonthlyExpensesRow';
-
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Form from 'react-bootstrap/Form';
 
-function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
+function MonthlyExpensesTable() {
     const { month, year } = useParams();
 
     const initialData = {
@@ -19,15 +20,19 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
         categoryName: ''
     }
 
-    const [mainExpenses, setMainExpenses] = useState([]);
+    const [expenses, setExpenses] = useContext(ExpensesContext);
+    const [variableBudget, setVariableBudget] = useContext(VariableBudgetContext);
+    const [incomeBudget, setIncomeBudget] = useContext(IncomeBudgetContext);
+    const [budget, setBudget] = useState([]);
 
     const [addFormData, setAddFormData] = useState(initialData);
 
-    const [editFormData, setEditFormData] = useState(initialData);
     const [editBudgetId, setEditBudgetId] = useState(null); 
+    const [editFormData, setEditFormData] = useState(initialData);
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    useEffect(() => {
+        setBudget([...variableBudget, ...incomeBudget]);
+    }, [variableBudget, incomeBudget])
 
     // Add functions
     const handleAddFormChange = (event) => {
@@ -65,7 +70,7 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
         if (addFormData.category === -1) {
             console.log("send error message")
         } else {
-            const newBudget = {
+            const newExpense = {
                 id: -1,
                 date: addFormData.date,
                 category: addFormData.category,
@@ -74,13 +79,12 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
                 categoryName: addFormData.categoryName
             };
 
-            axios.post(`/monthlyBudget/save`, newBudget)
+            axios.post(`/monthlyBudget/save`, newExpense)
             .then((res) => {
                 if (res.data.success) {
-                    newBudget.id = res.data.budgetId;
-                    const newMainBudget = [...mainExpenses, newBudget];
-                    setMainExpenses(newMainBudget);
-                    setExpenses(newMainBudget);
+                    newExpense.id = res.data.budgetId;
+                    const newExpenses = [...expenses, newExpense];
+                    setExpenses(newExpenses);
                     console.log('Successfully added to db.');            
                 } else {
                     console.log(res.data.message);
@@ -126,7 +130,7 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
     const handleEditFormSubmit = (event) => {
         event.preventDefault();
 
-        const editedBudget = {
+        const editedExpense = {
             id: editBudgetId,
             date: editFormData.date,
             category: editFormData.category,
@@ -136,14 +140,13 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
         };
         setEditBudgetId(null);
 
-        axios.post('/monthlyBudget/edit', editedBudget)
+        axios.post('/monthlyBudget/edit', editedExpense)
          .then((res) => {
             if (res.data.success) {
-                const newMainBudget = [...mainExpenses];
-                const index = mainExpenses.findIndex((budget) => budget.id === editBudgetId);
-                newMainBudget[index] = editedBudget;
-                setMainExpenses(newMainBudget);
-                setExpenses(newMainBudget);
+                const newExpenses = [...expenses];
+                const index = expenses.findIndex((budget) => budget.id === editBudgetId);
+                newExpenses[index] = editedExpense;
+                setExpenses(newExpenses);
                 console.log('Successfully edited to db.');            
             } else {
                 console.log(res.data.message);
@@ -175,12 +178,11 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
 
     // Delete Functions
     const handleDeleteClick = (budgetId) => {
-        const newMainBudget = [...mainExpenses];
-        const index = mainExpenses.findIndex((budget) => budget.id === budgetId);
+        const newExpenses = [...expenses];
+        const index = expenses.findIndex((budget) => budget.id === budgetId);
 
-        newMainBudget.splice(index, 1);
-        setMainExpenses(newMainBudget);
-        setExpenses(newMainBudget);
+        newExpenses.splice(index, 1);
+        setExpenses(newExpenses);
 
         axios.delete('/monthlyBudget/delete', {data: {id: budgetId}})
          .then((res) => {
@@ -195,16 +197,9 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
          })
     };
 
-    useEffect(() => {
-        setMainExpenses(expenses);
-        setLoading(false);
-    }, [expenses])
-
-    if(loading) return "Loading...";
-    if(error) return "Error loading...";
     return (
         <>
-            <div className='app-container'>    
+            <div className='container'>    
                 <form onSubmit={ handleEditFormSubmit }>
                     <table>
                         <thead>
@@ -218,10 +213,10 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
 
                         </thead>
                         <tbody>
-                            {mainExpenses.map((data) => (
-                                <Fragment key={ data.id }>
+                            {expenses.map((expense) => (
+                                <Fragment key={ expense.id }>
                                     { 
-                                     data.id === editBudgetId ? 
+                                     expense.id === editBudgetId ? 
                                      <EditMonthlyExpensesRow 
                                         budget={ budget }
                                         editFormData={ editFormData } 
@@ -230,7 +225,7 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
                                         handleDropdownEdit={ handleDropdownEdit } 
                                         handleEditCancelClick={ handleEditCancelClick } /> : 
                                      <ReadMonthlyExpensesRow 
-                                        expense={ data } 
+                                        expense={ expense } 
                                         handleEditClick={ handleEditClick }
                                         handleDeleteClick={ handleDeleteClick }/> 
                                     }
@@ -250,7 +245,7 @@ function MonthlyExpensesTable({ expenses, budget, setExpenses }) {
                         </option>
                         {budget.map((budget_) => (
                             <option key={budget_.id} value={budget_.id}>
-                                {budget_.category}
+                                {budget_.category} - {budget_.type}
                             </option>
                         ))}
                     </Form.Select>          

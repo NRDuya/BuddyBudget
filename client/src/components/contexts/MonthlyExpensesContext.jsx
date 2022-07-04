@@ -1,17 +1,13 @@
 import React, { useState, createContext } from 'react';
 
-export const VariableExpensesContext = createContext();
-export const IncomeExpensesContext = createContext();
+export const ExpensesContext = createContext();
 
 export default function MonthlyExpenseProvider({ children }) {
-  const [variableExpenses, setVariableExpenses] = useState([]);
-  const [incomeExpenses, setIncomeExpenses] = useState([]);
+  const [expenses, setExpenses] = useState([]);
 
   return (
-    <VariableExpensesContext.Provider value={[variableExpenses, setVariableExpenses]}>
-      <IncomeExpensesContext.Provider value={[incomeExpenses, setIncomeExpenses]}>
+    <ExpensesContext.Provider value={[expenses, setExpenses]}>
         {children}
-      </IncomeExpensesContext.Provider>
-    </VariableExpensesContext.Provider>
+    </ExpensesContext.Provider>
   );
 }

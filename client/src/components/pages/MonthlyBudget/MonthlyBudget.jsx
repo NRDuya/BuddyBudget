@@ -1,16 +1,16 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams } from "react-router-dom";
+import { ExpensesContext } from '../../contexts/MonthlyExpensesContext';
 import MainBudgetTable from './MainBudgetTable/MainBudgetTable';
 import MonthlyExpensesTable from './MonthlyExpensesTable/MonthlyExpensesTable';
 
 function MonthlyBudget() {
     const { month, year } = useParams();
-    const [expenses, setExpenses] = useState([]);
-    const [budget, setBudget] = useState([]);
+
+    const [expenses, setExpenses] = useContext(ExpensesContext);
 
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         axios.defaults.withCredentials = true;
@@ -23,16 +23,15 @@ function MonthlyBudget() {
         })
          .then((res) => {
             if (res.data.success) {
-                setBudget(res.data.categories);
                 setExpenses(res.data.budget);
             }
             else {
-                
+                // set alert
             }
          })
          .catch((err) => {
+            // set alert
             console.error("Error fetching data", err);
-            setError(err);
          })
          .finally(() => {
             setLoading(false);
@@ -40,7 +39,6 @@ function MonthlyBudget() {
     }, [month, year])
 
     if(loading) return "Loading...";
-    if(error) return "Error loading...";
     return (
         <>
             <div className='container'>    
@@ -49,10 +47,10 @@ function MonthlyBudget() {
                 </h2>
 
                 <div className='d-flex'>
-                    <MonthlyExpensesTable expenses={ expenses } budget={ budget } setExpenses={ setExpenses }/>
+                    <MonthlyExpensesTable />
                     <div>                        
-                        <MainBudgetTable type={ 'var' } allExpenses={ expenses } allBudget={ budget }/>
-                        <MainBudgetTable type={ 'inc' } allExpenses={ expenses } allBudget={ budget }/>
+                        <MainBudgetTable type={ 'variable' } />
+                        <MainBudgetTable type={ 'income' } />
                     </div>
                 </div>
             </div>
