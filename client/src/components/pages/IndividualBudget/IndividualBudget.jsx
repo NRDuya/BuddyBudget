@@ -26,9 +26,8 @@ function IndividualBudget() {
     const [showAddForm, setShowAddForm] = useState(false);
     const [addFormData, setAddFormData] = useState(initialData);
 
-    const [editFormData, setEditFormData] = useState(initialData);
-
     const [editBudgetId, setEditBudgetId] = useState(null); 
+    const [editFormData, setEditFormData] = useState(initialData);
 
     const [alert, setAlert] = useState({
         show: false,
