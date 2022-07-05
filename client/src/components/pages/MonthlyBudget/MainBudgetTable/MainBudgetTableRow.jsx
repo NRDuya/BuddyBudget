@@ -1,35 +1,35 @@
 import { useState, useEffect } from 'react';
 
-function MainBudgetTableRow({ budget, expenses, setExpenses }){
-    const [catTotal, setCatTotal] = useState(0);
+function MainBudgetTableRow({ type, budget, expenses }){
+    const [catExpenseTotal, setCatExpenseTotal] = useState(0);
     const [remaining, setRemaining] = useState(0);
     
     useEffect(() => {
-        let currentCatBudget = []
-        // Removes current budget category from the parent budget array
-        let filteredCatBudget = expenses.filter((budget_) => {
-            if (budget_.category === budget.id) {
-                currentCatBudget.push(budget_);
-                return false;
-            } else {
-                return true;
-            }
-        })
-        setExpenses(filteredCatBudget);
+        // Removes expenses from different budget categories
+        const filteredCatExpenses = expenses.filter((expense) => expense.category === budget.id )
 
         // Calculate sum of current category expenses
-        let budgetExpenses = currentCatBudget.map(budget_ => parseFloat(budget_.expense))
-        let budgetSum = budgetExpenses.reduce((prev, curr) => parseFloat(prev) + parseFloat(curr), 0);
-        setCatTotal(budgetSum.toFixed(2));
-
-        setRemaining((budget.expense - catTotal).toFixed(2));
-    }, [catTotal]);
+        const catSum = filteredCatExpenses.map(budget_ => parseFloat(budget_.expense))
+            .reduce((prev, curr) => parseFloat(prev) + parseFloat(curr), 0);
+        setCatExpenseTotal(catSum.toFixed(2));
+        
+        switch(type) {
+            case "variable":
+                setRemaining((budget.expense - catExpenseTotal).toFixed(2));
+                break;
+            case "income":
+                setRemaining((catExpenseTotal - budget.expense).toFixed(2));
+                break;
+            default:
+                break;
+        }
+    }, [type, budget, expenses, catExpenseTotal]);
     
     return(
         <>
             <tr>
                 <td>{budget.category}</td>
-                <td>${catTotal}</td>
+                <td>${catExpenseTotal}</td>
                 <td>${budget.expense}</td>
                 <td>${remaining}</td>
             </tr> 

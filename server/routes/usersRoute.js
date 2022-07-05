@@ -47,7 +47,7 @@ router.post('/register', async function (req, res, next) {
     catch (err) {
         if (err instanceof UserError) {
             return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
-        } else next(err);
+        } else return res.status(500).json({ success: false, alert: new Alert("Server Error", 'danger') });
     }
 });
 
@@ -80,7 +80,7 @@ router.post('/login', async function (req, res, next) {
     catch (err) {
         if (err instanceof UserError) {
             return res.status(err.getStatus()).json({ success: false, alert: new Alert(err.getMessage(), 'danger') });
-        } else next(err);
+        } else return res.status(500).json({ success: false, alert: new Alert("Server Error", 'danger') });
     }
 });
 

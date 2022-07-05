@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useContext, Fragment } from 'react';
 import { useParams } from "react-router-dom";
 import { Modal } from 'react-bootstrap';
 import CurrencyInput from 'react-currency-input-field';
+import { VariableBudgetContext, FixedBudgetContext, IncomeBudgetContext } from '../../contexts/MainBudgetContext';
 import ReadIndividualBudgetRow from './ReadIndividualBudgetRow';
 import EditIndividualBudgetRow from './EditIndividualBudgetRow';
 import AlertComponent from '../../AlertComponent';
@@ -14,24 +15,42 @@ function IndividualBudget() {
         category: '',
         expense: null
     }
-
+    
     const [title, setTitle] = useState(type);
-    const [showAddForm, setShowAddForm] = useState(false);
 
+    const [variableBudget, setVariableBudget] = useContext(VariableBudgetContext);
+    const [fixedBudget, setFixedBudget] = useContext(FixedBudgetContext);
+    const [incomeBudget, setIncomeBudget] = useContext(IncomeBudgetContext);
     const [individualBudget, setIndividualBudget] = useState([]);
 
+    const [showAddForm, setShowAddForm] = useState(false);
     const [addFormData, setAddFormData] = useState(initialData);
 
+    const [editBudgetId, setEditBudgetId] = useState(null); 
     const [editFormData, setEditFormData] = useState(initialData);
 
-    const [editBudgetId, setEditBudgetId] = useState(null); 
-
-    const [loading, setLoading] = useState(true);
     const [alert, setAlert] = useState({
         show: false,
         message: '',
         type: ''
     });
+
+    useEffect(() => {
+        switch(type) {
+            case "variable":
+              setIndividualBudget(variableBudget);
+              break;
+            case "fixed":
+              setIndividualBudget(fixedBudget);
+              break;
+            case "income":
+              setIndividualBudget(incomeBudget);
+              break;
+            default:
+              break;
+        }
+        setTitle(type.charAt(0).toUpperCase() + type.slice(1));
+    }, [type, variableBudget, fixedBudget, incomeBudget])
 
     // Add functions
     const handleShowAddForm = () => {
@@ -99,6 +118,7 @@ function IndividualBudget() {
         newFormData.expense = value;
         setEditFormData(newFormData);
     }
+    
     const handleEditFormSubmit = (event) => {
         event.preventDefault();
 
@@ -161,25 +181,6 @@ function IndividualBudget() {
          })
     };
 
-    useEffect(() => {
-        axios.defaults.withCredentials = true;
-
-        axios.get(`/${type}Budget/`)
-         .then((res) => {
-            setIndividualBudget(res.data.budget);
-         })
-         .catch((err) => {
-            console.error("Error fetching data", err);
-            setAlert(err);
-         })
-         .finally(() => {
-            setLoading(false);
-         });
-        
-        setTitle(type.charAt(0).toUpperCase() + type.slice(1));
-    }, [type])
-
-    if(loading) return "Loading...";
     return (
         <>
             {

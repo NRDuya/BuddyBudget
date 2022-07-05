@@ -1,42 +1,50 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useContext, Fragment } from 'react';
+import { VariableBudgetContext, IncomeBudgetContext } from '../../../contexts/MainBudgetContext';
+import { ExpensesContext } from '../../../contexts/MonthlyExpensesContext';
 import MainBudgetTableRow from './MainBudgetTableRow';
 import MainBudgetTableTotal from './MainBudgetTableTotal';
 
-function MainBudgetTable({ type, allExpenses, allBudget }) {
-    // Holds all budget for the current type
-    const [budget, setBudget] = useState(allBudget);
-    // Holds all the expenses for the current type
-    const [totalExpenses, setTotalExpenses] = useState([]);
-    // Holds the filtered expenses used by each row
-    const [expenses, setExpenses] = useState([]);
+function MainBudgetTable({ type }) {
+    const [variableBudget, setVariableBudget] = useContext(VariableBudgetContext);
+    const [incomeBudget, setIncomeBudget] = useContext(IncomeBudgetContext);
+    const [budget, setBudget] = useState([]);
+
+    const [expenses, setExpenses] = useContext(ExpensesContext);
+    const [typeExpenses, setTypeExpenses] = useState([]);
 
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Remove budget that are different types
-        setBudget(allBudget.filter(budget => budget.type === type));
-    }, [allBudget, type]);
+        switch(type) {
+            case "variable":
+                setBudget(variableBudget);
+                break;
+            case "income":
+                setBudget(incomeBudget);
+                break;
+            default:
+                break;
+        }
+    }, [type, variableBudget, incomeBudget]);
 
     useEffect(() => {
         // Remove expenses of different types
-        const filteredExpenses = allExpenses.filter((budget_) => budget.some(category => category.id === budget_.category));
-        setExpenses(filteredExpenses);
-        setTotalExpenses(filteredExpenses);
+        const filteredTypeExpenses = expenses.filter((budget_) => budget.some(category => category.id === budget_.category));
+        setTypeExpenses(filteredTypeExpenses);
         setLoading(false);
-    }, [allExpenses, budget]);
+    }, [expenses, budget]);
     
     if(loading) return "Loading...";
-    if(error) return "Error loading...";
     return (
         <>
-            <div className='container'>    
+            <div className='container mt-4'>    
                 <h2>
                     { type } Budget
                 </h2>
+
                 <div>
-                    <table>
-                        <thead>
+                    <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
+                        <thead className='table-light'>
                             <tr>
                                 <th>Category</th>
                                 <th>Actual</th>
@@ -49,11 +57,11 @@ function MainBudgetTable({ type, allExpenses, allBudget }) {
                             {budget.map((budget_) => (
                                 <Fragment key={ budget_.id }>
                                     { 
-                                     <MainBudgetTableRow budget={ budget_ } expenses={ expenses } setExpenses={ setExpenses }/> 
+                                     <MainBudgetTableRow type={ type } budget={ budget_ } expenses={ typeExpenses } /> 
                                     }
                                 </Fragment>
                             ))}
-                            <MainBudgetTableTotal budget={ budget } allExpenses={ totalExpenses }/>
+                            <MainBudgetTableTotal type={ type } budgets={ budget } expenses={ typeExpenses } />
                         </tbody>
                     </table>
                 </div>

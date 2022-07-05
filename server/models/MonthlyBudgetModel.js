@@ -16,17 +16,6 @@ MonthlyBudgetModel.get = (userId, month, year) => {
         .catch((err) => Promise.reject(err))
 }
 
-MonthlyBudgetModel.getAllCategories = (userId) => {
-    const baseSQL = "SELECT id, category, type, expense FROM mainbudget WHERE user = ?;"
-    return db.execute(baseSQL, [userId])
-        .then(([results, fields]) => {
-            if(results && results.length){
-                return Promise.resolve(results);
-            } else return Promise.resolve(-1);
-        })
-        .catch((err) => Promise.reject(err))
-}
-
 MonthlyBudgetModel.create = (category, expense, date, comment, userId) => {
     const baseSQL = "INSERT INTO monthlybudget (category, expense, date, comment, user) VALUES (?, ?, ?, ?, ?);"
     return db.execute(baseSQL, [category, expense, date, comment, userId])
