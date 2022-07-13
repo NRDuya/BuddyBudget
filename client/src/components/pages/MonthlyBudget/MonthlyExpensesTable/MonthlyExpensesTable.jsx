@@ -15,7 +15,8 @@ function MonthlyExpensesTable() {
         date: new Date(`${year}-${month}-1`).toISOString().split("T")[0],
         category: -1,
         expense: null,
-        comment: ''
+        comment: '',
+        categoryName: ''
     }
 
     const [minDate, setMinDate] = useState(new Date(year, month - 1, 1).toISOString().split("T")[0]);
@@ -70,13 +71,18 @@ function MonthlyExpensesTable() {
 
         if (addFormData.category === -1) {
             console.log("send error message")
-        } else {            
+        } else {
+            // Set category name based on the expense category
+            const category = budget.find(budget_ => budget_.id === parseInt(addFormData.category));
+            addFormData.categoryName = category.category;
+            
             const newExpense = {
                 id: -1,
                 date: addFormData.date,
                 category: parseInt(addFormData.category),
                 expense: addFormData.expense,
                 comment: addFormData.comment,
+                categoryName: addFormData.categoryName
             };
 
             axios.post(`/monthlyBudget/save`, newExpense)
@@ -141,12 +147,17 @@ function MonthlyExpensesTable() {
     const handleEditFormSubmit = (event) => {
         event.preventDefault();
 
+        // Set category name based on the expense category
+        const category = budget.find(budget_ => budget_.id === parseInt(editFormData.category));
+        editFormData.categoryName = category.category;
+
         const editedExpense = {
             id: editBudgetId,
             date: editFormData.date,
             category: parseInt(editFormData.category),
             expense: editFormData.expense,
             comment: editFormData.comment,
+            categoryName: editFormData.categoryName
         };
 
         axios.post('/monthlyBudget/edit', editedExpense)
