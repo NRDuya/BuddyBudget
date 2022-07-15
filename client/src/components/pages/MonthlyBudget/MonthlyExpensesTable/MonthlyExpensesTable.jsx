@@ -19,8 +19,8 @@ function MonthlyExpensesTable() {
         categoryName: ''
     }
 
-    const [minDate] = useState(new Date(year, month - 1, 1).toISOString().split("T")[0]);
-    const [maxDate] = useState(new Date(year, month, 0).toISOString().split("T")[0]);
+    const [minDate, setMinDate] = useState(new Date(year, month - 1, 1).toISOString().split("T")[0]);
+    const [maxDate, setMaxDate] = useState(new Date(year, month, 0).toISOString().split("T")[0]);
 
     const [expenses, setExpenses] = useContext(ExpensesContext);
     const [variableBudget, setVariableBudget] = useContext(VariableBudgetContext);
@@ -35,7 +35,12 @@ function MonthlyExpensesTable() {
 
     useEffect(() => {
         setBudget([...variableBudget, ...incomeBudget]);
-    }, [variableBudget, incomeBudget])
+    }, [variableBudget, incomeBudget]);
+
+    useEffect(() => {
+        setMinDate(new Date(year, month - 1, 1).toISOString().split("T")[0]);
+        setMaxDate(new Date(year, month, 0).toISOString().split("T")[0]);
+    }, [month, year])
 
     // Add functions
     const handleShowAddForm = () => {
@@ -212,7 +217,7 @@ function MonthlyExpensesTable() {
                                 <th>Category</th>
                                 <th>Expense</th>
                                 <th>Comments</th>
-                                <th>Actions</th>
+                                <th className='text-center'>Actions</th>
                             </tr>
                         </thead>
 

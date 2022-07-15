@@ -17,3 +17,11 @@ td {
   gap: 10px;
   padding: 1rem;
 }
+
+.negative {
+  background:#fdaaaa;
+}
+
+.positive {
+  color: green;
+}

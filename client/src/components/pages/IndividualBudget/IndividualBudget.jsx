@@ -202,7 +202,7 @@ function IndividualBudget() {
                             <tr>
                                 <th>Category</th>
                                 <th>Set BudGet</th>
-                                <th>Actions</th>
+                                <th className='text-center'>Actions</th>
                             </tr>
                         </thead>
 
