@@ -27,11 +27,11 @@ function MainBudgetTableRow({ type, budget, expenses }){
     
     return(
         <>
-            <tr>
+            <tr className={remaining < 0 && 'negative'}>
                 <td>{budget.category}</td>
                 <td>${catExpenseTotal}</td>
                 <td>${budget.expense}</td>
-                <td>${remaining}</td>
+                <td className={remaining > 0 && 'positive'}>${remaining}</td>
             </tr> 
         </>
     )

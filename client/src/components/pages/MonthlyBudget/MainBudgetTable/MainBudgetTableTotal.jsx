@@ -30,11 +30,11 @@ function MainBudgetTableTotal({ type, budgets, expenses }){
 
     return(
         <>
-            <tr>
+            <tr className={remaining < 0 && 'negative'}>
                 <td>Total</td>
                 <td>${actualTotal}</td>
                 <td>${budgetedTotal}</td>
-                <td>${remaining}</td>
+                <td className={remaining > 0 && 'positive'}>${remaining}</td>
             </tr> 
         </>
     )
