@@ -1,17 +1,21 @@
 import { useState, useEffect, useContext } from 'react';
-import { FixedTotalContext } from '../../../contexts/MainBudgetContext';
+import { FixedTotalContext } from '../../../../contexts/MainBudgetContext';
 
-function YearSummaryData({ expensesSummary, month }) {
+function MonthSavingsData({ expensesSummary, month }) {
     const [fixedTotal, setFixedTotal] = useContext(FixedTotalContext);
 
     const [moneySaved, setMoneySaved] = useState(0);
 
     useEffect(() => {
         const monthExpenses = expensesSummary[month];
-        console.log(monthExpenses);
+
         if (monthExpenses) {
-            const variableExpenses = expensesSummary[month].var;
-            const incomeExpenses = expensesSummary[month].inc;
+            let variableExpenses = expensesSummary[month].var;
+            if (!variableExpenses) variableExpenses = 0;
+            
+            let incomeExpenses = expensesSummary[month].inc;
+            if (!incomeExpenses) incomeExpenses = 0;
+
             const saved = incomeExpenses - (variableExpenses + fixedTotal)
             setMoneySaved(saved.toFixed(2));
         } else {
@@ -29,4 +33,4 @@ function YearSummaryData({ expensesSummary, month }) {
     )
 }
 
-export default YearSummaryData;
+export default MonthSavingsData;

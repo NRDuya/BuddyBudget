@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext, Fragment } from 'react';
 import { VariableTotalContext, FixedTotalContext, IncomeTotalContext } from '../../../contexts/MainBudgetContext';
-import YearSummaryTable from './YearSummaryTable';
+import YearSavingsTable from './YearSavingsTable/YearSavingsTable';
 
-function SummaryBudget() {
+function DashboardSummary() {
     const [variableTotal, setVariableTotal] = useContext(VariableTotalContext);
     const [fixedTotal, setFixedTotal] = useContext(FixedTotalContext);
     const [incomeTotal, setIncomeTotal] = useContext(IncomeTotalContext);
@@ -17,7 +17,7 @@ function SummaryBudget() {
     return (
         <>  
             <div className='text-center mt-2'>
-                <YearSummaryTable />
+                <YearSavingsTable />
                 <h5 className={moneyLeft < 0 ? 'negative' : 'positive'}>
                     ${moneyLeft} left to budget
                 </h5>
@@ -26,4 +26,4 @@ function SummaryBudget() {
     )
 }
 
-export default SummaryBudget;
+export default DashboardSummary;

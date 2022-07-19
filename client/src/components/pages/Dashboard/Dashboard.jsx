@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import DashboardBudget from './DashboardBudget/DashboardBudget';
-import SummaryBudget from './Summary/SummaryBudget';
+import DashboardSummary from './DashboardSummary/DashboardSummary';
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -12,7 +12,7 @@ function Dashboard() {
     return (
         <>  
             <div>
-                <SummaryBudget />
+                <DashboardSummary />
             </div>
             <div className='container d-flex' style={{ maxWidth: '100%' }}>  
                 <div className="card w-100 m-2">
