@@ -51,8 +51,8 @@ function MainBudgetTable({ type }) {
                                 <th>Budgeted</th>
                                 <th>Remaining</th>
                             </tr>
-
                         </thead>
+                        
                         <tbody>
                             {budget.map((budget_) => (
                                 <Fragment key={ budget_.id }>
@@ -61,7 +61,7 @@ function MainBudgetTable({ type }) {
                                     }
                                 </Fragment>
                             ))}
-                            <MainBudgetTableTotal type={ type } budgets={ budget } expenses={ typeExpenses } />
+                            <MainBudgetTableTotal type={ type } expenses={ typeExpenses } />
                         </tbody>
                     </table>
                 </div>

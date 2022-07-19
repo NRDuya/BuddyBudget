@@ -12,6 +12,7 @@ const variableBudgetRouter = require('./routes/MainBudget/variableBudgetRoute');
 const fixedBudgetRouter = require('./routes/MainBudget/fixedBudgetRoute');
 const incomeBudgetRouter = require('./routes/MainBudget/incomeBudgetRoute');
 const monthlyBudgetRouter = require('./routes/monthlyBudgetRoute');
+const summaryBudgetRouter = require('./routes/summaryBudgetRoute');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/variableBudget', variableBudgetRouter);
 app.use('/fixedBudget', fixedBudgetRouter);
 app.use('/incomeBudget', incomeBudgetRouter);
 app.use('/monthlyBudget', monthlyBudgetRouter);
+app.use('/summaryBudget', summaryBudgetRouter);
 
 app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../client/build/index.html')); });
 app.use((req, res) => { res.status(404).json({ message: 'Route Not Found' }); });

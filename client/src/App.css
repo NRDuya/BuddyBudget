@@ -18,8 +18,12 @@ td {
   padding: 1rem;
 }
 
-.negative {
+.negative-row {
   background:#fdaaaa;
+}
+
+.negative {
+  color: red;
 }
 
 .positive {
