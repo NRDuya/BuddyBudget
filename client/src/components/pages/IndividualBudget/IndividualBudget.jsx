@@ -3,7 +3,8 @@ import { useState, useEffect, useContext, Fragment } from 'react';
 import { useParams } from "react-router-dom";
 import { Modal } from 'react-bootstrap';
 import CurrencyInput from 'react-currency-input-field';
-import { VariableBudgetContext, FixedBudgetContext, IncomeBudgetContext } from '../../contexts/MainBudgetContext';
+import { VariableBudgetContext, FixedBudgetContext, IncomeBudgetContext,
+    VariableTotalContext, FixedTotalContext, IncomeTotalContext } from '../../contexts/MainBudgetContext';
 import ReadIndividualBudgetRow from './ReadIndividualBudgetRow';
 import EditIndividualBudgetRow from './EditIndividualBudgetRow';
 import AlertComponent from '../../AlertComponent';
@@ -17,7 +18,11 @@ function IndividualBudget() {
     }
     
     const [title, setTitle] = useState(type);
+    const [totalBudgeted, setTotalBudgeted] = useState(0);
 
+    const [variableTotal, setVariableTotal] = useContext(VariableTotalContext);
+    const [fixedTotal, setFixedTotal] = useContext(FixedTotalContext);
+    const [incomeTotal, setIncomeTotal] = useContext(IncomeTotalContext);
     const [variableBudget, setVariableBudget] = useContext(VariableBudgetContext);
     const [fixedBudget, setFixedBudget] = useContext(FixedBudgetContext);
     const [incomeBudget, setIncomeBudget] = useContext(IncomeBudgetContext);
@@ -39,18 +44,22 @@ function IndividualBudget() {
         switch(type) {
             case "variable":
               setIndividualBudget(variableBudget);
+              setTotalBudgeted(variableTotal);
               break;
             case "fixed":
               setIndividualBudget(fixedBudget);
+              setTotalBudgeted(fixedTotal);
               break;
             case "income":
               setIndividualBudget(incomeBudget);
+              setTotalBudgeted(incomeTotal);
               break;
             default:
               break;
         }
+
         setTitle(type.charAt(0).toUpperCase() + type.slice(1));
-    }, [type, variableBudget, fixedBudget, incomeBudget])
+    }, [type, variableBudget, fixedBudget, incomeBudget, variableTotal, fixedTotal, incomeTotal])
 
     // Add functions
     const handleShowAddForm = () => {
@@ -191,6 +200,10 @@ function IndividualBudget() {
                 <h2 className="card-header text-center">
                     { title } Budget
                 </h2>
+
+                <h5 className='text-center mt-3'>
+                    ${totalBudgeted} budgeted
+                </h5>
 
                 <button onClick={handleShowAddForm} className="btn btn-primary m-3">
                     Add a Budget

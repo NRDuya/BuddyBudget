@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import DashboardBudget from './DashboardBudget/DashboardBudget';
 import SummaryBudget from './Summary/SummaryBudget';
+
 function Dashboard() {
     const navigate = useNavigate();
 

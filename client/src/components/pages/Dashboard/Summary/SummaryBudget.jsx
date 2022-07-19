@@ -18,9 +18,9 @@ function SummaryBudget() {
         <>  
             <div className='text-center mt-2'>
                 <YearSummaryTable />
-                <div className={moneyLeft < 0 ? 'negative' : 'positive'}>
+                <h5 className={moneyLeft < 0 ? 'negative' : 'positive'}>
                     ${moneyLeft} left to budget
-                </div>
+                </h5>
             </div>
         </>
     )
