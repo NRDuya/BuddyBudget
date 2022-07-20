@@ -16,7 +16,7 @@ function YearSavingsTable() {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios.get('/summaryBudget/sum', {
+        axios.get('/summaryBudget/year-sum', {
             params: {
               year: new Date().getFullYear()
             }
@@ -64,32 +64,32 @@ function YearSavingsTable() {
     return (
         <>  
             <div className='text-center mt-2'>
-            <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
-                        <thead className='table-light'>
-                            <tr>
-                                <th onClick={() => handleYearClick()} style={{cursor:'pointer'}}>
-                                    {currentYear}
+                <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
+                    <thead className='table-light'>
+                        <tr>
+                            <th onClick={() => handleYearClick()} style={{cursor:'pointer'}}>
+                                {currentYear}
+                            </th>
+
+                            {months.map((month, index) => (
+                                <th onClick={() => handleMonthClick(index + 1)} style={{cursor:'pointer'}}>
+                                    {month}
                                 </th>
+                            ))}
+                        </tr>
+                    </thead>
 
-                                {months.map((month, index) => (
-                                    <th onClick={() => handleMonthClick(index + 1)} style={{cursor:'pointer'}}>
-                                        {month}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <th>Money Saved</th>
-                                {months.map((month, index) => (
-                                    <Fragment key={index}>
-                                        <MonthSavingsData expensesSummary={ expensesSummary } month={ index + 1 } />
-                                    </Fragment>
-                                ))}
-                            </tr>
-                        </tbody>
-                    </table>
+                    <tbody>
+                        <tr>
+                            <th>Money Saved</th>
+                            {months.map((month, index) => (
+                                <Fragment key={index}>
+                                    <MonthSavingsData expensesSummary={ expensesSummary } month={ index + 1 } />
+                                </Fragment>
+                            ))}
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </>
     )
