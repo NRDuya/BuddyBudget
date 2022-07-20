@@ -7,6 +7,7 @@ import Navigation from './components/Navbar';
 import Dashboard from './components/pages/Dashboard/Dashboard';
 import IndividualBudget from './components/pages/IndividualBudget/IndividualBudget';
 import MonthlyBudget from './components/pages/MonthlyBudget/MonthlyBudget';
+import SummaryBudget from './components/pages/SummaryBudget/SummaryBudget';
 import Registration from './components/pages/Registration';
 import Login from './components/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
@@ -31,7 +32,7 @@ function App() {
               }
             />
             <Route
-            path='/:type'
+            path='/individual-budget/:type'
             element={
               <PrivateRoute>
                 <IndividualBudget />
@@ -39,13 +40,21 @@ function App() {
             }
             />
             <Route
-            path='/:year/:month'
+            path='/budget/:year/:month'
             element={
               <MonthlyExpenseProvider>
                 <PrivateRoute>
                   <MonthlyBudget />
                 </PrivateRoute>
               </MonthlyExpenseProvider>
+            }
+            />
+            <Route
+            path='/budget/:year'
+            element={
+              <PrivateRoute>
+                <SummaryBudget />
+              </PrivateRoute>
             }
             />
           </Routes>

@@ -6,7 +6,7 @@ function Dashboard() {
     const navigate = useNavigate();
 
     const handleBudgetClick = (type) => {
-        navigate(`/${type}`)
+        navigate(`/individual-budget/${type}`)
     }
     
     return (

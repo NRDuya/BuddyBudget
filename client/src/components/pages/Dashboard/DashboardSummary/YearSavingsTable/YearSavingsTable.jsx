@@ -53,8 +53,12 @@ function YearSavingsTable() {
     }, []);
 
     const handleMonthClick = (month) => {
-        navigate(`/${currentYear}/${month}`)
-    }
+        navigate(`/budget/${currentYear}/${month}`);
+    };
+
+    const handleYearClick = () => {
+        navigate(`/budget/${currentYear}`);
+    };
 
     if(loading) return "Loading...";
     return (
@@ -63,7 +67,10 @@ function YearSavingsTable() {
             <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
                         <thead className='table-light'>
                             <tr>
-                                <th>{currentYear}</th>
+                                <th onClick={() => handleYearClick()} style={{cursor:'pointer'}}>
+                                    {currentYear}
+                                </th>
+
                                 {months.map((month, index) => (
                                     <th onClick={() => handleMonthClick(index + 1)} style={{cursor:'pointer'}}>
                                         {month}
