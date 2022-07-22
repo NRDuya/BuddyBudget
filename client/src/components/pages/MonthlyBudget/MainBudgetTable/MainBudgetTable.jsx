@@ -43,13 +43,13 @@ function MainBudgetTable({ type }) {
                 </h2>
 
                 <div>
-                    <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
+                    <table className='table table-bordered table-responsive'>
                         <thead className='table-light'>
                             <tr>
                                 <th>Category</th>
                                 <th>Actual</th>
                                 <th>Budgeted</th>
-                                <th>Remaining</th>
+                                <th className='text-center'>Under/Over Budget</th>
                             </tr>
                         </thead>
                         
