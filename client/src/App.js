@@ -13,53 +13,57 @@ import Login from './components/pages/Login';
 import PrivateRoute from './components/PrivateRoute';
 import MainBudgetProvider from './components/contexts/MainBudgetContext';
 import MonthlyExpenseProvider from './components/contexts/MonthlyExpensesContext';
+import GlobalVariablesProvider from './components/contexts/GlobalVariablesContext';
 
 function App() {
 
   return (
-    <MainBudgetProvider>
-      <Router>
-          <Navigation />
-          <Routes>
-            <Route path='/login' element={<Login />} />
-            <Route path='/signup' element={<Registration />} />
-            <Route
-              path='/'
+    <GlobalVariablesProvider>
+      <MainBudgetProvider>
+        <Router>
+            <Navigation />
+            <Routes>
+              <Route path='/login' element={<Login />} />
+              <Route path='/signup' element={<Registration />} />
+              <Route
+                path='/'
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+              path='/individual-budget/:type'
               element={
                 <PrivateRoute>
-                  <Dashboard />
+                  <IndividualBudget />
                 </PrivateRoute>
               }
-            />
-            <Route
-            path='/individual-budget/:type'
-            element={
-              <PrivateRoute>
-                <IndividualBudget />
-              </PrivateRoute>
-            }
-            />
-            <Route
-            path='/budget/:year/:month'
-            element={
-              <MonthlyExpenseProvider>
+              />
+              <Route
+              path='/budget/:year/:month'
+              element={
+                <MonthlyExpenseProvider>
+                  <PrivateRoute>
+                    <MonthlyBudget />
+                  </PrivateRoute>
+                </MonthlyExpenseProvider>
+              }
+              />
+              <Route
+              path='/budget/:year'
+              element={
                 <PrivateRoute>
-                  <MonthlyBudget />
+                  <SummaryBudget />
                 </PrivateRoute>
-              </MonthlyExpenseProvider>
-            }
-            />
-            <Route
-            path='/budget/:year'
-            element={
-              <PrivateRoute>
-                <SummaryBudget />
-              </PrivateRoute>
-            }
-            />
-          </Routes>
-      </Router>
-    </MainBudgetProvider>
+              }
+              />
+            </Routes>
+        </Router>
+      </MainBudgetProvider>
+    </GlobalVariablesProvider>
+
   );
 }
 

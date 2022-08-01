@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { FixedTotalContext } from '../../../../contexts/MainBudgetContext';
+import { FixedTotalContext } from '../contexts/MainBudgetContext';
 
 function MonthSavingsData({ expensesSummary, month }) {
     const [fixedTotal, setFixedTotal] = useContext(FixedTotalContext);

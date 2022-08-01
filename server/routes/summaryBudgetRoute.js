@@ -6,7 +6,7 @@ const SummaryBudgetModel = require('../models/SummaryBudgetModel');
 const authenticateToken = require('../middleware/authenticateToken');
 const budgetCheck = require('../utils/budgetCheck');
 
-router.get('/year-sum', authenticateToken, async (req, res, next) => {
+router.get('/monthly-total-sum', authenticateToken, async (req, res, next) => {
     const user = req.user;
     const year = parseInt(req.query.year);
     
@@ -17,7 +17,7 @@ router.get('/year-sum', authenticateToken, async (req, res, next) => {
             throw new UserError("Invalid year!", 200);
         }
         
-        const results = await SummaryBudgetModel.getYearlySum(user, year);
+        const results = await SummaryBudgetModel.getMonthlyTypeTotals(user, year);
         if (results < 0) {
             return res.status(200).json({ success: true, alert: new Alert("No Expenses found for the year", 'success'), expenses: [] })
         } else return res.status(201).json({ success: true, alert: new Alert("Get Yearly sum Successful", 'success'), expenses: results });
@@ -29,7 +29,7 @@ router.get('/year-sum', authenticateToken, async (req, res, next) => {
     }
 });
 
-router.get('/year-expenses', authenticateToken, async (req, res, next) => {
+router.get('/monthly-expenses-sum', authenticateToken, async (req, res, next) => {
     const user = req.user;
     const year = parseInt(req.query.year);
     
@@ -41,8 +41,7 @@ router.get('/year-expenses', authenticateToken, async (req, res, next) => {
             throw new UserError("Invalid year!", 200);
         }
 
-        const results = await SummaryBudgetModel.getYearlyExpenses(user, year);
-        console.log("After results")
+        const results = await SummaryBudgetModel.getMonthlyCategoryTotals(user, year);
         if (results < 0) {
             return res.status(200).json({ success: true, alert: new Alert("No Expenses found for the year", 'success'), expenses: [] })
         } else return res.status(201).json({ success: true, alert: new Alert("Get Yearly expenses Successful", 'success'), expenses: results });

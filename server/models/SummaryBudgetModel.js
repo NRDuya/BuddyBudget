@@ -1,7 +1,7 @@
 var db = require('../config/database');
 const SummaryBudgetModel = {};
 
-SummaryBudgetModel.getYearlySum = (userId, year) => {
+SummaryBudgetModel.getMonthlyTypeTotals = (userId, year) => {
     const baseSQL = "SELECT SUM(e.expense) total, MONTH(e.date) month, b.type FROM monthlybudget e " + 
                         "JOIN mainbudget b ON b.id = e.category WHERE e.user = ? AND YEAR(e.date) = ? " + 
                         "GROUP BY MONTH(date), type ORDER BY month;" 
@@ -14,8 +14,8 @@ SummaryBudgetModel.getYearlySum = (userId, year) => {
         .catch((err) => Promise.reject(err))
 }
 
-SummaryBudgetModel.getYearlyExpenses = (userId, year) => {
-    const baseSQL = "SELECT e.category, MONTH(e.date) month, SUM(e.expense) total FROM monthlybudget e " +
+SummaryBudgetModel.getMonthlyCategoryTotals = (userId, year) => {
+    const baseSQL = "SELECT e.category, MONTH(e.date) month, SUM(e.expense) total, b.type FROM monthlybudget e " +
 	                    "JOIN mainbudget b ON b.id = e.category " +
 	                    "WHERE e.user = ? AND YEAR(e.date) = ? " +
                         "GROUP BY e.category, MONTH(e.date);"
