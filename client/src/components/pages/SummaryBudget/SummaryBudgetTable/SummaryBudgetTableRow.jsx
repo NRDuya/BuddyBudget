@@ -6,6 +6,7 @@ function SummaryBudgetTableRow({ budget, expenses }) {
     const [months] = useContext(GlobalVariablesContext);
     const [budgetExpenses, setBudgetExpenses] = useState({});
     const [totalYearSpent, setTotalYearSpent] = useState(0);
+    const [highlightRow, setHighlightRow] = useState(false);
 
     useEffect(() => {
         let budgetExpenses = expenses[budget.id];
@@ -17,10 +18,14 @@ function SummaryBudgetTableRow({ budget, expenses }) {
         setTotalYearSpent(budgetTotalExpenses.toFixed(2));    
     }, [budget, expenses]);
 
+    const highlightRowClicked = () => {
+        setHighlightRow(!highlightRow);
+    };
+
     return (
         <>
-            <tr>
-                <th>
+            <tr className={highlightRow && 'highlight'}>
+                <th onClick={() => highlightRowClicked()} style={{cursor:'pointer'}}>
                     {budget.category}
                 </th>
 
@@ -30,7 +35,8 @@ function SummaryBudgetTableRow({ budget, expenses }) {
 
                 {months.map((month, index) => (
                     <Fragment key={month}>
-                        <SummaryBudgetTableData expenses={ budgetExpenses } month={ index + 1 } />
+                        <SummaryBudgetTableData highlight={ highlightRow } month={ index + 1 } 
+                            type={ budget.type } budgetTotal={ budget.expense } expenses={ budgetExpenses }  />
                     </Fragment>
                 ))}
 
