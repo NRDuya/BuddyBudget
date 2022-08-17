@@ -107,9 +107,9 @@ function SummaryBudget() {
     return (
         <>
             <div className='container mt-3'>
+                <YearSavingsTable expensesObj={ monthlyTotal } />
                 <SummaryBudgetTable expenses={ expenses } monthlyTotal={ monthlyTotal } type={ "var" } />
                 <SummaryBudgetTable expenses={ expenses } monthlyTotal={ monthlyTotal } type={ "inc" } />
-                <YearSavingsTable expensesObj={ monthlyTotal } />
             </div>
         </>
     )
