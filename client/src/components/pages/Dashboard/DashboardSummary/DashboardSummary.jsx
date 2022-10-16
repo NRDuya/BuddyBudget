@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, Fragment } from 'react';
 import { VariableTotalContext, FixedTotalContext, IncomeTotalContext } from '../../../contexts/MainBudgetContext';
-import YearSavingsTable from './YearSavingsTable/YearSavingsTable';
+import YearSavingsTable from '../../../YearSavingsTable/YearSavingsTable';
 
 function DashboardSummary() {
     const [variableTotal, setVariableTotal] = useContext(VariableTotalContext);
