@@ -28,7 +28,7 @@ function Navigation() {
     
     const handleCalendar = (value) => {
         const link = value.getFullYear() + "/" + (value.getMonth() + 1);
-        navigate(`/${link}`);
+        navigate(`/budget/${link}`);
         setShowCalendar(!showCalendar);
     }
 

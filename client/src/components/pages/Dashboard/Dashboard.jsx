@@ -1,15 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import DashboardBudget from './DashboardBudget/DashboardBudget';
+import DashboardSummary from './DashboardSummary/DashboardSummary';
 
 function Dashboard() {
     const navigate = useNavigate();
 
     const handleBudgetClick = (type) => {
-        navigate(`/${type}`)
+        navigate(`/individual-budget/${type}`)
     }
     
     return (
-        <>
+        <>  
+            <div>
+                <DashboardSummary />
+            </div>
             <div className='container d-flex' style={{ maxWidth: '100%' }}>  
                 <div className="card w-100 m-2">
                     <div className="card-body">
