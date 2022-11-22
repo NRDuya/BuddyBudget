@@ -19,10 +19,13 @@ function PrivateRoute({ children }) {
   useEffect(() => {
     axios.defaults.withCredentials = true;
 
-    axios.get('/users/verify')
+    axios.get('/api/users/verify')
       .then((res) => {
         setAuth(res.data.success);
-        return axios.get('/mainBudget/');
+        if (!res.data.success) {
+          return res.data.success;
+        }
+        return axios.get('/api/mainBudget/');
       })
       .then((res) => {
         if (res.data.success) {

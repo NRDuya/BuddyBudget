@@ -19,7 +19,7 @@ function Registration(){
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const res = await axios.post('/users/register', {
+            const res = await axios.post('/api/users/register', {
                 username: usernameRef.current.value,
                 email: emailRef.current.value,
                 password: passwordRef.current.value,

@@ -19,7 +19,7 @@ function Login(){
         axios.defaults.withCredentials = true;
 
         try{
-            const res = await axios.post('/users/login', {
+            const res = await axios.post('/api/users/login', {
                 username: usernameRef.current.value,
                 password: passwordRef.current.value
             });

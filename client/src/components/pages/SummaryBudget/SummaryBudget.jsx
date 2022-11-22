@@ -33,7 +33,7 @@ function SummaryBudget() {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios.get('/summaryBudget/monthly-expenses-sum', {
+        axios.get('/api/summaryBudget/monthly-expenses-sum', {
             params: {
               year: year
             }

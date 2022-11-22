@@ -27,7 +27,7 @@ function YearSavingsTable({ expensesObj }) {
             setExpensesSummary(expensesObj);
             setLoading(false);
         } else {
-            axios.get('/summaryBudget/monthly-total-sum', {
+            axios.get('/api/summaryBudget/monthly-total-sum', {
                 params: {
                   year: new Date().getFullYear()
                 }

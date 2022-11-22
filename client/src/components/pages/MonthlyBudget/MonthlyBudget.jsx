@@ -15,7 +15,7 @@ function MonthlyBudget() {
     useEffect(() => {
         axios.defaults.withCredentials = true;
 
-        axios.get('/monthlyBudget/', {
+        axios.get('/api/monthlyBudget/', {
             params: {
               month: month,
               year: year

@@ -85,7 +85,7 @@ function MonthlyExpensesTable() {
                 categoryName: addFormData.categoryName
             };
 
-            axios.post(`/monthlyBudget/save`, newExpense)
+            axios.post(`/api/monthlyBudget/save`, newExpense)
                 .then((res) => {
                     if (res.data.success) {
                         newExpense.id = res.data.budgetId;
@@ -160,7 +160,7 @@ function MonthlyExpensesTable() {
             categoryName: editFormData.categoryName
         };
 
-        axios.post('/monthlyBudget/edit', editedExpense)
+        axios.post('/api/monthlyBudget/edit', editedExpense)
          .then((res) => {
             if (res.data.success) {
                 const newExpenses = [...expenses];
@@ -187,7 +187,7 @@ function MonthlyExpensesTable() {
         newExpenses.splice(index, 1);
         setExpenses(newExpenses);
 
-        axios.delete('/monthlyBudget/delete', {data: {id: budgetId}})
+        axios.delete('/api/monthlyBudget/delete', {data: {id: budgetId}})
          .then((res) => {
             if (res.data.success) {
                 console.log('Successfully deleted from db.');            

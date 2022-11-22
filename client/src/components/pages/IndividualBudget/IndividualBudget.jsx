@@ -91,7 +91,7 @@ function IndividualBudget() {
             expense: addFormData.expense
         };
 
-        axios.post(`/${type}Budget/save`, newBudget)
+        axios.post(`/api/${type}Budget/save`, newBudget)
          .then((res) => {
             if (res.data.success) {
                 newBudget.id = res.data.budgetId;
@@ -139,7 +139,7 @@ function IndividualBudget() {
 
         setEditBudgetId(null);
 
-        axios.post(`/${type}Budget/edit`, editedBudget)
+        axios.post(`/api/${type}Budget/edit`, editedBudget)
          .then((res) => {
             if (res.data.success) {
                 const newMainBudget = [...individualBudget];
@@ -181,7 +181,7 @@ function IndividualBudget() {
         newMainBudget.splice(index, 1);
         setIndividualBudget(newMainBudget);
 
-        axios.delete(`/${type}Budget/delete`, {data: {id: budgetId}})
+        axios.delete(`/api/${type}Budget/delete`, {data: {id: budgetId}})
          .then((res) => {
            console.log('Successfully deleted from db.');            
          })
