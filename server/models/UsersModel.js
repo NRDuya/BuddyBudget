@@ -45,7 +45,7 @@ UserModel.authenticate = (username, password) => {
                 return bcrypt.compare(password, results[0].password);
             }
             else{
-                return Promise.reject(-1);
+                return Promise.resolve(-1);
             }
         })
         .then((passwordsMatch) => {

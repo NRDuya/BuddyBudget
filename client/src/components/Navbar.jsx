@@ -15,7 +15,7 @@ function Navigation() {
         axios.defaults.withCredentials = true;
         localStorage.removeItem("username");
         try {
-            const res = await axios.post('/users/logout', {});
+            const res = await axios.post('/api/users/logout', {});
             if (res.data.success) {
                 window.location.reload(false);
                 navigate('/login');
@@ -28,7 +28,7 @@ function Navigation() {
     
     const handleCalendar = (value) => {
         const link = value.getFullYear() + "/" + (value.getMonth() + 1);
-        navigate(`/${link}`);
+        navigate(`/budget/${link}`);
         setShowCalendar(!showCalendar);
     }
 

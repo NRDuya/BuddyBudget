@@ -1,0 +1,53 @@
+version: '3'
+
+x-common-variables: &common-variables
+  MYSQL_DATABASE: buddybudget
+  MYSQL_USER: admin
+  MYSQL_PASSWORD: password
+
+volumes:
+  mysql_dockervolume:
+
+services:
+  mysql_db:
+    image: mysql
+    restart: always
+    cap_add:
+      - SYS_NICE
+    volumes:
+      - ./scripts/schema/1buddybudgetschema.sql:/docker-entrypoint-initdb.d/1buddybudgetschema.sql
+      - mysql_dockervolume:/var/lib/mysql
+    environment:
+      <<: *common-variables
+      MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
+      MYSQL_HOST: host.docker.internal
+
+
+  express-server:
+    container_name: buddybudget-express-server
+    build:
+      dockerfile: Dockerfile
+      context: "./server"
+    depends_on:
+      - mysql_db
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      <<: *common-variables
+      MYSQL_HOST: "mysql_db"
+
+
+  frontend:
+    container_name: buddybudget-frontend
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    depends_on:
+      - express-server
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    ports:
+      - "3000:80"

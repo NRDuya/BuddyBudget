@@ -1,27 +1,15 @@
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th,
-td {
-  border: 1px solid #ffffff;
-  text-align: left;
-  padding: 8px;
-  width: 1%;
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 1rem;
+.negative-row {
+  background:#fdaaaa;
 }
 
 .negative {
-  background:#fdaaaa;
+  color: red;
 }
 
 .positive {
   color: green;
+}
+
+.highlight {
+  background-color: #fff370;
 }

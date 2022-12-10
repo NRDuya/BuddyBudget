@@ -43,16 +43,16 @@ function MainBudgetTable({ type }) {
                 </h2>
 
                 <div>
-                    <table className='table table-bordered table-responsive' style={{ tableLayout: 'fixed' }}>
+                    <table className='table table-bordered table-responsive'>
                         <thead className='table-light'>
                             <tr>
                                 <th>Category</th>
                                 <th>Actual</th>
                                 <th>Budgeted</th>
-                                <th>Remaining</th>
+                                <th className='text-center'>Under/Over Budget</th>
                             </tr>
-
                         </thead>
+                        
                         <tbody>
                             {budget.map((budget_) => (
                                 <Fragment key={ budget_.id }>
@@ -61,7 +61,7 @@ function MainBudgetTable({ type }) {
                                     }
                                 </Fragment>
                             ))}
-                            <MainBudgetTableTotal type={ type } budgets={ budget } expenses={ typeExpenses } />
+                            <MainBudgetTableTotal type={ type } expenses={ typeExpenses } />
                         </tbody>
                     </table>
                 </div>
